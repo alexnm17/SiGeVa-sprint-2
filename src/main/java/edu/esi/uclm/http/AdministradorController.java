@@ -8,7 +8,7 @@ import org.json.JSONObject;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import edu.esi.uclm.dao.AdministradorDao;
+import edu.esi.uclm.dao.PruebaDao;
 
 @RestController
 public class AdministradorController {
@@ -20,7 +20,7 @@ public class AdministradorController {
 		String nombre = jso.getString("nombre");
 		System.out.println("Hola, "+ nombre+" con DNI:"+dni);	
 		
-		AdministradorDao adminDao = new AdministradorDao();
+		PruebaDao adminDao = new PruebaDao();
 		adminDao.connection();
 		adminDao.insertarPaciente(nombre, dni);
 		adminDao.closeConnection();

@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import edu.esi.uclm.model.Usuario;
 
 @Repository
-public interface AdministradorDao extends MongoRepository<Usuario, String> {
+public interface UsuarioDao extends MongoRepository<Usuario, String> {
 
 }

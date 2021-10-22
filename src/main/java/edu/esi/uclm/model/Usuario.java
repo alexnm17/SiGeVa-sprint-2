@@ -7,7 +7,9 @@ public class Usuario {
 	private String password;
 	//private CentroSalud centro;
 	
-	public Usuario() {	}
+	public Usuario() {
+		//El constructor vacio ha sido crado por exigencias del Spring
+	}
 	
 	public Usuario(String dni, String nombre, String apellido, String password) {
 		this.dni=dni;
