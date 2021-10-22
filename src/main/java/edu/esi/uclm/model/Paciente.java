@@ -1,10 +1,13 @@
 package edu.esi.uclm.model;
 
 public class Paciente extends Usuario {
+	//Hace falta esto?
 	private String historiaClinica;
 	private EstadoVacunacion estadoVacunacion;
 	
-	public Paciente() {	}
+	public Paciente() {	
+		//El constructor vacio ha sido crado por exigencias del Spring
+	}
 	
 	public Paciente(String dni, String nombre, String apellido, String password, String historiaClinica) {
 		super(dni,nombre,apellido, password);
