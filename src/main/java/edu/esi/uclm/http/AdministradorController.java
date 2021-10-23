@@ -1,4 +1,4 @@
-package edu.esi.uclm.http;
+/*package edu.esi.uclm.http;
 
 import java.util.Map;
 
@@ -34,3 +34,4 @@ public class AdministradorController {
 
 	
 }
+*/

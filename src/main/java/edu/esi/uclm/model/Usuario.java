@@ -12,11 +12,12 @@ public class Usuario {
 		//El constructor vacio ha sido crado por exigencias del Spring
 	}
 	
-	public Usuario(String dni, String nombre, String apellido, String password, String rol) {
-		this.dni=dni;
-		this.nombre=nombre;
-		this.apellido=apellido;
-		this.password=password;
+	public Usuario(String dni, String nombre, String apellido,String centro, String password, String rol) {
+		this.dni = dni;
+		this.nombre = nombre;
+		this.apellido = apellido;
+		this.centro = centro;
+		this.password = password;
 		this.rol = rol;
 	
 	}
