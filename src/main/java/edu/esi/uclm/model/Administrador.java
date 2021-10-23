@@ -8,8 +8,8 @@ public class Administrador extends Usuario{
 		super();
 	}
 	
-	public Administrador(String dni, String nombre, String apellido, String password) {
-			super(dni, nombre, apellido, password);
+	public Administrador(String dni, String nombre, String apellido, String password, String rol) {
+			super(dni, nombre, apellido, password, rol);
 			this.rol="administrador";
 	}
 
