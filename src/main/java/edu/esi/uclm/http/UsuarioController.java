@@ -44,7 +44,7 @@ public class UsuarioController {
 	@PostMapping("/modificarUsuario")
 	public void ModificarUsuario(@RequestBody Usuario user) {
 		try {
-			if(user.getRol().equals(RolUsuario.ADMINISTRADOR)) throw new Exception("No puede modificar a otro administrador del sistema");
+			if(user.getRol().equals(RolUsuario.ADMINISTRADOR.name())) throw new Exception("No puede modificar a otro administrador del sistema");
 
 
 			else {
