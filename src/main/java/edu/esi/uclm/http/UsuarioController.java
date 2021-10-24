@@ -1,15 +1,29 @@
 package edu.esi.uclm.http;
 
-public class UsuarioController {
+import edu.esi.uclm.model.Usuario;
 
-	public void addUsuario() {
-	}
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+
+import edu.esi.uclm.dao.UsuarioDao;
+
+public class UsuarioController {
+	private UsuarioDao usuariodao;
 	
-	public void modificarUsuario() {
+	@PostMapping ("/crearUsuario")
+	public void addUsuario(String dni, String nombre, String apellido, String password) {
+		Usuario user = new Usuario(dni, nombre, apellido, password);
+		usuariodao.insert(user);
+
+	}
+	@PostMapping ("/modificarUsuario")
+	public void modificarUsuario(String dni, String nombre, String apellido, String password) {
+		Usuario user = new Usuario(dni, nombre, apellido, password);
 		
 	}
-	
-	public void eliminarUsuario() {
+	@DeleteMapping ("/eliminarUsuario")
+	public void eliminarUsuario(String dni) {
+		usuariodao.deleteById(dni);
 		
 	}
 }
