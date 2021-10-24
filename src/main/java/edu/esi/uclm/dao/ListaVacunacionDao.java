@@ -3,9 +3,9 @@ package edu.esi.uclm.dao;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
-import edu.esi.uclm.model.Usuario;
+import edu.esi.uclm.model.ListaVacunacion;
 
 @Repository
-public interface AdministradorDao extends MongoRepository<Usuario, String> {
+public interface ListaVacunacionDao extends MongoRepository<ListaVacunacion, String> {
 
 }
