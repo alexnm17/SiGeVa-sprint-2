@@ -9,8 +9,8 @@ public class Paciente extends Usuario {
 		//El constructor vacio ha sido crado por exigencias del Spring
 	}
 	
-	public Paciente(String dni, String nombre, String apellido, String password, String historiaClinica) {
-		super(dni,nombre,apellido, password);
+	public Paciente(String dni, String nombre, String apellido, String password, String centroSalud,String historiaClinica) {
+		super(dni,nombre,apellido, password, centroSalud);
 		this.historiaClinica = historiaClinica;
 		this.estadoVacunacion = EstadoVacunacion.NO_VACUNADO;
 	}
