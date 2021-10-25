@@ -12,5 +12,5 @@ public class ListaVacunacionController {
 	public void setVacunado() {
 
 	}
-
+	
 }

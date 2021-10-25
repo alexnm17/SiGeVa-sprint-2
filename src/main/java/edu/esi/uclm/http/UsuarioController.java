@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import edu.esi.uclm.dao.UsuarioDao;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class UsuarioController {
