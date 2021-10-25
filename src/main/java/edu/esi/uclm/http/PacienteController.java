@@ -12,22 +12,24 @@ import edu.esi.uclm.model.Paciente;
 
 @RestController
 public class PacienteController {
-	
-	@Autowired private PacienteDao pacienteDao;
-	
+
+	@Autowired
+	private PacienteDao pacienteDao;
+
 	@GetMapping("/pruebaConfigGet")
 	public void pruebaConfig(HttpSession session) {
-	    for (Paciente paciente : pacienteDao.findAll()) {
-	        System.out.println(paciente);
-	     }
-		
+		for (Paciente paciente : pacienteDao.findAll()) {
+			System.out.println(paciente);
+		}
+
 	}
-	
+
 	@PostMapping("/pruebaConfigPost")
 	public void pruebaConfigPost(HttpSession session) {
 		System.out.println("Pasa por el post");
-		pacienteDao.save(new Paciente("20617021M", "Jaime", "León", "ContraSuperSegura", "No le hja pasado nunca nada"));
-		
+		pacienteDao
+				.save(new Paciente("20617021M", "Jaime", "León", "ContraSuperSegura", "No le hja pasado nunca nada"));
+
 	}
-	
+
 }
