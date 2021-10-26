@@ -1,6 +1,7 @@
 package edu.esi.uclm.http;
 
 import edu.esi.uclm.model.Usuario;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
 
