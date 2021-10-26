@@ -1,5 +1,9 @@
 package edu.esi.uclm.model;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class FormatoVacunacion {
 	private String horaInicioVacunacion;
 	private String horaFinVacunacion;
@@ -50,6 +54,16 @@ public class FormatoVacunacion {
 		this.personasPorFranja = personasPorFranja;
 	}
 	
-	
+	public boolean horasCorrectas() {
+		try {
+			Date horaInicio = new SimpleDateFormat("HH:mm").parse(horaInicioVacunacion);
+			Date horaFin = new SimpleDateFormat("HH:mm").parse(horaFinVacunacion);
+			return horaInicio.before(horaFin);
+		} catch (ParseException e) {
+			
+			e.printStackTrace();
+		}
+		return false; 
+	}
 	
 }
