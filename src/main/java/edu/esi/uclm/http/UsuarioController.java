@@ -2,6 +2,8 @@ package edu.esi.uclm.http;
 
 import edu.esi.uclm.model.Usuario;
 
+import java.util.Optional;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -15,14 +17,22 @@ public class UsuarioController {
 	@PostMapping("/crearUsuario")
 	public void addUsuario(String dni, String nombre, String apellido, String password) {
 		Usuario user = new Usuario(dni, nombre, apellido, password);
-		usuariodao.insert(user);
+		usuariodao.save(user);
 
 	}
 
 	@PostMapping("/modificarUsuario")
 	public void modificarUsuario(String dni, String nombre, String apellido, String password) {
-		Usuario user = new Usuario(dni, nombre, apellido, password);
-
+		try {
+			
+		
+		Optional<Usuario> antiguo= usuariodao.findById(dni);
+		antiguo.get().setPassword(password);
+		usuariodao.deleteById(dni);
+		usuariodao.save(antiguo.get());
+		}catch(Exception e) {
+			
+		}
 	}
 
 	@DeleteMapping("/eliminarUsuario")
