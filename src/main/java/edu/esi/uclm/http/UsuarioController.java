@@ -87,11 +87,6 @@ public class UsuarioController {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
 		}
 		
-	@PostMapping("/modificarUsuario")
-	public void modificarUsuario(String dni, String nombre, String apellido, String password, String centroSalud) {
-		Usuario user = new Usuario(dni, nombre, apellido, password, centroSalud);
-
-	}
 
 
 }

@@ -8,19 +8,15 @@ public class Usuario {
 	private String nombre;
 	private String apellido;
 	private String password;
-<<<<<<< HEAD
+
 	private String rol;
 	private String centro;
 
-=======
+
 	private String centroSalud;
 	
->>>>>>> branch 'master' of https://SiGeVa@dev.azure.com/SiGeVa/SiGeVa/_git/SiGeVa
-	public Usuario() {
-		//El constructor vacio ha sido crado por exigencias del Spring
-	}
+
 	
-<<<<<<< HEAD
 	public Usuario(String dni, String nombre, String apellido,String centro, String password, String rol) {
 		this.dni = dni;
 		this.nombre = nombre;
@@ -29,15 +25,6 @@ public class Usuario {
 		this.password = password;
 		this.rol = rol;
 	
-=======
-	public Usuario(String dni, String nombre, String apellido, String password, String centroSalud) {
-		this.dni=dni;
-		this.nombre=nombre;
-		this.apellido=apellido;
-		this.password=password;
-		this.centroSalud=centroSalud;
->>>>>>> branch 'master' of https://SiGeVa@dev.azure.com/SiGeVa/SiGeVa/_git/SiGeVa
-	}
 
 	public String getDni() {
 		return dni;
