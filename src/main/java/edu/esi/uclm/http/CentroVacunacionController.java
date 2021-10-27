@@ -22,7 +22,7 @@ public class CentroVacunacionController {
 	private CentroVacunacionDao centroDao;
 	
 	@PostMapping("/addCentro")
-	public void add(HttpServletRequest request,@RequestBody CentroVacunacion centro) {
+	public void darAltaCentroVacunacion(HttpServletRequest request,@RequestBody CentroVacunacion centro) {
 		try {
 			centroDao.save(centro);
 		} catch(Exception e) {	
