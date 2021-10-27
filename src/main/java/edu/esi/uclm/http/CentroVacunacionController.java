@@ -21,6 +21,7 @@ public class CentroVacunacionController {
 	@Autowired
 	private CentroVacunacionDao centroDao;
 	
+	//Metodo para añadir centros de vacunacion a la BD
 	@PostMapping("/addCentro")
 	public void darAltaCentroVacunacion(HttpServletRequest request,@RequestBody CentroVacunacion centro) {
 		try {
