@@ -1,17 +1,29 @@
 package edu.esi.uclm.model;
 
+import org.springframework.data.mongodb.core.mapping.DBRef;
+
 public class CentroVacunacion {
 	private String nombre;
 	private String municipio;
+	@DBRef
+	private ListaVacunacion listaVacunacion;
 	
 	public CentroVacunacion() {
 		
 	}
 	
-	public CentroVacunacion(String nombre, String municipio) {
-		super();
+	public CentroVacunacion(String nombre, String municipio, ListaVacunacion listaVacunacion) {
 		this.nombre = nombre;
 		this.municipio = municipio;
+		this.listaVacunacion=listaVacunacion;
+	}
+	
+	public ListaVacunacion getListaVacunacion() {
+		return listaVacunacion;
+	}
+
+	public void setListaVacunacion(ListaVacunacion listaVacunacion) {
+		this.listaVacunacion = listaVacunacion;
 	}
 
 	public String getNombre() {
