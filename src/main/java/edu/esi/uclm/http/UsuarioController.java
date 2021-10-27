@@ -1,5 +1,4 @@
 package edu.esi.uclm.http;
-
 import java.util.Map;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,12 +6,21 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import edu.esi.uclm.model.Usuario;
+
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import edu.esi.uclm.dao.UsuarioDao;
 import edu.esi.uclm.exceptions.SigevaException;
 import edu.esi.uclm.model.RolUsuario;
+import edu.esi.uclm.model.Usuario;
+
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import edu.esi.uclm.dao.UsuarioDao;
 import edu.esi.uclm.model.Usuario;
 
 @RestController
@@ -64,7 +72,7 @@ public class UsuarioController {
 	}
 
 	
-	@PostMapping("/eliminarUsuario/{dni}")
+	@DeleteMapping("/eliminarUsuario/{dni}")
 	public void eliminarUsuario(@PathVariable String dni) {
 		try {
 			Usuario user = userDao.findByDni(dni);
@@ -78,6 +86,12 @@ public class UsuarioController {
 
 			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
 		}
+		
+	@PostMapping("/modificarUsuario")
+	public void modificarUsuario(String dni, String nombre, String apellido, String password, String centroSalud) {
+		Usuario user = new Usuario(dni, nombre, apellido, password, centroSalud);
 
 	}
+
+
 }
