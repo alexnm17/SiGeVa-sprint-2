@@ -24,6 +24,8 @@ public class Usuario {
 		this.centro = centro;
 		this.password = password;
 		this.rol = rol;
+		
+	}
 	
 
 	public String getDni() {

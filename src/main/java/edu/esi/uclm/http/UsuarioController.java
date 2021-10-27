@@ -86,7 +86,7 @@ public class UsuarioController {
 
 			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
 		}
-		
+	}
 
 
 }
