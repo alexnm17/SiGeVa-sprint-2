@@ -1,4 +1,4 @@
-package edu.esi.uclm.http;
+/*package edu.esi.uclm.http;
 
 import javax.servlet.http.HttpSession;
 
@@ -33,3 +33,4 @@ public class PacienteController {
 	}
 
 }
+*/
