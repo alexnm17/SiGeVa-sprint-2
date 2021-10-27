@@ -7,21 +7,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import edu.esi.uclm.model.Usuario;
-
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
-
 import edu.esi.uclm.dao.UsuarioDao;
 import edu.esi.uclm.exceptions.SigevaException;
 import edu.esi.uclm.model.RolUsuario;
-import edu.esi.uclm.model.Usuario;
-
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import edu.esi.uclm.dao.UsuarioDao;
-import edu.esi.uclm.model.Usuario;
 
 @RestController
 public class UsuarioController {
