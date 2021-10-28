@@ -1,10 +1,7 @@
 package edu.esi.uclm.http;
 
-
 import java.util.Map;
-
 import javax.servlet.http.HttpSession;
-
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +16,7 @@ public class FormatoVacunacionController {
 
 	@Autowired
 	private FormatoVacunacionDao formatoVacunacionDao;
+
 	
 	@PostMapping("/definirFormatoVacunacion")
 	public void definirFormatoVacunacion(HttpSession session, @RequestBody Map<String, Object> datosFormatoVacunacion) {
@@ -26,7 +24,7 @@ public class FormatoVacunacionController {
 		
 		String horaInicio = jso.getString("horaIncio");
 		String horaFin = jso.getString("horaFin");
-		String duracionFranja = jso.getString("duracionFranja");
+		int duracionFranja = jso.getInt("duracionFranja");
 		int personasAVacunar = jso.getInt("personasAVacunar");
 		
 		FormatoVacunacion formatoVacunacion = new FormatoVacunacion(horaInicio, horaFin, duracionFranja, personasAVacunar);
@@ -34,19 +32,20 @@ public class FormatoVacunacionController {
 		
 	}
 	
-	@PostMapping ("/")
+	@PostMapping ("/setPersonalVacunacion")
 	public void setPersonalVacunacion() {
 		
 	}
 	
-	@PostMapping ("/")
+	@PostMapping ("/setHorarioVacunacion")
 	public void setHorarioVacunacion() {
 	
 	}
 	
-	@PostMapping ("/")
+	@PostMapping ("/setDosisDisponibles")
 	public void setDosisDisponibles() {
 		
 	}
 	
+
 }

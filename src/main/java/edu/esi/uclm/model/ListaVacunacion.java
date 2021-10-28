@@ -1,40 +1,52 @@
 package edu.esi.uclm.model;
 
-import java.util.Date;
+import java.util.List;
 
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
 public class ListaVacunacion {
 
-	private Date fecha;
+	private String fecha;
 	@DBRef
-	private	Cita cita;
+	private	List<Cita> listaCitas;
 	
+	private String centroSalud;
 	
 	public ListaVacunacion() {
 		
 	}
 
-	public ListaVacunacion(Date fecha, Cita cita) {
+	public ListaVacunacion(String fecha, List<Cita> listaCitas, String centroSalud) {
 		this.fecha = fecha;
-		this.cita = cita;
+		this.listaCitas = listaCitas;
+		this.centroSalud = centroSalud;
 	}
 
-	public Date getFecha() {
+	public String getFecha() {
 		return fecha;
 	}
 
-	public void setFecha(Date fecha) {
+	public void setFecha(String fecha) {
 		this.fecha = fecha;
 	}
 
-	public Cita getCita() {
-		return cita;
+	public List<Cita> getListaCitas() {
+		return listaCitas;
 	}
 
-	public void setCita(Cita cita) {
-		this.cita = cita;
+	public void setListaCitas(List<Cita> listaCitas) {
+		this.listaCitas = listaCitas;
 	}
+
+	public String getCentroSalud() {
+		return centroSalud;
+	}
+
+	public void setCentroSalud(String centroSalud) {
+		this.centroSalud = centroSalud;
+	}
+
+
 	
 	
 }

@@ -49,7 +49,7 @@ public class UsuarioController {
 				Usuario antiguoUsuario = userDao.findByDni(user.getDni());
 				antiguoUsuario.setNombre(user.getNombre());
 				antiguoUsuario.setApellido(user.getApellido());
-				antiguoUsuario.setCentro(user.getCentro());
+				antiguoUsuario.setCentroSalud(user.getCentroSalud());
 				antiguoUsuario.setPassword(user.getPassword());
 				
 				userDao.save(antiguoUsuario);
