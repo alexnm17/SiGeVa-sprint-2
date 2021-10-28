@@ -1,14 +1,17 @@
-package edu.esi.uclm.http;
+/*package edu.esi.uclm.http;
 
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import edu.esi.uclm.dao.PruebaDao;
+import edu.esi.uclm.dao.UsuarioDao;
+import edu.esi.uclm.model.Usuario;
 
 @RestController
 public class AdministradorController {
@@ -26,5 +29,9 @@ public class AdministradorController {
 		adminDao.closeConnection();
 		
 	}
+
+	
+
 	
 }
+*/
