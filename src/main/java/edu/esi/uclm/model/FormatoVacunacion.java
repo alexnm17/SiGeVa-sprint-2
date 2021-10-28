@@ -7,18 +7,18 @@ import java.util.Date;
 public class FormatoVacunacion {
 	private String horaInicioVacunacion;
 	private String horaFinVacunacion;
-	private String duracionFranjaVacunacion;
+	private int duracionFranjaVacunacion;
 	private int personasPorFranja;
 	
 	public FormatoVacunacion() {
 		//El constructor vacio ha sido crado por exigencias del Spring
 	}
 	
-	public FormatoVacunacion(String horaInicioVacunacion, String horaFinVacunacion, String duracionFranjaVacunacion,
+	public FormatoVacunacion(String horaInicioVacunacion, String horaFinVacunacion, int duracionFranja,
 			int personasPorFranja) {
 		this.horaInicioVacunacion = horaInicioVacunacion;
 		this.horaFinVacunacion = horaFinVacunacion;
-		this.duracionFranjaVacunacion = duracionFranjaVacunacion;
+		this.duracionFranjaVacunacion = duracionFranja;
 		this.personasPorFranja = personasPorFranja;
 	}
 
@@ -38,11 +38,11 @@ public class FormatoVacunacion {
 		this.horaFinVacunacion = horaFinVacunacion;
 	}
 
-	public String getDuracionFranjaVacunacion() {
+	public int getDuracionFranjaVacunacion() {
 		return duracionFranjaVacunacion;
 	}
 
-	public void setDuracionFranjaVacunacion(String duracionFranjaVacunacion) {
+	public void setDuracionFranjaVacunacion(int duracionFranjaVacunacion) {
 		this.duracionFranjaVacunacion = duracionFranjaVacunacion;
 	}
 
