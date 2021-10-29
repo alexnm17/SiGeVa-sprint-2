@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
 public class ListaVacunacion {
-
+	
 	private String fecha;
 	@DBRef
 	private	List<Cita> listaCitas;
