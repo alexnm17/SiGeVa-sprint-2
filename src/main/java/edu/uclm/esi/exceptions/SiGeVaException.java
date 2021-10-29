@@ -21,5 +21,4 @@ public class SiGeVaException extends Exception{
 		return message;
 	}
 
-
 }

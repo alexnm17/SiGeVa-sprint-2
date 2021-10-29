@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import edu.esi.uclm.model.Usuario;
 import org.springframework.web.bind.annotation.RestController;
+
 import org.springframework.web.server.ResponseStatusException;
 import edu.esi.uclm.dao.UsuarioDao;
 import edu.esi.uclm.exceptions.SigevaException;
@@ -33,7 +34,7 @@ public class UsuarioController {
 
 		System.out.print("Hola, estoy creando al usuario:\t DNI: "+dni+" || Nombre: "+nombre);
 
-		Usuario nuevoUsuario = new Usuario(dni,nombre,apellido, centroSalud, password, rol);
+		Usuario nuevoUsuario = new Usuario(dni,nombre,apellido, centroSalud, password, rol, null);
 		userDao.save(nuevoUsuario);
 	}
 
@@ -49,7 +50,7 @@ public class UsuarioController {
 				Usuario antiguoUsuario = userDao.findByDni(user.getDni());
 				antiguoUsuario.setNombre(user.getNombre());
 				antiguoUsuario.setApellido(user.getApellido());
-				antiguoUsuario.setCentro(user.getCentro());
+				antiguoUsuario.setCentroSalud(user.getCentroSalud());
 				antiguoUsuario.setPassword(user.getPassword());
 				
 				userDao.save(antiguoUsuario);

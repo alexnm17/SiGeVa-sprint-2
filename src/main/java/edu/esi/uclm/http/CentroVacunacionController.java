@@ -1,6 +1,5 @@
 package edu.esi.uclm.http;
 
-import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
