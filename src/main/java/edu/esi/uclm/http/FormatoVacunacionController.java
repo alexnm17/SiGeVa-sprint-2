@@ -33,7 +33,7 @@ public class FormatoVacunacionController {
 		formatoVacunacionDao.insert(formatoVacunacion);
 		
 	}
-	//ofhgiweurhwoehfoewhfpo
+
 	
 	@PostMapping ("/")
 	public void setPersonalVacunacion() {
