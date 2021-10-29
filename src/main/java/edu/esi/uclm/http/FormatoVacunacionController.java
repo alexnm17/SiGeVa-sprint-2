@@ -20,28 +20,34 @@ public class FormatoVacunacionController {
 	
 	@PostMapping("/definirFormatoVacunacion")
 	public void definirFormatoVacunacion(HttpSession session, @RequestBody Map<String, Object> datosFormatoVacunacion) {
-		JSONObject jso = new JSONObject(datosFormatoVacunacion);
-		
-		String horaInicio = jso.getString("horaIncio");
-		String horaFin = jso.getString("horaFin");
-		int duracionFranja = jso.getInt("duracionFranja");
-		int personasAVacunar = jso.getInt("personasAVacunar");
-		
-		FormatoVacunacion formatoVacunacion = new FormatoVacunacion(horaInicio, horaFin, duracionFranja, personasAVacunar);
-		formatoVacunacionDao.insert(formatoVacunacion);
-		
+
+		try {
+			JSONObject jso = new JSONObject(datosFormatoVacunacion);
+			
+			String horaInicio = jso.getString("horaInicio");
+			String horaFin = jso.getString("horaFin");
+			int duracionFranja = jso.getInt("duracionFranja");
+			int personasAVacunar = jso.getInt("personasAVacunar");
+			
+			FormatoVacunacion formatoVacunacion = new FormatoVacunacion(horaInicio, horaFin, duracionFranja, personasAVacunar);
+			if (formatoVacunacion.horasCorrectas()) 
+				formatoVacunacionDao.insert(formatoVacunacion);
+		}catch(Exception e) {
+			
+		}
+			
 	}
-	//ofhgiweurhwoehfoewhfpo
 	
 	@PostMapping ("/setPersonalVacunacion")
 	public void setPersonalVacunacion() {
 		
 	}
-	
+
 	@PostMapping ("/setHorarioVacunacion")
 	public void setHorarioVacunacion() {
 	
 	}
+
 	
 	@PostMapping ("/setDosisDisponibles")
 	public void setDosisDisponibles() {

@@ -1,6 +1,9 @@
 package edu.esi.uclm.model;
 
+import org.springframework.data.annotation.Id;
+
 public class CentroVacunacion {
+	@Id
 	private String nombre;
 	private String municipio;
 	
@@ -8,7 +11,7 @@ public class CentroVacunacion {
 		
 	}
 	
-	public CentroVacunacion(String nombre, String municipio, ListaVacunacion listaVacunacion) {
+	public CentroVacunacion(String nombre, String municipio) {
 		this.nombre = nombre;
 		this.municipio = municipio;
 		
