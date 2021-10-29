@@ -1,31 +1,19 @@
 package edu.esi.uclm.model;
 
-import java.util.List;
-
-import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.annotation.Id;
 
 public class CentroVacunacion {
+	@Id
 	private String nombre;
 	private String municipio;
-	@DBRef
-	private List<ListaVacunacion> listaVacunacion;
-	
+
 	public CentroVacunacion() {
-		
-	}
-	
-	public CentroVacunacion(String nombre, String municipio, List<ListaVacunacion> listaVacunacion) {
-		this.nombre = nombre;
-		this.municipio = municipio;
-		this.listaVacunacion=listaVacunacion;
-	}
-	
-	public List<ListaVacunacion> getListaVacunacion() {
-		return listaVacunacion;
+
 	}
 
-	public void setListaVacunacion(List<ListaVacunacion> listaVacunacion) {
-		this.listaVacunacion = listaVacunacion;
+	public CentroVacunacion(String nombre, String municipio) {
+		this.nombre = nombre;
+		this.municipio = municipio;
 	}
 
 	public String getNombre() {
@@ -43,5 +31,5 @@ public class CentroVacunacion {
 	public void setMunicipio(String municipio) {
 		this.municipio = municipio;
 	}
-	
+
 }
