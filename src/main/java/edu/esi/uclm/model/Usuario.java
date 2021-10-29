@@ -7,20 +7,22 @@ public class Usuario {
 	private String password;
 	private String rol;
 	private String centroSalud;
-	private Cita[] cita = new  Cita[2];
-	
 
-	
-	public Usuario(String dni, String nombre, String apellido,String centroSalud, String password, String rol) {
+	private Cita[] cita = new Cita[2];
+
+	public Usuario() {
+	}
+
+	public Usuario(String dni, String nombre, String apellido, String password, String rol, String centroSalud,
+			Cita[] cita) {
 		this.dni = dni;
 		this.nombre = nombre;
 		this.apellido = apellido;
-		this.centroSalud = centroSalud;
 		this.password = password;
 		this.rol = rol;
-		
+		this.centroSalud = centroSalud;
+		this.cita = cita;
 	}
-	
 
 	public String getDni() {
 		return dni;
@@ -37,7 +39,7 @@ public class Usuario {
 	public String getPassword() {
 		return password;
 	}
-	
+
 	public String getRol() {
 		return rol;
 	}
@@ -65,20 +67,17 @@ public class Usuario {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
+
 	public void setRol(String rol) {
 		this.rol = rol;
 	}
-
 
 	public Cita[] getCita() {
 		return cita;
 	}
 
-
 	public void setCita(Cita[] cita) {
 		this.cita = cita;
 	}
-
 
 }
