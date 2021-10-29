@@ -4,6 +4,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import edu.uclm.esi.exceptions.SiGeVaException;
+
 public class FormatoVacunacion {
 	private String horaInicioVacunacion;
 	private String horaFinVacunacion;
@@ -54,16 +56,14 @@ public class FormatoVacunacion {
 		this.personasPorFranja = personasPorFranja;
 	}
 	
-	public boolean horasCorrectas() {
+	public boolean horasCorrectas() throws SiGeVaException{
 		try {
 			Date horaInicio = new SimpleDateFormat("HH:mm").parse(horaInicioVacunacion);
 			Date horaFin = new SimpleDateFormat("HH:mm").parse(horaFinVacunacion);
 			return horaInicio.before(horaFin);
 		} catch (ParseException e) {
-			
-			e.printStackTrace();
+			throw new SiGeVaException (null, "El formato introducido no es válido ");
 		}
-		return false; 
 	}
 	
 }
