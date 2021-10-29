@@ -33,19 +33,18 @@ public class FormatoVacunacionController {
 		formatoVacunacionDao.insert(formatoVacunacion);
 		
 	}
-	//ofhgiweurhwoehfoewhfpo
 	
-	@PostMapping ("/")
+	@PostMapping ("/setPersonalVacunacion")
 	public void setPersonalVacunacion() {
 		
 	}
 	
-	@PostMapping ("/")
+	@PostMapping ("/setHorarioVacunacion")
 	public void setHorarioVacunacion() {
 	
 	}
 	
-	@PostMapping ("/")
+	@PostMapping ("/setDosisDisponibles")
 	public void setDosisDisponibles() {
 		
 	}

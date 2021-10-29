@@ -33,7 +33,7 @@ public class UsuarioController {
 
 		System.out.print("Hola, estoy creando al usuario:\t DNI: "+dni+" || Nombre: "+nombre);
 
-		Usuario nuevoUsuario = new Usuario(dni,nombre,apellido, centroSalud, password, rol);
+		Usuario nuevoUsuario = new Usuario(dni,nombre,apellido, centroSalud, password, rol, null);
 		userDao.save(nuevoUsuario);
 	}
 
@@ -49,7 +49,7 @@ public class UsuarioController {
 				Usuario antiguoUsuario = userDao.findByDni(user.getDni());
 				antiguoUsuario.setNombre(user.getNombre());
 				antiguoUsuario.setApellido(user.getApellido());
-				antiguoUsuario.setCentro(user.getCentro());
+				antiguoUsuario.setCentroSalud(user.getCentroSalud());
 				antiguoUsuario.setPassword(user.getPassword());
 				
 				userDao.save(antiguoUsuario);
