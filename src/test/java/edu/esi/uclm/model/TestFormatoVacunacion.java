@@ -16,9 +16,9 @@ class TestFormatoVacunacion {
 
 	void FormatoVacunacionTester() {
 		try {
-			formato = new FormatoVacunacion("12:30", "16:30", "1 h", 10);
+			formato = new FormatoVacunacion("12:30", "16:30", 30, 10);
 			assertTrue(formato.horasCorrectas());
-			fail("Ha detectado que la hora de inicio es posterior a la otra");
+			fail("Ha detectado que la hora de inicio es posterior a la de fin");
 
 			formato.setHoraInicioVacunacion("17:00");
 
