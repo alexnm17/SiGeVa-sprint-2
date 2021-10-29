@@ -1,14 +1,16 @@
-package edu.uclm.esi.exceptions;
+package edu.esi.uclm.exceptions;
 
 import org.springframework.http.HttpStatus;
 
-public class SiGeVaException extends Exception{
-	
+public class SigevaException extends Exception{
+
+
+
 	private static final long serialVersionUID = 1L;
 	private final HttpStatus status;
 	private final String message;
-	
-	public SiGeVaException(HttpStatus status, String message) {
+
+	public SigevaException(HttpStatus status, String message) {
 		this.status=status;
 		this.message=message;
 	}
@@ -20,5 +22,8 @@ public class SiGeVaException extends Exception{
 	public String getMessage() {
 		return message;
 	}
+
+
+
 
 }

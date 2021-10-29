@@ -2,10 +2,14 @@ package edu.esi.uclm.model;
 
 import java.util.Date;
 
+import org.springframework.data.mongodb.core.mapping.DBRef;
+
 public class ListaVacunacion {
 
 	private Date fecha;
-	Cita cita;
+	@DBRef
+	private	Cita cita;
+	
 	
 	public ListaVacunacion() {
 		

@@ -3,38 +3,42 @@ package edu.esi.uclm.http;
 
 import java.util.Map;
 
-import org.springframework.http.HttpStatus;
+import javax.servlet.http.HttpSession;
 
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 import edu.esi.uclm.dao.FormatoVacunacionDao;
 import edu.esi.uclm.model.FormatoVacunacion;
-import edu.uclm.esi.exceptions.SiGeVaException;
 
 @RestController
 public class FormatoVacunacionController {
 
-
-	private FormatoVacunacionDao formatovacunaciondao;
+	@Autowired
+	private FormatoVacunacionDao formatoVacunacionDao;
 	
-	@PostMapping ("/Generar Formato")
-	public void generarFormatoVacunacion(@RequestBody FormatoVacunacion formato) {
-		
+	@PostMapping("/definirFormatoVacunacion")
+	public void definirFormatoVacunacion(HttpSession session, @RequestBody Map<String, Object> datosFormatoVacunacion) {
 		try {
-			if (formato.horasCorrectas() || formato.getPersonasPorFranja()>1) 
-				throw new SiGeVaException(HttpStatus.FORBIDDEN,"Valores no permitidos para el formato");
-				
-			formatovacunaciondao.save(formato);
+			JSONObject jso = new JSONObject(datosFormatoVacunacion);
 			
-		}catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
+			String horaInicio = jso.getString("horaInicio");
+			String horaFin = jso.getString("horaFin");
+			String duracionFranja = jso.getString("duracionFranja");
+			int personasAVacunar = jso.getInt("personasAVacunar");
+			
+			FormatoVacunacion formatoVacunacion = new FormatoVacunacion(horaInicio, horaFin, duracionFranja, personasAVacunar);
+			if (formatoVacunacion.horasCorrectas())
+			formatoVacunacionDao.insert(formatoVacunacion);
+		}catch(Exception e) {
+			
 		}
-
-		
+			
 	}
+	
 	@PostMapping ("/")
 	public void setPersonalVacunacion() {
 		

@@ -8,4 +8,8 @@ import edu.esi.uclm.model.Usuario;
 @Repository
 public interface UsuarioDao extends MongoRepository<Usuario, String> {
 
+	Usuario findByDni(String dni);
+
+	void deleteByDni(String dni);
+
 }
