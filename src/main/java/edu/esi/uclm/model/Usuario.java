@@ -1,32 +1,28 @@
 package edu.esi.uclm.model;
 
-import org.springframework.data.annotation.Id;
-
 public class Usuario {
-	@Id
 	private String dni;
 	private String nombre;
 	private String apellido;
 	private String password;
-
 	private String rol;
-	private String centro;
-
-
 	private String centroSalud;
-	
 
-	
-	public Usuario(String dni, String nombre, String apellido,String centro, String password, String rol) {
+	private Cita[] cita = new Cita[2];
+
+	public Usuario() {
+	}
+
+	public Usuario(String dni, String nombre, String apellido, String password, String rol, String centroSalud,
+			Cita[] cita) {
 		this.dni = dni;
 		this.nombre = nombre;
 		this.apellido = apellido;
-		this.centro = centro;
 		this.password = password;
 		this.rol = rol;
-		
+		this.centroSalud = centroSalud;
+		this.cita = cita;
 	}
-	
 
 	public String getDni() {
 		return dni;
@@ -43,13 +39,9 @@ public class Usuario {
 	public String getPassword() {
 		return password;
 	}
-	
+
 	public String getRol() {
 		return rol;
-	}
-
-	public String getCentro() {
-		return centro;
 	}
 
 	public String getCentroSalud() {
@@ -75,13 +67,17 @@ public class Usuario {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
+
 	public void setRol(String rol) {
 		this.rol = rol;
 	}
 
-	public void setCentro(String centro) {
-		this.centro = centro;
+	public Cita[] getCita() {
+		return cita;
+	}
+
+	public void setCita(Cita[] cita) {
+		this.cita = cita;
 	}
 
 }
