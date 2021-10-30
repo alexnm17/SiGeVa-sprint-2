@@ -9,6 +9,7 @@ import java.util.Optional;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +23,7 @@ import edu.esi.uclm.dao.FormatoVacunacionDao;
 import edu.esi.uclm.model.CentroVacunacion;
 import edu.esi.uclm.model.Cita;
 import edu.esi.uclm.model.FormatoVacunacion;
+import edu.uclm.esi.exceptions.SiGeVaException;
 
 
 @RestController
@@ -71,9 +73,11 @@ public class CitaController {
 	}
 
 	@GetMapping("/crearPlantillasCitaVacunacion")
-	public void crearPlantillasCitaVacunacion() {
+	public void crearPlantillasCitaVacunacion() throws SiGeVaException {
 		Optional<FormatoVacunacion> optformato = formatoVacunacionDao.findById("61786ae2d452371261588e26");
-		FormatoVacunacion formato = optformato.get();
+		FormatoVacunacion formato= null;
+		if (!optformato.isPresent()) throw new SiGeVaException(HttpStatus.NOT_FOUND,"No se ha encontrado el componente");
+			formato = optformato.get();
 
 		List<CentroVacunacion> centrosVacunacion = centroVacunacionDao.findAll();
 
