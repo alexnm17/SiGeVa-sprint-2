@@ -1,4 +1,5 @@
 package edu.esi.uclm.http;
+
 import java.util.Map;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,55 +31,49 @@ public class UsuarioController {
 		String password = json.getString("password");
 		String centroSalud = json.getString("centroSalud");
 		String rol = json.getString("rol");
-
-
-		System.out.print("Hola, estoy creando al usuario:\t DNI: "+dni+" || Nombre: "+nombre);
-
-		Usuario nuevoUsuario = new Usuario(dni,nombre,apellido, centroSalud, password, rol, null);
+		Usuario nuevoUsuario = new Usuario(dni, nombre, apellido, password, rol, centroSalud, null);
 		userDao.save(nuevoUsuario);
 	}
-
 
 	@PostMapping("/modificarUsuario")
 	public void modificarUsuario(@RequestBody Usuario user) {
 		try {
-			if(user.getRol().equals(RolUsuario.ADMINISTRADOR.name())) throw new SigevaException(HttpStatus.FORBIDDEN, "No puede modificar a otro administrador del sistema");
-
+			if (user.getRol().equals(RolUsuario.ADMINISTRADOR.name()))
+				throw new SigevaException(HttpStatus.FORBIDDEN, "No puede modificar a otro administrador del sistema");
 
 			else {
-				System.out.print("Hola, estoy modificando al usuario:\t DNI: "+user.getDni()+" || Nombre: "+user.getNombre());
+				System.out.print("Hola, estoy modificando al usuario:\t DNI: " + user.getDni() + " || Nombre: "
+						+ user.getNombre());
 				Usuario antiguoUsuario = userDao.findByDni(user.getDni());
 				antiguoUsuario.setNombre(user.getNombre());
 				antiguoUsuario.setApellido(user.getApellido());
 				antiguoUsuario.setCentroSalud(user.getCentroSalud());
 				antiguoUsuario.setPassword(user.getPassword());
-				
+
 				userDao.save(antiguoUsuario);
 			}
 
-		}catch(Exception e) {
+		} catch (Exception e) {
 
 			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
 		}
 
 	}
 
-	
 	@DeleteMapping("/eliminarUsuario/{dni}")
 	public void eliminarUsuario(@PathVariable String dni) {
 		try {
 			Usuario user = userDao.findByDni(dni);
-			
-			if(user.getRol().equals(RolUsuario.ADMINISTRADOR.name())) 
+
+			if (user.getRol().equals(RolUsuario.ADMINISTRADOR.name()))
 				throw new SigevaException(HttpStatus.FORBIDDEN, "No puede eliminar a otro administrador del sistema");
-			else 
+			else
 				userDao.delete(user);
-			
-		}catch(Exception e) {
+
+		} catch (Exception e) {
 
 			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
 		}
 	}
-
 
 }

@@ -40,6 +40,7 @@ public class CitaController {
 	private CentroVacunacionDao centroVacunacionDao;
 	@Autowired
 	private UsuarioDao usuarioDao;
+	String ID_FORMATOVACUNACION = "617ebe37bc0b9b43a2216d8e";
 
 	@GetMapping("/solicitarCita")
 	public void solicitarCita(HttpSession session, @RequestBody Map<String, Object> datosUsuario) {
@@ -50,33 +51,30 @@ public class CitaController {
 
 		if (usuario != null) {
 			CentroVacunacion centroVacunacion = centroVacunacionDao.findByNombre(usuario.getCentroSalud());
-			System.out.println(LocalDate.now().getMonthValue());
-			String fechaActual = LocalDate.now().getYear() + "-" + "10" + "-"+ LocalDate.now().getDayOfMonth();
-			//String fechaActual = LocalDate.now().toString();
-			System.out.println(fechaActual);
-			System.out.println();
+			String fechaActual = LocalDate.now().getYear() + "-" + LocalDate.now().getMonthValue() + "-"
+					+ LocalDate.now().getDayOfMonth();
 			LocalDate fechaActualDate = LocalDate.parse(fechaActual);
 			List<Cita> listaCitas = citaDao.findAllByCentroVacunacion(centroVacunacion);
 
 			Cita citaLibre = buscarCitaLibre(fechaActualDate, listaCitas);
 			try {
-				
-				if(citaLibre == null) {
-					throw new SiGeVaException(HttpStatus.NOT_FOUND, "No se ha podido encontrar ninguna cita libre. Contacte con el administrador.");
+
+				if (citaLibre == null) {
+					throw new SiGeVaException(HttpStatus.NOT_FOUND,
+							"No se ha podido encontrar ninguna cita libre. Contacte con el administrador.");
 				}
-				
+
 				Cita segundaCita = buscarSegundaCita(usuario, citaLibre, listaCitas);
-				
+
 				citaLibre.getListaUsuario().add(usuario);
 				segundaCita.getListaUsuario().add(usuario);
-				usuario.getCita()[0] = citaLibre;		
+				usuario.getCita()[0] = citaLibre;
 				usuario.getCita()[1] = segundaCita;
-				
-				
+
 				citaDao.save(citaLibre);
 				citaDao.save(segundaCita);
 				usuarioDao.save(usuario);
-			}catch(SiGeVaException e) {
+			} catch (SiGeVaException e) {
 				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 			}
 		}
@@ -85,23 +83,24 @@ public class CitaController {
 	private Cita buscarSegundaCita(Usuario usuario, Cita citaLibre, List<Cita> listaCitas) {
 		LocalDate fechaPrimera = LocalDate.parse(citaLibre.getFecha());
 		LocalDate fechaSegunda = fechaPrimera.plusDays(21);
-		
+
 		Cita segundaCita = buscarCitaLibre(fechaSegunda, listaCitas);
-		
+
 		try {
-			if(segundaCita == null) {
-				throw new SiGeVaException(HttpStatus.NOT_FOUND, "No se ha podido encontrar ninguna cita libre. Contacte con el administrador.");
+			if (segundaCita == null) {
+				throw new SiGeVaException(HttpStatus.NOT_FOUND,
+						"No se ha podido encontrar ninguna cita libre. Contacte con el administrador.");
 			}
-		}catch(SiGeVaException e) {
+		} catch (SiGeVaException e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 		}
-		
+
 		return segundaCita;
 	}
 
 	private Cita buscarCitaLibre(LocalDate fechaActualDate, List<Cita> listaCitas) {
 		Cita cita = null;
-		Optional<FormatoVacunacion> optformato = formatoVacunacionDao.findById("61786ae2d452371261588e26");
+		Optional<FormatoVacunacion> optformato = formatoVacunacionDao.findById(ID_FORMATOVACUNACION);
 		FormatoVacunacion formato = optformato.get();
 
 		for (int i = 0; i < listaCitas.size(); i++) {
@@ -148,7 +147,7 @@ public class CitaController {
 
 	@GetMapping("/crearPlantillasCitaVacunacion")
 	public void crearPlantillasCitaVacunacion() {
-		Optional<FormatoVacunacion> optformato = formatoVacunacionDao.findById("61786ae2d452371261588e26");
+		Optional<FormatoVacunacion> optformato = formatoVacunacionDao.findById(ID_FORMATOVACUNACION);
 		FormatoVacunacion formato = optformato.get();
 
 		List<CentroVacunacion> centrosVacunacion = centroVacunacionDao.findAll();

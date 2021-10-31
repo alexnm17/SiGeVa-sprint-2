@@ -1,6 +1,9 @@
 package edu.esi.uclm.model;
 
+import org.springframework.data.annotation.Id;
+
 public class Usuario {
+	@Id
 	private String dni;
 	private String nombre;
 	private String apellido;
