@@ -4,9 +4,11 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import edu.esi.uclm.dao.FormatoVacunacionDao;
 import edu.esi.uclm.model.FormatoVacunacion;
@@ -33,9 +35,8 @@ public class FormatoVacunacionController {
 			if (formatoVacunacion.horasCorrectas()) 
 				formatoVacunacionDao.insert(formatoVacunacion);
 		}catch(Exception e) {
-			
-		}
-			
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+		}	
 	}
 
 	@PostMapping ("/setPersonalVacunacion")
