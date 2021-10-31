@@ -37,7 +37,7 @@ public class FormatoVacunacionController {
 		}
 			
 	}
-	
+
 	@PostMapping ("/setPersonalVacunacion")
 	public void setPersonalVacunacion() {
 		

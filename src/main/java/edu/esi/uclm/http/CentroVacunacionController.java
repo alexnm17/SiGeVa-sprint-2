@@ -24,7 +24,6 @@ public class CentroVacunacionController {
 	@PostMapping("/addCentro")
 	public void darAltaCentroVacunacion(HttpServletRequest request,@RequestBody CentroVacunacion centro) {
 		try {
-
 			centroDao.save(centro);
 		} catch(Exception e) {	
 			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
