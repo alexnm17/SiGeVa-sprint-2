@@ -50,11 +50,8 @@ public class CitaController {
 
 		if (usuario != null) {
 			CentroVacunacion centroVacunacion = centroVacunacionDao.findByNombre(usuario.getCentroSalud());
-			System.out.println(LocalDate.now().getMonthValue());
-			String fechaActual = LocalDate.now().getYear() + "-" + "10" + "-"+ LocalDate.now().getDayOfMonth();
-			//String fechaActual = LocalDate.now().toString();
-			System.out.println(fechaActual);
-			System.out.println();
+			String fechaActual = LocalDate.now().getYear() + "-" + LocalDate.now().getMonth() + "-"
+					+ LocalDate.now().getDayOfMonth();
 			LocalDate fechaActualDate = LocalDate.parse(fechaActual);
 			List<Cita> listaCitas = citaDao.findAllByCentroVacunacion(centroVacunacion);
 
