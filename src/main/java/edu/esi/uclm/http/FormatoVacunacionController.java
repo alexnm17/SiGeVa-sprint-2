@@ -39,7 +39,7 @@ public class FormatoVacunacionController {
 				formatoVacunacionDao.insert(formatoVacunacion);
 				
 			}else {
-				if (formatoVacunacion.horasCorrectas()) resultado = 409;
+				if (!formatoVacunacion.horasCorrectas()) resultado = 409;
 				else resultado = 410;
 			}
 		switch (resultado) {
@@ -57,12 +57,11 @@ public class FormatoVacunacionController {
 		}
 		}catch(Exception e) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
-
 		}
 		return resultado;
 			
 	}
-
+	
 	@PostMapping ("/setPersonalVacunacion")
 	public void setPersonalVacunacion() {
 		

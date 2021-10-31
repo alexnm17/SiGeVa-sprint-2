@@ -9,7 +9,7 @@ import edu.uclm.esi.exceptions.SiGeVaException;
 import junit.framework.TestCase;
 
 @RunWith(SpringRunner.class)
-public class TestFormatoVacunacion extends TestCase {
+class TestFormatoVacunacion extends TestCase {
 
 	private FormatoVacunacion formato;
 

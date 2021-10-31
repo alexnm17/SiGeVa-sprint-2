@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,14 +16,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import edu.esi.uclm.dao.CentroVacunacionDao;
 import edu.esi.uclm.dao.CitaDao;
 
 import edu.esi.uclm.dao.FormatoVacunacionDao;
+import edu.esi.uclm.dao.UsuarioDao;
 import edu.esi.uclm.model.CentroVacunacion;
 import edu.esi.uclm.model.Cita;
 import edu.esi.uclm.model.FormatoVacunacion;
+import edu.esi.uclm.model.Usuario;
 import edu.uclm.esi.exceptions.SiGeVaException;
 
 
@@ -32,13 +36,84 @@ public class CitaController {
 	@Autowired
 	private FormatoVacunacionDao formatoVacunacionDao;
 	@Autowired
-	private CitaDao citadao;
+	private CitaDao citaDao;
 	@Autowired
 	private CentroVacunacionDao centroVacunacionDao;
+	@Autowired
+	private UsuarioDao usuarioDao;
 
-	@PostMapping("/solicitarCita")
-	public void solicitarCita(HttpSession session) {
+	@GetMapping("/solicitarCita")
+	public void solicitarCita(HttpSession session, @RequestBody Map<String, Object> datosUsuario) {
+		JSONObject json = new JSONObject(datosUsuario);
+		String dni = json.getString("dni");
 
+		Usuario usuario = usuarioDao.findByDni(dni);
+
+		if (usuario != null) {
+			CentroVacunacion centroVacunacion = centroVacunacionDao.findByNombre(usuario.getCentroSalud());
+			System.out.println(LocalDate.now().getMonthValue());
+			String fechaActual = LocalDate.now().getYear() + "-" + "10" + "-"+ LocalDate.now().getDayOfMonth();
+			//String fechaActual = LocalDate.now().toString();
+			System.out.println(fechaActual);
+			System.out.println();
+			LocalDate fechaActualDate = LocalDate.parse(fechaActual);
+			List<Cita> listaCitas = citaDao.findAllByCentroVacunacion(centroVacunacion);
+
+			Cita citaLibre = buscarCitaLibre(fechaActualDate, listaCitas);
+			try {
+				
+				if(citaLibre == null) {
+					throw new SiGeVaException(HttpStatus.NOT_FOUND, "No se ha podido encontrar ninguna cita libre. Contacte con el administrador.");
+				}
+				
+				Cita segundaCita = buscarSegundaCita(usuario, citaLibre, listaCitas);
+				
+				citaLibre.getListaUsuario().add(usuario);
+				segundaCita.getListaUsuario().add(usuario);
+				usuario.getCita()[0] = citaLibre;		
+				usuario.getCita()[1] = segundaCita;
+				
+				
+				citaDao.save(citaLibre);
+				citaDao.save(segundaCita);
+				usuarioDao.save(usuario);
+			}catch(SiGeVaException e) {
+				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+			}
+		}
+	}
+
+	private Cita buscarSegundaCita(Usuario usuario, Cita citaLibre, List<Cita> listaCitas) {
+		LocalDate fechaPrimera = LocalDate.parse(citaLibre.getFecha());
+		LocalDate fechaSegunda = fechaPrimera.plusDays(21);
+		
+		Cita segundaCita = buscarCitaLibre(fechaSegunda, listaCitas);
+		
+		try {
+			if(segundaCita == null) {
+				throw new SiGeVaException(HttpStatus.NOT_FOUND, "No se ha podido encontrar ninguna cita libre. Contacte con el administrador.");
+			}
+		}catch(SiGeVaException e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+		}
+		
+		return segundaCita;
+	}
+
+	private Cita buscarCitaLibre(LocalDate fechaActualDate, List<Cita> listaCitas) {
+		Cita cita = null;
+		Optional<FormatoVacunacion> optformato = formatoVacunacionDao.findById("61786ae2d452371261588e26");
+		FormatoVacunacion formato = optformato.get();
+
+		for (int i = 0; i < listaCitas.size(); i++) {
+			Cita citaAux = listaCitas.get(i);
+			if (LocalDate.parse(citaAux.getFecha()).isAfter(fechaActualDate)
+					&& citaAux.getListaUsuario().size() < formato.getPersonasPorFranja()) {
+				cita = citaAux;
+				break;
+			}
+		}
+		return cita;
 	}
 
 	@PostMapping("/modificarCita")
@@ -48,12 +123,12 @@ public class CitaController {
 
 	@DeleteMapping("/anularCita")
 	public void anularCita(HttpSession session, @RequestBody String idCita) {
-		citadao.deleteById(idCita);
+		citaDao.deleteById(idCita);
 	}
 
 	@GetMapping("/consultarCita")
 	public void consultar(HttpSession session, @RequestBody String idCita) {
-		citadao.findById(idCita);
+		citaDao.findById(idCita);
 	}
 
 	@PostMapping("/crearCita")
@@ -64,7 +139,7 @@ public class CitaController {
 		for (int i = 0; i < numFranjas; i++) {
 
 			cita = new Cita(fecha.toString(), horaInicio.toString(), centroVacunacion);
-			citadao.save(cita);
+			citaDao.save(cita);
 
 			horaInicio = horaInicio.plusMinutes(duracion);
 
