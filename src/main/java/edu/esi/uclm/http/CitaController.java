@@ -45,7 +45,7 @@ public class CitaController {
 	public void solicitarCita(HttpSession session, @RequestBody Map<String, Object> datosUsuario) {
 		JSONObject json = new JSONObject(datosUsuario);
 		String dni = json.getString("dni");
-
+		
 		Usuario usuario = usuarioDao.findByDni(dni);
 
 		if (usuario != null) {
