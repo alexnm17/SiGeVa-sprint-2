@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import edu.esi.uclm.model.Usuario;
+import edu.uclm.esi.exceptions.SiGeVaException;
+
 import org.springframework.web.bind.annotation.RestController;
 
 import org.springframework.web.server.ResponseStatusException;
@@ -32,9 +34,8 @@ public class UsuarioController {
 		String rol = json.getString("rol");
 
 
-		System.out.print("Hola, estoy creando al usuario:\t DNI: "+dni+" || Nombre: "+nombre);
 
-		Usuario nuevoUsuario = new Usuario(dni,nombre,apellido, centroSalud, password, rol, null);
+		Usuario nuevoUsuario = new Usuario(dni,nombre,apellido, centroSalud, password, rol);
 		userDao.save(nuevoUsuario);
 	}
 
@@ -48,6 +49,7 @@ public class UsuarioController {
 			else {
 				System.out.print("Hola, estoy modificando al usuario:\t DNI: "+user.getDni()+" || Nombre: "+user.getNombre());
 				Usuario antiguoUsuario = userDao.findByDni(user.getDni());
+				if (antiguoUsuario==null) throw new SiGeVaException(HttpStatus.NOT_FOUND,"No existe un usuario con este identificador");
 				antiguoUsuario.setNombre(user.getNombre());
 				antiguoUsuario.setApellido(user.getApellido());
 				antiguoUsuario.setCentroSalud(user.getCentroSalud());

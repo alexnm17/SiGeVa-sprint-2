@@ -29,7 +29,6 @@ import edu.esi.uclm.model.FormatoVacunacion;
 import edu.esi.uclm.model.Usuario;
 import edu.uclm.esi.exceptions.SiGeVaException;
 
-
 @RestController
 public class CitaController {
 
@@ -44,59 +43,61 @@ public class CitaController {
 
 	@GetMapping("/solicitarCita")
 	public void solicitarCita(HttpSession session, @RequestBody Map<String, Object> datosUsuario) {
-		JSONObject json = new JSONObject(datosUsuario);
-		String dni = json.getString("dni");
+		try {
 
-		Usuario usuario = usuarioDao.findByDni(dni);
+			JSONObject json = new JSONObject(datosUsuario);
+			String dni = json.getString("dni");
 
-		if (usuario != null) {
+			Usuario usuario = usuarioDao.findByDni(dni);
+
+			if (usuario == null)
+				throw new SiGeVaException(HttpStatus.NOT_FOUND, "No se ha encontrado ningun usuario con este dni");
 			CentroVacunacion centroVacunacion = centroVacunacionDao.findByNombre(usuario.getCentroSalud());
 			System.out.println(LocalDate.now().getMonthValue());
-			String fechaActual = LocalDate.now().getYear() + "-" + "10" + "-"+ LocalDate.now().getDayOfMonth();
-			//String fechaActual = LocalDate.now().toString();
+			String fechaActual = LocalDate.now().getYear() + "-" + LocalDate.now().getMonthValue() + "-"
+					+ LocalDate.now().getDayOfMonth();
 			System.out.println(fechaActual);
 			System.out.println();
 			LocalDate fechaActualDate = LocalDate.parse(fechaActual);
 			List<Cita> listaCitas = citaDao.findAllByCentroVacunacion(centroVacunacion);
 
 			Cita citaLibre = buscarCitaLibre(fechaActualDate, listaCitas);
-			try {
-				
-				if(citaLibre == null) {
-					throw new SiGeVaException(HttpStatus.NOT_FOUND, "No se ha podido encontrar ninguna cita libre. Contacte con el administrador.");
-				}
-				
-				Cita segundaCita = buscarSegundaCita(usuario, citaLibre, listaCitas);
-				
-				citaLibre.getListaUsuario().add(usuario);
-				segundaCita.getListaUsuario().add(usuario);
-				usuario.getCita()[0] = citaLibre;		
-				usuario.getCita()[1] = segundaCita;
-				
-				
-				citaDao.save(citaLibre);
-				citaDao.save(segundaCita);
-				usuarioDao.save(usuario);
-			}catch(SiGeVaException e) {
-				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+
+			if (citaLibre == null) {
+				throw new SiGeVaException(HttpStatus.NOT_FOUND,
+						"No se ha podido encontrar ninguna cita libre. Contacte con el administrador.");
 			}
+
+			Cita segundaCita = buscarSegundaCita(usuario, citaLibre, listaCitas);
+
+			citaLibre.getListaUsuario().add(usuario);
+			segundaCita.getListaUsuario().add(usuario);
+			usuario.getCita()[0] = citaLibre;
+			usuario.getCita()[1] = segundaCita;
+
+			citaDao.save(citaLibre);
+			citaDao.save(segundaCita);
+			usuarioDao.save(usuario);
+		} catch (SiGeVaException e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 		}
 	}
 
 	private Cita buscarSegundaCita(Usuario usuario, Cita citaLibre, List<Cita> listaCitas) {
 		LocalDate fechaPrimera = LocalDate.parse(citaLibre.getFecha());
 		LocalDate fechaSegunda = fechaPrimera.plusDays(21);
-		
+
 		Cita segundaCita = buscarCitaLibre(fechaSegunda, listaCitas);
-		
+
 		try {
-			if(segundaCita == null) {
-				throw new SiGeVaException(HttpStatus.NOT_FOUND, "No se ha podido encontrar ninguna cita libre. Contacte con el administrador.");
+			if (segundaCita == null) {
+				throw new SiGeVaException(HttpStatus.NOT_FOUND,
+						"No se ha podido encontrar ninguna cita libre. Contacte con el administrador.");
 			}
-		}catch(SiGeVaException e) {
+		} catch (SiGeVaException e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 		}
-		
+
 		return segundaCita;
 	}
 
@@ -149,10 +150,12 @@ public class CitaController {
 
 	@GetMapping("/crearPlantillasCitaVacunacion")
 	public void crearPlantillasCitaVacunacion() throws SiGeVaException {
+		FormatoVacunacion formato = null;
 		Optional<FormatoVacunacion> optformato = formatoVacunacionDao.findById("61786ae2d452371261588e26");
-		FormatoVacunacion formato= null;
-		if (!optformato.isPresent()) throw new SiGeVaException(HttpStatus.NOT_FOUND,"No se ha encontrado el componente");
-			formato = optformato.get();
+		if (!optformato.isPresent())
+			throw new SiGeVaException(HttpStatus.NOT_FOUND, "No se ha encontrado el componente");
+		
+		formato = optformato.get();
 
 		List<CentroVacunacion> centrosVacunacion = centroVacunacionDao.findAll();
 
