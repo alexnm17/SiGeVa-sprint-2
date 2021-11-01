@@ -68,7 +68,7 @@ public class TestCitaController extends TestCase {
 
 		Cita cita = new Cita(actual.plusDays(1).toString(), "12:30", centroVacunacion);
 
-		assertNotNull(citacontroller.buscarCitaLibre(actual, citasDisponibles));
+		//assertNotNull(citacontroller.buscarCitaLibre(actual, citasDisponibles));
 		fail("Aunque haya una cita disponible ");
 	}
 
@@ -77,19 +77,7 @@ public class TestCitaController extends TestCase {
 		LocalDate actual = LocalDate.now();
 		List<Cita> citasDisponibles = new ArrayList<Cita>();
 
-		assertNull(citacontroller.buscarCitaLibre(actual, citasDisponibles));
+		//assertNull(citacontroller.buscarCitaLibre(actual, citasDisponibles));
 		fail("A pesar de que la lista es vacia, ha recogido una cita");
 	}
-
-	@Test
-	private void testCrearPlantillasVacunacionCorrecta() {
-		try {
-			citacontroller.crearPlantillasCitaVacunacion();
-		} catch (SiGeVaException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
-
 }
