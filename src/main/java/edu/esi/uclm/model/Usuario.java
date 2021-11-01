@@ -1,14 +1,15 @@
 package edu.esi.uclm.model;
 
+import org.springframework.data.annotation.Id;
+
 public class Usuario {
+	@Id
 	private String dni;
 	private String nombre;
 	private String apellido;
 	private String password;
 	private String rol;
 	private String centroSalud;
-
-	private Cita[] cita = new Cita[2];
 
 	public Usuario() {
 	}

@@ -4,9 +4,13 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.springframework.data.annotation.Id;
+
 import edu.uclm.esi.exceptions.SiGeVaException;
 
 public class FormatoVacunacion {
+	@Id
+	private String id;
 	private String horaInicioVacunacion;
 	private String horaFinVacunacion;
 	private int duracionFranjaVacunacion;
@@ -22,6 +26,7 @@ public class FormatoVacunacion {
 		this.horaFinVacunacion = horaFinVacunacion;
 		this.duracionFranjaVacunacion = duracionFranja;
 		this.personasPorFranja = personasPorFranja;
+		this.id = "Formato_Unico";
 	}
 
 	public String getHoraInicioVacunacion() {

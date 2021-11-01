@@ -27,7 +27,6 @@ public class FormatoVacunacionController {
 		
 		try {
 			JSONObject jso = new JSONObject(datosFormatoVacunacion);
-			
 			String horaInicio = jso.getString("horaInicio");
 			String horaFin = jso.getString("horaFin");
 			int duracionFranja = jso.getInt("duracionFranja");
@@ -61,7 +60,7 @@ public class FormatoVacunacionController {
 		return resultado;
 			
 	}
-	
+
 	@PostMapping ("/setPersonalVacunacion")
 	public void setPersonalVacunacion() {
 		
