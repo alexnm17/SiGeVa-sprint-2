@@ -1,20 +1,21 @@
 package edu.esi.uclm.http;
 
 import java.util.Map;
+
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import edu.esi.uclm.model.Usuario;
 import org.springframework.web.bind.annotation.RestController;
-
 import org.springframework.web.server.ResponseStatusException;
+
 import edu.esi.uclm.dao.UsuarioDao;
 import edu.esi.uclm.exceptions.SigevaException;
 import edu.esi.uclm.model.RolUsuario;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import edu.esi.uclm.model.Usuario;
 
 @RestController
 public class UsuarioController {
@@ -31,7 +32,7 @@ public class UsuarioController {
 		String password = json.getString("password");
 		String centroSalud = json.getString("centroSalud");
 		String rol = json.getString("rol");
-		Usuario nuevoUsuario = new Usuario(dni, nombre, apellido, password, rol, centroSalud, null);
+		Usuario nuevoUsuario = new Usuario(dni, nombre, apellido, password, rol, centroSalud);
 		userDao.save(nuevoUsuario);
 	}
 

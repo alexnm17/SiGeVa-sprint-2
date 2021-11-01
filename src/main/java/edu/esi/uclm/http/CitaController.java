@@ -2,6 +2,7 @@ package edu.esi.uclm.http;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -40,7 +41,6 @@ public class CitaController {
 	private CentroVacunacionDao centroVacunacionDao;
 	@Autowired
 	private UsuarioDao usuarioDao;
-	String ID_FORMATOVACUNACION = "617ebe37bc0b9b43a2216d8e";
 
 	@GetMapping("/solicitarCita")
 	public void solicitarCita(HttpSession session, @RequestBody Map<String, Object> datosUsuario) {
@@ -51,29 +51,33 @@ public class CitaController {
 
 		if (usuario != null) {
 			CentroVacunacion centroVacunacion = centroVacunacionDao.findByNombre(usuario.getCentroSalud());
-			String fechaActual = LocalDate.now().getYear() + "-" + LocalDate.now().getMonthValue() + "-"
+			String fechaActual = LocalDate.now().getYear() + "-" + LocalDate.now().getMonthValue() + "-0"
 					+ LocalDate.now().getDayOfMonth();
 			LocalDate fechaActualDate = LocalDate.parse(fechaActual);
-			List<Cita> listaCitas = citaDao.findAllByCentroVacunacion(centroVacunacion);
-
-			Cita citaLibre = buscarCitaLibre(fechaActualDate, listaCitas);
+			List<Cita> listaCitas;
 			try {
+				listaCitas = citaDao.findAllByCentroVacunacion(centroVacunacion);
+			} catch (Exception e) {
+				throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+			}
 
-				if (citaLibre == null) {
+			Cita primeraCita = buscarCitaLibre(fechaActualDate, listaCitas);
+			try {
+				if (primeraCita == null) {
 					throw new SiGeVaException(HttpStatus.NOT_FOUND,
 							"No se ha podido encontrar ninguna cita libre. Contacte con el administrador.");
 				}
 
-				Cita segundaCita = buscarSegundaCita(usuario, citaLibre, listaCitas);
+				Cita segundaCita = buscarSegundaCita(usuario, primeraCita, listaCitas);
 
-				citaLibre.getListaUsuario().add(usuario);
+				primeraCita.getListaUsuario().add(usuario);
 				segundaCita.getListaUsuario().add(usuario);
-				usuario.getCita()[0] = citaLibre;
-				usuario.getCita()[1] = segundaCita;
-
-				citaDao.save(citaLibre);
+				
+				citaDao.deleteByFechaAndHora(primeraCita.getFecha(), primeraCita.getHora());
+				citaDao.deleteByFechaAndHora(segundaCita.getFecha(), segundaCita.getHora());
+				
+				citaDao.save(primeraCita);
 				citaDao.save(segundaCita);
-				usuarioDao.save(usuario);
 			} catch (SiGeVaException e) {
 				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 			}
@@ -100,14 +104,15 @@ public class CitaController {
 
 	private Cita buscarCitaLibre(LocalDate fechaActualDate, List<Cita> listaCitas) {
 		Cita cita = null;
-		Optional<FormatoVacunacion> optformato = formatoVacunacionDao.findById(ID_FORMATOVACUNACION);
-		FormatoVacunacion formato = optformato.get();
-
+		FormatoVacunacion formato = getFormatoVacunacion();
+		
+		//Para poder coger siempre la primera con un hueco libre por fecha
+		listaCitas.sort(Comparator.comparing(Cita::getFecha));
+		
 		for (int i = 0; i < listaCitas.size(); i++) {
-			Cita citaAux = listaCitas.get(i);
-			if (LocalDate.parse(citaAux.getFecha()).isAfter(fechaActualDate)
-					&& citaAux.getListaUsuario().size() < formato.getPersonasPorFranja()) {
-				cita = citaAux;
+			cita = listaCitas.get(i);
+			if (LocalDate.parse(cita.getFecha()).isAfter(fechaActualDate)
+					&& cita.getListaUsuario().size() < formato.getPersonasPorFranja()) {
 				break;
 			}
 		}
@@ -147,9 +152,7 @@ public class CitaController {
 
 	@GetMapping("/crearPlantillasCitaVacunacion")
 	public void crearPlantillasCitaVacunacion() {
-		Optional<FormatoVacunacion> optformato = formatoVacunacionDao.findById(ID_FORMATOVACUNACION);
-		FormatoVacunacion formato = optformato.get();
-
+		FormatoVacunacion formato = getFormatoVacunacion();
 		List<CentroVacunacion> centrosVacunacion = centroVacunacionDao.findAll();
 
 		int horaFin = LocalTime.parse(formato.getHoraFinVacunacion()).getHour();
@@ -169,4 +172,11 @@ public class CitaController {
 			}
 		}
 	}
+
+	private FormatoVacunacion getFormatoVacunacion() {
+		Optional<FormatoVacunacion> optFormato = formatoVacunacionDao.findById("Formato_Unico");
+		FormatoVacunacion formatoVacunacion = optFormato.get();
+		return formatoVacunacion;
+	}
+
 }
