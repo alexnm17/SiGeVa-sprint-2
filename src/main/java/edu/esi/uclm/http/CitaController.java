@@ -178,5 +178,12 @@ public class CitaController {
 		FormatoVacunacion formatoVacunacion = optFormato.get();
 		return formatoVacunacion;
 	}
+	
+	@GetMapping("/getFormatoVacunacionNumPersonas")
+	private int getFormatoVacunacionNumPersonas() {
+		Optional<FormatoVacunacion> optFormato = formatoVacunacionDao.findById("Formato_Unico");
+		int personasFranja = optFormato.get().getPersonasPorFranja();
+		return personasFranja;
+	}
 
 }
