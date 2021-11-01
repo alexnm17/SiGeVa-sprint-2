@@ -7,6 +7,7 @@ import edu.esi.uclm.model.CentroVacunacion;
 
 @Repository
 public interface CentroVacunacionDao extends MongoRepository<CentroVacunacion, String> {
-	CentroVacunacion findByNombre(String nombre);
+
+	CentroVacunacion findByNombre(String centroSalud);
 
 }
