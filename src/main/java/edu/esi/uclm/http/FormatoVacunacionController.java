@@ -25,15 +25,16 @@ public class FormatoVacunacionController {
 
 		try {
 			JSONObject jso = new JSONObject(datosFormatoVacunacion);
-			
 			String horaInicio = jso.getString("horaInicio");
 			String horaFin = jso.getString("horaFin");
 			int duracionFranja = jso.getInt("duracionFranja");
 			int personasAVacunar = jso.getInt("personasAVacunar");
 			
 			FormatoVacunacion formatoVacunacion = new FormatoVacunacion(horaInicio, horaFin, duracionFranja, personasAVacunar);
-			if (formatoVacunacion.horasCorrectas()) 
-				formatoVacunacionDao.insert(formatoVacunacion);
+			if (formatoVacunacion.horasCorrectas()) {
+				formatoVacunacionDao.deleteById("Formato_Unico");
+				formatoVacunacionDao.save(formatoVacunacion);
+			}			
 		}catch(Exception e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 		}	
