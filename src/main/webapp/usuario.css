@@ -1,0 +1,476 @@
+* {
+	font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande',
+		'Lucida Sans', Arial, sans-serif;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	font-family: sans-serif;
+	background-image: url(fondo-pantalla.jpg);
+	background-size: cover;
+}
+
+.boxHeader {
+	max-width: 97%;
+	width: 97%;
+	height: 80px;
+	padding: 20px;
+	position: absolute;
+	top: 0%;
+	left: 0%;
+	transform: translate(0%, 0%);
+	background: rgba(0, 0, 0, -0.1);
+	box-shadow: 0 0 30px rgba(0, 0, 0, 0.568);
+	color: white;
+	text-align: center;
+	border-radius: 25px;
+	flex-wrap: wrap;
+	margin: 22px;
+	cursor: pointer;
+	margin-bottom: 10px;
+}
+
+.boxHeader h1 {
+	color: rgb(248, 248, 248);
+	text-transform: uppercase;
+	font-weight: 100;
+	text-align: center;
+}
+
+.boxHeader button[type="logout"] {
+	width: 25%;
+	font-size: 15px;
+	margin: 0px;
+	text-align: center;
+	border: 3px;
+	padding: 10px;
+	outline: none;
+	background: #90c7e7;
+	color: white;
+	border-color: #d8d8d8;
+	border-radius: 18px;
+	transition: 0.5s;
+	cursor: pointer;
+	display: inline;
+	float: right;
+}
+
+.boxHeader button[type="logout"]:hover {
+	background: #3397e9;
+	color: black;
+	border-color: #3397e9;
+	transform: scale(1.1);
+}
+
+.boxMenu {
+	max-width: 97%;
+	width: 97%;
+	padding: 0px;
+	position: absolute;
+	top: 90px;
+	left: 0%;
+	transform: translate(0%, 0%);
+	background: rgba(0, 0, 0, -0.1);
+	box-shadow: 0 0 30px rgba(0, 0, 0, 0.568);
+	color: white;
+	text-align: center;
+	border-radius: 25px;
+	flex-wrap: wrap;
+	margin: 22px;
+	margin-bottom: 0px;
+}
+
+.boxMenu button[id="agenda"], .boxMenu button[id="reunionesPendientes"],
+	.boxMenu button[id="convocarReuniones"], .boxMenu button[id="modificarDatos"]
+	{
+	background: #161616c5;
+	top: 0%;
+	left: 50%;
+	margin: 20px auto;
+	text-align: center;
+	border: 2px solid #2e2c2c;
+	padding: 14px 10px;
+	width: 200px;
+	outline: none;
+	color: rgb(255, 255, 255);
+	border-radius: 20px;
+	transition: 0.5s;
+	cursor: pointer;
+	display: inline;
+	float: center;
+}
+
+.boxMenu button[id="agenda"]:hover, .boxMenu button[id="reunionesPendientes"]:hover,
+	.boxMenu button[id="convocarReuniones"]:hover, .boxMenu button[id="modificarDatos"]:hover
+	{
+	width: 280px;
+	background: #d8d8d8;
+	color: black;
+}
+
+#nombreActividad {
+	width: 60%;
+	font-size: 10px;
+	margin: 10px;
+	text-align: center;
+	background: #90c7e7;
+	border: 2px solid #d8d8d8;
+	padding: 10px;
+	outline: none;
+	color: black;
+	border-radius: 18px;
+	transition: 0.25s;
+	float: center;
+}
+
+#nombreActividad:hover {
+	background: #90c7e7;
+	color: black;
+	border-color: black;
+	transform: scale(0.9);
+}
+
+#crear {
+	color: black;
+	border-color: #2b7e4d;
+	width: 20%;
+	font-size: 15px;
+	margin: 0px;
+	text-align: center;
+	border: 2px;
+	padding: 10px;
+	outline: none;
+	background: #5fca8c;
+	border-radius: 18px;
+	transition: 0.25s;
+	cursor: pointer;
+	display: inline;
+	float: right;
+	margin-right: 5px;
+}
+
+#crear:hover {
+	background: #398558;
+	color: whitesmoke;
+	transform: scale(0.9);
+}
+
+#rechazar {
+	border: 2px;
+	border-color: #ac0606;
+	opacity: 0.9;
+	width: 20%;
+	font-size: 15px;
+	text-align: center;
+	padding: 10px;
+	outline: none;
+	background: #e74141a4;
+	color: black;
+	border-radius: 18px;
+	transition: 0.25s;
+	cursor: pointer;
+	display: inline;
+	float: right;
+	margin-right: 8px;
+}
+
+#rechazar:hover {
+	background: #af4a4a;
+	color: whitesmoke;
+	transform: scale(0.9);
+}
+
+#volver {
+	border: 2px;
+	border-color: #ac0606;
+	opacity: 0.9;
+	width: 25%;
+	font-size: 15px;
+	margin: 0px;
+	text-align: center;
+	padding: 10px;
+	outline: none;
+	background: #90c7e7;
+	color: black;
+	border-radius: 18px;
+	transition: 0.25s;
+	cursor: pointer;
+	display: inline;
+	float: center;
+}
+
+#volver:hover {
+	background: #90c7e7;
+	color: whitesmoke;
+	transform: scale(0.9);
+}
+
+.boxMenu button[type=submit]:active {
+	transform: scale(0.9);
+}
+
+.combobox {
+	position: relative;
+	background-color: white;
+	border: 2px;
+	padding: 5px;
+	border-radius: 18px;
+	border-color: white;
+	float: center;
+	display: inline;
+}
+
+#popup_box {
+	display: none; /* Hide the DIV */
+	position: fixed;
+	_position: absolute; /* hack for internet explorer 6 */
+	height: 55px;
+	width: 40%;
+	background: #5fca8c;
+	left: 27%;
+	top: 33%;
+	float: center;
+	text-align: center;
+	/* Layering ( on-top of others), if you have lots of layers: I just maximized, you can change it yourself */
+	margin-left: 25px;
+	/* additional features, can be omitted */
+	border: 2px;
+	padding: 15px;
+	font-size: 2px;
+	-moz-box-shadow: 0 0 5px;
+	-webkit-box-shadow: 0 0 5px;
+	box-shadow: 0 0 5px;
+	border-radius: 10px;
+	z-index: 200;
+}
+
+#restriccion {
+	color: rgb(248, 248, 248);
+	text-transform: uppercase;
+	font-size: 18px;
+}
+
+.boxConvocar {
+	max-width: 97%;
+	width: 97%;
+	max-height: 83%;
+	position: absolute;
+	top: 90px;
+	left: 0%;
+	transform: translate(0%, 0%);
+	background: rgba(0, 0, 0, -0.1);
+	box-shadow: 0 0 30px rgba(0, 0, 0, 0.568);
+	color: white;
+	text-align: center;
+	border-radius: 25px;
+	flex-wrap: wrap;
+	margin: 22px;
+	margin-bottom: 0px;
+	padding: 0px;
+	height: 100%;
+}
+
+.boxConvocar button[id="agenda"], .boxMenu button[id="reunionesPendientes"],
+	.boxMenu button[id="convocarReuniones"], .boxMenu button[id="modificarDatos"]
+	{
+	background: #161616c5;
+	top: 0%;
+	left: 50%;
+	margin: 20px auto;
+	text-align: center;
+	border: 2px solid #2e2c2c;
+	padding: 14px 10px;
+	width: 200px;
+	outline: none;
+	color: rgb(255, 255, 255);
+	border-radius: 20px;
+	transition: 0.5s;
+	cursor: pointer;
+	display: inline;
+	float: center;
+}
+
+#actividad {
+	width: 60%;
+	font-size: 16px;
+	margin: 10px;
+	text-align: center;
+	background: #90c7e7;
+	border: 2px solid black;
+	padding: 10px;
+	outline: none;
+	color: black;
+	border-radius: 18px;
+	transition: 0.25s;
+	float: center;
+}
+
+#actividad:hover {
+	background: #90c7e7;
+	color: black;
+	border-color: white;
+	transform: scale(0.9);
+}
+
+.boxConvocar input[id="horaInicio"] {
+	width: 200px;
+	float: center;
+	display: inline;
+}
+
+.boxConvocar input[id="horaFinal"] {
+	width: 200px;
+	float: center;
+	display: inline;
+}
+
+.boxConvocar select[id="dia"] {
+	background-color: #90c7e7;
+	box-sizing: border-box;
+	border-radius: 20px;
+	padding: 5px;
+	font-family: sans-serif;
+}
+
+.boxConvocar button[id="check"] {
+	background: #161616c5;
+	top: 0%;
+	left: 50%;
+	margin: 20px auto;
+	text-align: center;
+	border: 2px solid #2e2c2c;
+	padding: 14px 10px;
+	width: 300px;
+	outline: none;
+	color: rgb(255, 255, 255);
+	border-radius: 20px;
+	transition: 0.5s;
+	cursor: pointer;
+	display: inline;
+	float: center;
+}
+
+.boxConvocar button[id="check"]:hover {
+	width: 300px;
+	background: #f8f8f8;
+	color: black;
+}
+
+#addReunion {
+	color: black;
+	border-color: #2b7e4d;
+	width: 25%;
+	font-size: 15px;
+	margin: 0px;
+	text-align: center;
+	border: 2px;
+	padding: 10px;
+	outline: none;
+	background: #5fca8c;
+	border-radius: 18px;
+	transition: 0.25s;
+	cursor: pointer;
+	display: inline;
+	float: center;
+}
+
+#addReunion:hover {
+	background: #398558;
+	color: whitesmoke;
+	transform: scale(0.9);
+}
+
+#volverConvocar {
+	border: 2px;
+	border-color: #ac0606;
+	opacity: 0.9;
+	width: 25%;
+	font-size: 15px;
+	margin: 0px;
+	text-align: center;
+	padding: 10px;
+	outline: none;
+	background: #90c7e7;
+	color: black;
+	border-radius: 18px;
+	transition: 0.25s;
+	cursor: pointer;
+	display: inline;
+	float: right;
+}
+
+.boxHeaderReunionesPendientes {
+	max-width: 97%;
+	width: 97%;
+	height: 80px;
+	padding: 20px;
+	position: absolute;
+	top: 0%;
+	left: 0%;
+	transform: translate(0%, 0%);
+	background: rgba(0, 0, 0, -0.1);
+	box-shadow: 0 0 30px rgba(0, 0, 0, 0.568);
+	color: white;
+	text-align: center;
+	border-radius: 25px;
+	flex-wrap: wrap;
+	margin: 22px;
+	cursor: pointer;
+	margin-bottom: 10px;
+}
+
+.boxHeaderReunionesPendientes h1 {
+	color: rgb(248, 248, 248);
+	text-transform: uppercase;
+	font-weight: 100;
+	text-align: center;
+}
+
+#volverReuniones {
+	border: 2px;
+	border-color: #ac0606;
+	opacity: 0.9;
+	width: 25%;
+	font-size: 15px;
+	margin: 0px;
+	text-align: center;
+	padding: 10px;
+	outline: none;
+	background: #90c7e7;
+	color: black;
+	border-radius: 18px;
+	transition: 0.25s;
+	cursor: pointer;
+	display: inline;
+	float: right;
+}
+
+#volverReuniones:hover {
+	background: #90c7e7;
+	color: whitesmoke;
+	transform: scale(0.9);
+}
+
+.boxMenuReunionesPendientes {
+	max-width: 97%;
+	width: 97%;
+	height: 80%;
+	padding: 0px;
+	position: absolute;
+	top: 90px;
+	left: 0%;
+	transform: translate(0%, 0%);
+	background: rgba(0, 0, 0, -0.1);
+	box-shadow: 0 0 30px rgba(0, 0, 0, 0.568);
+	color: white;
+	text-align: center;
+	border-radius: 25px;
+	flex-wrap: wrap;
+	margin: 22px;
+	margin-bottom: 0px;
+}
+
+#modificarUsuario {
+	text-align: center;
+}

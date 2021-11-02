@@ -71,12 +71,4 @@ public class FormatoVacunacion {
 		}
 	}
 
-	public boolean condicionesValidas() {
-		// Este método se usa para asegurar que se establezcan unas condiciones validas para los trabajadores del centro
-		// pero que tambien sea eficiente
-		int minutos_persona = duracionFranjaVacunacion/personasPorFranja;
-		return (15>=minutos_persona && minutos_persona>= 5);
-
-	}
-
 }
