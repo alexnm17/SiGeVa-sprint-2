@@ -46,6 +46,7 @@ public class CitaController {
 	@CrossOrigin(origins = "http://localhost:3000")
 	@PostMapping("/solicitarCita")
 	public void solicitarCita(HttpSession session, @RequestBody Map<String, Object> datosUsuario) {
+
 		try {
 
 			JSONObject json = new JSONObject(datosUsuario);
