@@ -5,6 +5,7 @@ import javax.servlet.http.HttpSession;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,7 +21,7 @@ public class FormatoVacunacionController {
 	@Autowired
 	private FormatoVacunacionDao formatoVacunacionDao;
 
-	
+	@CrossOrigin(origins = "http://localhost:3000")
 	@PostMapping("/definirFormatoVacunacion")
 	public int definirFormatoVacunacion(HttpSession session, @RequestBody Map<String, Object> datosFormatoVacunacion) {
 		int resultado = 0;
@@ -33,7 +34,7 @@ public class FormatoVacunacionController {
 			int personasAVacunar = jso.getInt("personasAVacunar");
 			
 			FormatoVacunacion formatoVacunacion = new FormatoVacunacion(horaInicio, horaFin, duracionFranja, personasAVacunar);
-			if (formatoVacunacion.horasCorrectas() && formatoVacunacion.condicionesValidas()) {
+			if (formatoVacunacion.horasCorrectas()) {
 				resultado = 200;
 				formatoVacunacionDao.insert(formatoVacunacion);
 				
