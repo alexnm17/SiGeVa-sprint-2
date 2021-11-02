@@ -9,16 +9,17 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.server.ResponseStatusException;
 
 import edu.uclm.esi.exceptions.SiGeVaException;
 import junit.framework.TestCase;
 
 @RunWith(SpringRunner.class)
 public class TestFormatoVacunacionControler extends TestCase{
-/*
+
 	private FormatoVacunacionController componente;
 
-	@Test
+	/*@Test
 	public void testDefinirFormatoCorrecto() {
 		
 		componente = new FormatoVacunacionController();
@@ -27,10 +28,11 @@ public class TestFormatoVacunacionControler extends TestCase{
 		body.put("horaFin","18:00");
 		body.put("duracionFranja",1);
 		body.put("personasAVacunar",10);
+		
 		int resultado = componente.definirFormatoVacunacion(null,body);
 		Assert.assertEquals(200,resultado);
 		
-	}
+	}*/
 	@Test
 	public void testDefinirFormatoIncorrectoHorasNoValidas() {
 		
@@ -40,7 +42,12 @@ public class TestFormatoVacunacionControler extends TestCase{
 		body.put("horaFin","11:00");
 		body.put("duracionFranja",1);
 		body.put("personasAVacunar",10);
-		componente.definirFormatoVacunacion(null,body);
+		try {
+			componente.definirFormatoVacunacion(null,body);
+		}catch(ResponseStatusException e) {
+			fail("Error al crear el formato de vacunacion");
+		}
+		
 		Exception exception = Assert.assertThrows(SiGeVaException.class,() -> componente.definirFormatoVacunacion(null,body));
 		fail("A pesar de que la hora de inicio es posterior a la de fin lo acepta como valido");
 		String expectedMessage = "Las horas del formato no son correctas";
@@ -57,7 +64,13 @@ public void testDefinirFormatoIncorrectoCondicionesNoPermitidas() {
 		body.put("horaFin","15:00");
 		body.put("duracionFranja",1);
 		body.put("personasAVacunar",20);
-		componente.definirFormatoVacunacion(null,body);
+		
+		try {
+			componente.definirFormatoVacunacion(null,body);
+		}catch(ResponseStatusException e) {
+			fail("Error al crear el formato de vacunacion");
+		}
+		
 		Exception exception = Assert.assertThrows(SiGeVaException.class,() -> componente.definirFormatoVacunacion(null,body));
 		fail("Aunque las condiciones no son validas, se han aceptado para adaptarlas al formato");
 		String expectedMessage = "Las condiciones no estan bien";
@@ -65,5 +78,5 @@ public void testDefinirFormatoIncorrectoCondicionesNoPermitidas() {
 
 		assertTrue(actualMessage.contains(expectedMessage));
 	}
-	*/
+	
 }
