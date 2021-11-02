@@ -2,19 +2,25 @@ package edu.esi.uclm.model;
 
 import static org.junit.Assert.assertThrows;
 
-import org.junit.jupiter.api.Test;
+//import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
 import edu.uclm.esi.exceptions.SiGeVaException;
 import junit.framework.TestCase;
+import org.junit.Test;
+
 
 @RunWith(SpringRunner.class)
-class TestFormatoVacunacion extends TestCase {
+public class TestFormatoVacunacion extends TestCase {
 
 	private FormatoVacunacion formato;
 
+	public TestFormatoVacunacion(){
+		
+	}
+	
 	@Test
-	void FormatoVacunacionCorrectaTester() {
+	public void FormatoVacunacionCorrectaTester() {
 
 		formato = new FormatoVacunacion("12:30", "16:30", 30, 10);
 		try {
@@ -28,7 +34,7 @@ class TestFormatoVacunacion extends TestCase {
 	}
 
 	@Test
-	void FormatoVacunacionIncorrectaTester() {
+	public void FormatoVacunacionIncorrectaTester() {
 		try {
 			formato = new FormatoVacunacion("17:00", "16:30", 30, 10);
 
@@ -40,7 +46,7 @@ class TestFormatoVacunacion extends TestCase {
 	}
 
 	@Test
-	void FormatoVacunacionFormatoNoValidoTester() {
+	public void FormatoVacunacionFormatoNoValidoTester() {
 		formato = new FormatoVacunacion("12:30", "fallo", 30, 10);
 
 		Exception exception = assertThrows(SiGeVaException.class, () -> formato.horasCorrectas());
@@ -54,7 +60,7 @@ class TestFormatoVacunacion extends TestCase {
 	}
 
 	@Test
-	void FormatoVacunacionCondicionesValidasTester() {
+	public void FormatoVacunacionCondicionesValidasTester() {
 		formato = new FormatoVacunacion("12:30", "16:30", 30, 3);
 
 		assertTrue(formato.condicionesValidas());
@@ -63,7 +69,7 @@ class TestFormatoVacunacion extends TestCase {
 	}
 
 	@Test
-	void FormatoVacunacionCondicionesNoValidasTester() {
+	public void FormatoVacunacionCondicionesNoValidasTester() {
 		formato = new FormatoVacunacion("12:30", "16:30", 30, 30);
 
 		assertFalse(formato.condicionesValidas());
