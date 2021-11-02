@@ -44,6 +44,7 @@ public class CitaController {
 
 	@GetMapping("/solicitarCita")
 	public void solicitarCita(HttpSession session, @RequestBody Map<String, Object> datosUsuario) {
+
 		try {
 
 			JSONObject json = new JSONObject(datosUsuario);
