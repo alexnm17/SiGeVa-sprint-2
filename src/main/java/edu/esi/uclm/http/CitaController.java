@@ -44,16 +44,23 @@ public class CitaController {
 
 	@GetMapping("/solicitarCita")
 	public void solicitarCita(HttpSession session, @RequestBody Map<String, Object> datosUsuario) {
-		JSONObject json = new JSONObject(datosUsuario);
-		String dni = json.getString("dni");
-		
-		Usuario usuario = usuarioDao.findByDni(dni);
 
-		if (usuario != null) {
+		try {
+
+			JSONObject json = new JSONObject(datosUsuario);
+			String dni = json.getString("dni");
+
+			Usuario usuario = usuarioDao.findByDni(dni);
+
+			if (usuario == null)
+				throw new SiGeVaException(HttpStatus.NOT_FOUND, "No se ha encontrado ningun usuario con este dni");
 			CentroVacunacion centroVacunacion = centroVacunacionDao.findByNombre(usuario.getCentroSalud());
+
 			String fechaActual = LocalDate.now().getYear() + "-" + LocalDate.now().getMonthValue() + "-0"
 					+ LocalDate.now().getDayOfMonth();
+
 			LocalDate fechaActualDate = LocalDate.parse(fechaActual);
+
 			List<Cita> listaCitas;
 			try {
 				listaCitas = citaDao.findAllByCentroVacunacion(centroVacunacion);
@@ -81,6 +88,17 @@ public class CitaController {
 			} catch (SiGeVaException e) {
 				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 			}
+
+			Cita segundaCita = buscarSegundaCita(usuario, primeraCita, listaCitas);
+
+			primeraCita.getListaUsuario().add(usuario);
+			segundaCita.getListaUsuario().add(usuario);
+
+			citaDao.save(primeraCita);
+			citaDao.save(segundaCita);
+			usuarioDao.save(usuario);
+		} catch (SiGeVaException e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 		}
 	}
 
@@ -151,6 +169,7 @@ public class CitaController {
 	}
 
 	@GetMapping("/crearPlantillasCitaVacunacion")
+
 	public void crearPlantillasCitaVacunacion() {
 		FormatoVacunacion formato = getFormatoVacunacion();
 		List<CentroVacunacion> centrosVacunacion = centroVacunacionDao.findAll();
