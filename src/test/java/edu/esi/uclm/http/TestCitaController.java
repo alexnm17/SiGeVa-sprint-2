@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -26,6 +25,11 @@ public class TestCitaController extends TestCase {
 	private CitaController citacontroller = new CitaController();
 	private CentroVacunacionDao dao;
 
+	
+	public TestCitaController() {
+		
+	}
+	
 	@Test
 	private void testSolicitarCitaCorrecta() {
 		Optional<CentroVacunacion> centro = dao.findById("61793aebb7bbfc0c001774c2");
