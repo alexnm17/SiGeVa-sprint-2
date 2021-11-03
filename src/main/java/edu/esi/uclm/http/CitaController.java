@@ -22,11 +22,12 @@ import org.springframework.web.server.ResponseStatusException;
 
 import edu.esi.uclm.dao.CentroVacunacionDao;
 import edu.esi.uclm.dao.CitaDao;
-
+import edu.esi.uclm.dao.CupoDao;
 import edu.esi.uclm.dao.FormatoVacunacionDao;
 import edu.esi.uclm.dao.UsuarioDao;
 import edu.esi.uclm.model.CentroVacunacion;
 import edu.esi.uclm.model.Cita;
+import edu.esi.uclm.model.Cupo;
 import edu.esi.uclm.model.FormatoVacunacion;
 import edu.esi.uclm.model.Usuario;
 import edu.uclm.esi.exceptions.SiGeVaException;
@@ -42,11 +43,14 @@ public class CitaController {
 	private CentroVacunacionDao centroVacunacionDao;
 	@Autowired
 	private UsuarioDao usuarioDao;
+	
+	@Autowired
+	private CupoDao cupoDao;
 
 	@CrossOrigin(origins = "http://localhost:3000")
 	@PostMapping("/solicitarCita")
 	public void solicitarCita(HttpSession session, @RequestBody Map<String, Object> datosUsuario) {
-
+	
 		try {
 			JSONObject json = new JSONObject(datosUsuario);
 			String dni = json.getString("dni");
@@ -55,70 +59,76 @@ public class CitaController {
 
 			if (usuario == null)
 				throw new SiGeVaException(HttpStatus.NOT_FOUND, "No se ha encontrado ningun usuario con este dni");
+			
+			
+			
 			CentroVacunacion centroVacunacion = centroVacunacionDao.findByNombre(usuario.getCentroSalud());
 
-			String fechaActual = LocalDate.now().getYear() + "-" + LocalDate.now().getMonthValue() + "-0"
-					+ LocalDate.now().getDayOfMonth();
+			LocalDate fechaActualDate = LocalDate.now();
 
-			LocalDate fechaActualDate = LocalDate.parse(fechaActual);
-
-			List<Cita> listaCitas;
-			listaCitas = citaDao.findAllByCentroVacunacion(centroVacunacion);
-
-			Cita primeraCita = buscarCitaLibre(fechaActualDate, listaCitas);
-				if (primeraCita == null) {
+			List<Cupo> listaCupos = cupoDao.findAllByCentroVacunacion(centroVacunacion);
+		//Posible throw de exception
+		
+			Cupo primerCupo = buscarCupoLibre(fechaActualDate, listaCupos);
+			
+				if (primerCupo == null) {
 					throw new SiGeVaException(HttpStatus.NOT_FOUND,
-							"No se ha podido encontrar ninguna cita libre. Contacte con el administrador.");
+							"No se ha podido encontrar ninguna cita libre para su primera dosis. Contacte con el administrador.");
 				}
 
-				Cita segundaCita = buscarSegundaCita(usuario, primeraCita, listaCitas);
-
-				primeraCita.getListaUsuario().add(usuario);
-				segundaCita.getListaUsuario().add(usuario);
+				Cupo segundoCupo = buscarSegundoCupo(primerCupo, listaCupos);
 				
-				citaDao.deleteByFechaAndHora(primeraCita.getFecha(), primeraCita.getHora());
-				citaDao.deleteByFechaAndHora(segundaCita.getFecha(), segundaCita.getHora());
+				//Disminuyendo el numero de personas
+				primerCupo.restarPersona(1);
+				segundoCupo.restarPersona(1);
+				
+				Cita primeraCita= new Cita(primerCupo.getFecha(),primerCupo.getHora(),primerCupo.getCentroVacunacion(), usuario.getDni());
+				Cita segundaCita= new Cita(segundoCupo.getFecha(),segundoCupo.getHora(),segundoCupo.getCentroVacunacion(), usuario.getDni());
 				
 				citaDao.save(primeraCita);
 				citaDao.save(segundaCita);
-			}catch(SiGeVaException e) {
-				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-			}
+				
+				//cupor.daoMeter los cupos actualizados
+				
+				
+			
+		} catch (SiGeVaException e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+		}
 	}
 
-	private Cita buscarSegundaCita(Usuario usuario, Cita citaLibre, List<Cita> listaCitas) {
-		LocalDate fechaPrimera = LocalDate.parse(citaLibre.getFecha());
+	private Cupo buscarSegundoCupo(Cupo cupoLibre, List<Cupo> listaCupos) {
+		LocalDate fechaPrimera = LocalDate.parse(cupoLibre.getFecha());
 		LocalDate fechaSegunda = fechaPrimera.plusDays(21);
 
-		Cita segundaCita = buscarCitaLibre(fechaSegunda, listaCitas);
+		Cupo segundoCupo = buscarCupoLibre(fechaSegunda, listaCupos);
 
 		try {
-			if (segundaCita == null) {
+			if (segundoCupo == null) {
 				throw new SiGeVaException(HttpStatus.NOT_FOUND,
-						"No se ha podido encontrar ninguna cita libre. Contacte con el administrador.");
+						"No se ha podido encontrar ninguna cita libre para la segunda dosis. Contacte con el administrador.");
 			}
 		} catch (SiGeVaException e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 		}
 
-		return segundaCita;
+		return segundoCupo;
 	}
 
-	private Cita buscarCitaLibre(LocalDate fechaActualDate, List<Cita> listaCitas) {
-		Cita cita = null;
-		FormatoVacunacion formato = getFormatoVacunacion();
-		
+	private Cupo buscarCupoLibre(LocalDate fechaActualDate, List<Cupo> listaCupos) {
+		Cupo cupo = null;
+	
 		//Para poder coger siempre la primera con un hueco libre por fecha
-		listaCitas.sort(Comparator.comparing(Cita::getFecha));
+		listaCupos.sort(Comparator.comparing(Cupo::getFecha));
 		
-		for (int i = 0; i < listaCitas.size(); i++) {
-			cita = listaCitas.get(i);
-			if (LocalDate.parse(cita.getFecha()).isAfter(fechaActualDate)
-					&& cita.getListaUsuario().size() < formato.getPersonasPorFranja()) {
+		for (int i = 0; i < listaCupos.size(); i++) {
+			cupo = listaCupos.get(i);
+			if (LocalDate.parse(cupo.getFecha()).isAfter(fechaActualDate)
+					&& cupo.getPersonasRestantes()>0) {
 				break;
 			}
 		}
-		return cita;
+		return cupo;
 	}
 
 	@PostMapping("/modificarCita")
@@ -136,15 +146,15 @@ public class CitaController {
 		citaDao.findById(idCita);
 	}
 
-	@PostMapping("/crearCita")
-	public void crearCita(int numFranjas, LocalDate fecha, LocalTime horaInicio, CentroVacunacion centroVacunacion,
-			int duracion) {
-		Cita cita;
+	@PostMapping("/crearCupo")
+	public void crearCupo(int numFranjas, LocalDate fecha, LocalTime horaInicio, CentroVacunacion centroVacunacion,
+			int duracion,int personasMax) {
+		Cupo cupo;
 
 		for (int i = 0; i < numFranjas; i++) {
 
-			cita = new Cita(fecha.toString(), horaInicio.toString(), centroVacunacion);
-			citaDao.save(cita);
+			cupo = new Cupo(fecha.toString(), horaInicio.toString(), centroVacunacion, personasMax);
+			cupoDao.save(cupo);
 
 			horaInicio = horaInicio.plusMinutes(duracion);
 
@@ -168,8 +178,8 @@ public class CitaController {
 
 			while (fechaCita.isBefore(LocalDate.parse(LocalDate.now().plusYears(1).getYear() + "-01-01"))) {
 
-				crearCita(numFranjas, fechaCita, LocalTime.parse(formato.getHoraInicioVacunacion()),
-						centrosVacunacion.get(i), formato.getDuracionFranjaVacunacion());
+				crearCupo(numFranjas, fechaCita, LocalTime.parse(formato.getHoraInicioVacunacion()),
+						centrosVacunacion.get(i), formato.getDuracionFranjaVacunacion(), formato.getPersonasPorFranja());
 
 				fechaCita = fechaCita.plusDays(1);
 			}
@@ -181,4 +191,5 @@ public class CitaController {
 		FormatoVacunacion formatoVacunacion = optFormato.get();
 		return formatoVacunacion;
 	}
+
 }

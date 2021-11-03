@@ -2,22 +2,22 @@ package edu.esi.uclm.model;
 
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
-public class Cita {
+public class Cupo {
 	private String fecha;
 	private String hora;
-	private String usuarioDni;
+	private int personasRestantes;
 	@DBRef
 	private CentroVacunacion centroVacunacion;
 
-	public Cita() {
+	public Cupo() {
 		// El constructor vacio ha sido crado por exigencias del Spring
 	}
 
-	public Cita(String fecha, String hora, CentroVacunacion centro, String usuarioDni) {
+	public Cupo(String fecha, String hora, CentroVacunacion centro, int personasRestantes) {
 		this.fecha = fecha;
 		this.hora = hora;
 		this.centroVacunacion = centro;
-		this.usuarioDni = usuarioDni;
+		this.personasRestantes=personasRestantes;
 	}
 
 	public String getFecha() {
@@ -44,12 +44,19 @@ public class Cita {
 		this.centroVacunacion = centroVacunacion;
 	}
 
-	public String getUsuarioDni() {
-		return usuarioDni;
+	public int getPersonasRestantes() {
+		return personasRestantes;
 	}
 
-	public void setUsuarioDni(String usuarioDni) {
-		this.usuarioDni = usuarioDni;
+	public void setPersonasRestantes(int personasRestantes) {
+		this.personasRestantes = personasRestantes;
+	}
+	
+	public void restarPersona(int numero) {
+		this.personasRestantes -= numero;
 	}
 
 }
+
+
+
