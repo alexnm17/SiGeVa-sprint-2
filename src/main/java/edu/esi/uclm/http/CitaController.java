@@ -48,7 +48,6 @@ public class CitaController {
 	public void solicitarCita(HttpSession session, @RequestBody Map<String, Object> datosUsuario) {
 
 		try {
-
 			JSONObject json = new JSONObject(datosUsuario);
 			String dni = json.getString("dni");
 
@@ -64,14 +63,9 @@ public class CitaController {
 			LocalDate fechaActualDate = LocalDate.parse(fechaActual);
 
 			List<Cita> listaCitas;
-			try {
-				listaCitas = citaDao.findAllByCentroVacunacion(centroVacunacion);
-			} catch (Exception e) {
-				throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-			}
+			listaCitas = citaDao.findAllByCentroVacunacion(centroVacunacion);
 
 			Cita primeraCita = buscarCitaLibre(fechaActualDate, listaCitas);
-			try {
 				if (primeraCita == null) {
 					throw new SiGeVaException(HttpStatus.NOT_FOUND,
 							"No se ha podido encontrar ninguna cita libre. Contacte con el administrador.");
@@ -87,21 +81,9 @@ public class CitaController {
 				
 				citaDao.save(primeraCita);
 				citaDao.save(segundaCita);
-			} catch (SiGeVaException e) {
+			}catch(SiGeVaException e) {
 				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 			}
-
-			Cita segundaCita = buscarSegundaCita(usuario, primeraCita, listaCitas);
-
-			primeraCita.getListaUsuario().add(usuario);
-			segundaCita.getListaUsuario().add(usuario);
-
-			citaDao.save(primeraCita);
-			citaDao.save(segundaCita);
-			usuarioDao.save(usuario);
-		} catch (SiGeVaException e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-		}
 	}
 
 	private Cita buscarSegundaCita(Usuario usuario, Cita citaLibre, List<Cita> listaCitas) {
