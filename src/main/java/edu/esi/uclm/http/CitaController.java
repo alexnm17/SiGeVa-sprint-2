@@ -142,8 +142,17 @@ public class CitaController {
 	}
 
 	@GetMapping("/consultarCita")
-	public void consultar(HttpSession session, @RequestBody String idCita) {
-		citaDao.findById(idCita);
+	public List<Cita> consultar(HttpSession session, @RequestBody String dni) {
+		try {
+			List<Cita> citas = citaDao.findAllByUsuarioDni(dni);
+			if(citas.isEmpty())
+				throw new SiGeVaException(HttpStatus.NOT_FOUND,"No se ha podido encontrar ninguna cita para el usuario. Contacte con el administrador.");
+			
+			return citas;
+			
+		}catch(SiGeVaException e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());	
+		}
 	}
 
 	@PostMapping("/crearCupo")
