@@ -52,23 +52,4 @@ class TestFormatoVacunacion extends TestCase {
 		assertTrue(actualMessage.contains(expectedMessage));
 
 	}
-
-	@Test
-	void FormatoVacunacionCondicionesValidasTester() {
-		formato = new FormatoVacunacion("12:30", "16:30", 30, 3);
-
-		assertTrue(formato.condicionesValidas());
-		fail("A pesar de que las condiciones son validas, no las acepta");
-
-	}
-
-	@Test
-	void FormatoVacunacionCondicionesNoValidasTester() {
-		formato = new FormatoVacunacion("12:30", "16:30", 30, 30);
-
-		assertFalse(formato.condicionesValidas());
-		fail("Aunque las condiciones no son justas, las acepta");
-
-	}
-
 }
