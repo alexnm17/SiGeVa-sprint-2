@@ -5,29 +5,39 @@ import axios from "axios";
 
 class Login {
 		constructor() {
+			self.dni = ko.observable("71360720T");
+			self.password = ko.observable("12345678");
+			self.message = ko.observable();
+			self.error = ko.observable();
 			
+			self.headerConfig = ko.observable({
+				'view' : [],
+				'viewModel' : null
+			}
 		}
 
 		login() {
-		}
-		
-		recoverPwd() {
+			var self = this;
+			var info = {
+				email : this.dni(),
+				pwd : this.password()
 			};
+			var data = {
+				data : JSON.stringify(info),
+				url : "user/login",
+				type : "post",
+				contentType : 'application/json',
+				success : function(response) {
+					
+				},
+				error : function(response) {
+					
+				}
+			};
+			$.ajax(data);
 		}
 		
-		register() {
-		}
-
-		connected() {
-			
-		}
-
-		disconnected() {
-			
-		}
-
-		transitionCompleted() {
-		}
+	
 	}
 
 	return Login;
