@@ -43,14 +43,14 @@ public class CitaController {
 	private CentroVacunacionDao centroVacunacionDao;
 	@Autowired
 	private UsuarioDao usuarioDao;
-	
+
 	@Autowired
 	private CupoDao cupoDao;
 
 	@CrossOrigin(origins = "http://localhost:3000")
 	@PostMapping("/solicitarCita")
 	public void solicitarCita(HttpSession session, @RequestBody Map<String, Object> datosUsuario) {
-	
+
 		try {
 			JSONObject json = new JSONObject(datosUsuario);
 			String dni = json.getString("dni");
@@ -60,38 +60,38 @@ public class CitaController {
 			if (usuario == null)
 				throw new SiGeVaException(HttpStatus.NOT_FOUND, "No se ha encontrado ningun usuario con este dni");
 			
-			
-			
+			if(citaDao.findAll().size()==2) throw new SiGeVaException(HttpStatus.FORBIDDEN,
+					"El usuario: "+dni+" ya dispone de dos citas asignadas. Si desea modificar su cita, utilice Modificar Cita");
+
 			CentroVacunacion centroVacunacion = centroVacunacionDao.findByNombre(usuario.getCentroSalud());
 
 			LocalDate fechaActualDate = LocalDate.now();
 
 			List<Cupo> listaCupos = cupoDao.findAllByCentroVacunacion(centroVacunacion);
-		//Posible throw de exception
-		
-			Cupo primerCupo = buscarCupoLibre(fechaActualDate, listaCupos);
-			
-				if (primerCupo == null) {
-					throw new SiGeVaException(HttpStatus.NOT_FOUND,
-							"No se ha podido encontrar ninguna cita libre para su primera dosis. Contacte con el administrador.");
-				}
+			//Posible throw de exception
 
-				Cupo segundoCupo = buscarSegundoCupo(primerCupo, listaCupos);
-				
-				//Disminuyendo el numero de personas
-				primerCupo.restarPersona(1);
-				segundoCupo.restarPersona(1);
-				
-				Cita primeraCita= new Cita(primerCupo.getFecha(),primerCupo.getHora(),primerCupo.getCentroVacunacion(), usuario.getDni());
-				Cita segundaCita= new Cita(segundoCupo.getFecha(),segundoCupo.getHora(),segundoCupo.getCentroVacunacion(), usuario.getDni());
-				
-				citaDao.save(primeraCita);
-				citaDao.save(segundaCita);
-				
-				//cupor.daoMeter los cupos actualizados
-				
-				
-			
+			Cupo primerCupo = buscarCupoLibre(fechaActualDate, listaCupos);
+
+			if (primerCupo == null) {
+				throw new SiGeVaException(HttpStatus.NOT_FOUND,
+						"No se ha podido encontrar ninguna cita libre para su primera dosis. Contacte con el administrador.");
+			}
+
+			Cupo segundoCupo = buscarSegundoCupo(primerCupo, listaCupos);
+
+			//Disminuyendo el numero de personas
+			cupoDao.deleteByFechaAndHoraAndCentroVacunacion(primerCupo.getFecha(),primerCupo.getHora(),primerCupo.getCentroVacunacion());
+			cupoDao.deleteByFechaAndHoraAndCentroVacunacion(segundoCupo.getFecha(),segundoCupo.getHora(),segundoCupo.getCentroVacunacion());
+			primerCupo.setPersonasRestantes(primerCupo.getPersonasRestantes()-1);
+			segundoCupo.setPersonasRestantes(segundoCupo.getPersonasRestantes()-1);
+			cupoDao.save(primerCupo);
+			cupoDao.save(segundoCupo);
+
+			Cita primeraCita= new Cita(primerCupo.getFecha(),primerCupo.getHora(),primerCupo.getCentroVacunacion(), usuario.getDni());
+			Cita segundaCita= new Cita(segundoCupo.getFecha(),segundoCupo.getHora(),segundoCupo.getCentroVacunacion(), usuario.getDni());
+
+			citaDao.save(primeraCita);
+			citaDao.save(segundaCita);
 		} catch (SiGeVaException e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 		}
@@ -117,10 +117,10 @@ public class CitaController {
 
 	private Cupo buscarCupoLibre(LocalDate fechaActualDate, List<Cupo> listaCupos) {
 		Cupo cupo = null;
-	
+
 		//Para poder coger siempre la primera con un hueco libre por fecha
 		listaCupos.sort(Comparator.comparing(Cupo::getFecha));
-		
+
 		for (int i = 0; i < listaCupos.size(); i++) {
 			cupo = listaCupos.get(i);
 			if (LocalDate.parse(cupo.getFecha()).isAfter(fechaActualDate)
