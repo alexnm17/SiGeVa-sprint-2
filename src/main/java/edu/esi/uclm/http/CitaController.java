@@ -201,7 +201,7 @@ public class CitaController {
 
 	@CrossOrigin(origins = "http://localhost:3000")
 	@GetMapping("/getCitaByDni")
-	public Cita getCitaByDni(HttpSession session, @RequestBody Map<String, Object> jsonDni) {
+	public List<Cita> getCitaByDni(HttpSession session, @RequestBody Map<String, Object> jsonDni) {
 		JSONObject json = new JSONObject(jsonDni);
 		return citaDao.findByUsuarioDni(json.getString("dni"));
 	}
