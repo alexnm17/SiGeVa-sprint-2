@@ -61,31 +61,13 @@ public class CitaController {
 			LocalDate fechaActualDate = LocalDate.parse(fechaActual);
 
 			List<Cita> listaCitas;
-			try {
-				listaCitas = citaDao.findAllByCentroVacunacion(centroVacunacion);
-			} catch (Exception e) {
-				throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-			}
+
+			listaCitas = citaDao.findAllByCentroVacunacion(centroVacunacion);
 
 			Cita primeraCita = buscarCitaLibre(fechaActualDate, listaCitas);
-			try {
-				if (primeraCita == null) {
-					throw new SiGeVaException(HttpStatus.NOT_FOUND,
-							"No se ha podido encontrar ninguna cita libre. Contacte con el administrador.");
-				}
-
-				Cita segundaCita = buscarSegundaCita(usuario, primeraCita, listaCitas);
-
-				primeraCita.getListaUsuario().add(usuario);
-				segundaCita.getListaUsuario().add(usuario);
-				
-				citaDao.deleteByFechaAndHora(primeraCita.getFecha(), primeraCita.getHora());
-				citaDao.deleteByFechaAndHora(segundaCita.getFecha(), segundaCita.getHora());
-				
-				citaDao.save(primeraCita);
-				citaDao.save(segundaCita);
-			} catch (SiGeVaException e) {
-				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+			if (primeraCita == null) {
+				throw new SiGeVaException(HttpStatus.NOT_FOUND,
+						"No se ha podido encontrar ninguna cita libre. Contacte con el administrador.");
 			}
 
 			Cita segundaCita = buscarSegundaCita(usuario, primeraCita, listaCitas);
@@ -93,8 +75,12 @@ public class CitaController {
 			primeraCita.getListaUsuario().add(usuario);
 			segundaCita.getListaUsuario().add(usuario);
 
+			citaDao.deleteByFechaAndHora(primeraCita.getFecha(), primeraCita.getHora());
+			citaDao.deleteByFechaAndHora(segundaCita.getFecha(), segundaCita.getHora());
+
 			citaDao.save(primeraCita);
 			citaDao.save(segundaCita);
+
 			usuarioDao.save(usuario);
 		} catch (SiGeVaException e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
@@ -122,10 +108,10 @@ public class CitaController {
 	private Cita buscarCitaLibre(LocalDate fechaActualDate, List<Cita> listaCitas) {
 		Cita cita = null;
 		FormatoVacunacion formato = getFormatoVacunacion();
-		
-		//Para poder coger siempre la primera con un hueco libre por fecha
+
+		// Para poder coger siempre la primera con un hueco libre por fecha
 		listaCitas.sort(Comparator.comparing(Cita::getFecha));
-		
+
 		for (int i = 0; i < listaCitas.size(); i++) {
 			cita = listaCitas.get(i);
 			if (LocalDate.parse(cita.getFecha()).isAfter(fechaActualDate)
@@ -168,7 +154,6 @@ public class CitaController {
 	}
 
 	@GetMapping("/crearPlantillasCitaVacunacion")
-
 	public void crearPlantillasCitaVacunacion() {
 		FormatoVacunacion formato = getFormatoVacunacion();
 		List<CentroVacunacion> centrosVacunacion = centroVacunacionDao.findAll();

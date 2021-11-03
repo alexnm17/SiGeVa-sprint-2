@@ -30,6 +30,7 @@ public class UsuarioController {
 
 	@PostMapping("/crearUsuario")
 	public void crearUsuario(@RequestBody Map<String, Object> datosUsuario) {
+
 		JSONObject json = new JSONObject(datosUsuario);
 		String dni = json.getString("dni");
 		String nombre = json.getString("nombre");
@@ -39,6 +40,8 @@ public class UsuarioController {
 		String rol = json.getString("rol");
 		Usuario nuevoUsuario = new Usuario(dni, nombre, apellido, password, rol, centroSalud);
 		userDao.save(nuevoUsuario);
+		
+
 	}
 
 	@PostMapping("/modificarUsuario")
@@ -47,8 +50,6 @@ public class UsuarioController {
 			if (user.getRol().equals(RolUsuario.ADMINISTRADOR.name()))
 				throw new SigevaException(HttpStatus.FORBIDDEN, "No puede modificar a otro administrador del sistema");
 			else {
-				System.out.print("Hola, estoy modificando al usuario:\t DNI: " + user.getDni() + " || Nombre: "
-						+ user.getNombre());
 				Usuario antiguoUsuario = userDao.findByDni(user.getDni());
 				if (antiguoUsuario==null) throw new SiGeVaException(HttpStatus.NOT_FOUND,"No existe un usuario con este identificador");
 				antiguoUsuario.setNombre(user.getNombre());
@@ -61,7 +62,7 @@ public class UsuarioController {
 
 		} catch (Exception e) {
 
-			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
+			throw new ResponseStatusException(HttpStatus.CONFLICT , e.getMessage());
 		}
 
 	}

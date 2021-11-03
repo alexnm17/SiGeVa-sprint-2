@@ -3,6 +3,7 @@ package edu.esi.uclm.http;
 import static org.junit.Assert.assertThrows;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -10,12 +11,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import edu.esi.uclm.dao.FormatoVacunacionDao;
+import edu.esi.uclm.model.FormatoVacunacion;
 import edu.uclm.esi.exceptions.SiGeVaException;
 import junit.framework.TestCase;
 
 @RunWith(SpringRunner.class)
 public class TestFormatoVacunacionControler extends TestCase{
-
+	private FormatoVacunacionDao dao;
 	private FormatoVacunacionController componente;
 	
 	@Test
@@ -27,8 +30,12 @@ public class TestFormatoVacunacionControler extends TestCase{
 		body.put("horaFin","18:00");
 		body.put("duracionFranja",1);
 		body.put("personasAVacunar",10);
-		int resultado = componente.definirFormatoVacunacion(null,body);
-		Assert.assertEquals(200,resultado);
+		FormatoVacunacion f = new FormatoVacunacion("12:30","18:00",1,10);
+		
+		componente.definirFormatoVacunacion(null,body);
+		
+		List<FormatoVacunacion> resultado= dao.findAll();
+		Assert.assertEquals(f,resultado.get(0));
 		
 	}
 	@Test

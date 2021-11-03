@@ -20,62 +20,46 @@ public class FormatoVacunacionController {
 	@Autowired
 	private FormatoVacunacionDao formatoVacunacionDao;
 
-	
 	@PostMapping("/definirFormatoVacunacion")
-	public int definirFormatoVacunacion(HttpSession session, @RequestBody Map<String, Object> datosFormatoVacunacion) {
-		int resultado = 0;
-		
+	public void definirFormatoVacunacion(HttpSession session, @RequestBody Map<String, Object> datosFormatoVacunacion) {
+
 		try {
 			JSONObject jso = new JSONObject(datosFormatoVacunacion);
 			String horaInicio = jso.getString("horaInicio");
 			String horaFin = jso.getString("horaFin");
 			int duracionFranja = jso.getInt("duracionFranja");
 			int personasAVacunar = jso.getInt("personasAVacunar");
-			
-			FormatoVacunacion formatoVacunacion = new FormatoVacunacion(horaInicio, horaFin, duracionFranja, personasAVacunar);
-			if (formatoVacunacion.horasCorrectas() && formatoVacunacion.condicionesValidas()) {
-				resultado = 200;
-				formatoVacunacionDao.insert(formatoVacunacion);
-				
-			}else {
-				if (!formatoVacunacion.horasCorrectas()) resultado = 409;
-				else resultado = 410;
-			}
-		switch (resultado) {
-		case 200:
-			break;
-		
-		case 409:
-			throw new SiGeVaException(HttpStatus.CONFLICT, "Las horas del formato no son correctas");
 
-		case 410:
-			throw new SiGeVaException(HttpStatus.CONFLICT, "Las condiciones no estan bien");
-		
-		default:
-			throw new SiGeVaException(HttpStatus.CONFLICT, "Se ha alcanzado un caso no valido");
-		}
-		}catch(Exception e) {
+			FormatoVacunacion formatoVacunacion = new FormatoVacunacion(horaInicio, horaFin, duracionFranja,
+					personasAVacunar);
+			if (formatoVacunacion.horasCorrectas() /*&& formatoVacunacion.condicionesValidas()*/) {
+				formatoVacunacionDao.insert(formatoVacunacion);
+			} else {
+				if (!formatoVacunacion.horasCorrectas())
+					throw new SiGeVaException(HttpStatus.CONFLICT, "Las horas del formato no son correctas");
+			/*	else
+					throw new SiGeVaException(HttpStatus.CONFLICT, "Las condiciones no estan bien");*/
+			}
+
+		} catch (Exception e) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
 		}
-		return resultado;
-			
+
 	}
 
-	@PostMapping ("/setPersonalVacunacion")
+	@PostMapping("/setPersonalVacunacion")
 	public void setPersonalVacunacion() {
-		
+
 	}
 
-	@PostMapping ("/setHorarioVacunacion")
+	@PostMapping("/setHorarioVacunacion")
 	public void setHorarioVacunacion() {
-	
+
 	}
 
-	
-	@PostMapping ("/setDosisDisponibles")
+	@PostMapping("/setDosisDisponibles")
 	public void setDosisDisponibles() {
-		
+
 	}
-	
 
 }
