@@ -16,5 +16,7 @@ public interface CitaDao extends MongoRepository<Cita, String> {
 	Cita findByFechaAndHora(String fecha, String hora);
 
 	void deleteByFechaAndHora(String fecha, String hora);
+
+	Cita findByUsuaioDni(String usuarioDni);
 	
 }
