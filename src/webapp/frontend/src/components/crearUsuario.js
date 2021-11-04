@@ -79,9 +79,7 @@ class GestionCentroSalud extends Component {
                                             Selecciona el rol
                                         </Dropdown.Toggle>
                                         <Dropdown.Menu>
-                                            <Dropdown.Item >Paciente</Dropdown.Item>
-                                            <Dropdown.Item >Administrador</Dropdown.Item>
-                                            <Dropdown.Item >Sanitario</Dropdown.Item>
+                                            
                                         </Dropdown.Menu>
                                     </Dropdown>
                                 </Col>

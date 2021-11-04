@@ -22,14 +22,15 @@ import org.springframework.web.server.ResponseStatusException;
 
 import edu.esi.uclm.dao.UsuarioDao;
 import edu.esi.uclm.exceptions.SigevaException;
+import edu.esi.uclm.model.EstadoVacunacion;
 import edu.esi.uclm.model.RolUsuario;
 
 @RestController
 public class UsuarioController {
 
 	@Autowired
-	private UsuarioDao userDao;
-
+	private UsuarioDao usuarioDao;
+	
 	@CrossOrigin(origins = "http://localhost:3000")
 	@PostMapping("/crearUsuario")
 	public void crearUsuario(@RequestBody Map<String, Object> datosUsuario) {
@@ -41,7 +42,7 @@ public class UsuarioController {
 		String centroSalud = json.getString("centroSalud");
 		String rol = json.getString("rol");
 		Usuario nuevoUsuario = new Usuario(dni, nombre, apellido, password, rol, centroSalud);
-		userDao.save(nuevoUsuario);
+		usuarioDao.save(nuevoUsuario);
 	}
 
 	@PostMapping("/modificarUsuario")
@@ -52,15 +53,15 @@ public class UsuarioController {
 			else {
 				System.out.print("Hola, estoy modificando al usuario:\t DNI: " + user.getDni() + " || Nombre: "
 						+ user.getNombre());
-				Usuario antiguoUsuario = userDao.findByDni(user.getDni());
-				if (antiguoUsuario == null)
-					throw new SiGeVaException(HttpStatus.NOT_FOUND, "No existe un usuario con este identificador");
+
+				Usuario antiguoUsuario = usuarioDao.findByDni(user.getDni());
+				if (antiguoUsuario==null) throw new SiGeVaException(HttpStatus.NOT_FOUND,"No existe un usuario con este identificador");
 				antiguoUsuario.setNombre(user.getNombre());
 				antiguoUsuario.setApellido(user.getApellido());
 				antiguoUsuario.setCentroSalud(user.getCentroSalud());
 				antiguoUsuario.setPassword(user.getPassword());
 
-				userDao.save(antiguoUsuario);
+				usuarioDao.save(antiguoUsuario);
 			}
 
 		} catch (Exception e) {
@@ -73,22 +74,47 @@ public class UsuarioController {
 	@DeleteMapping("/eliminarUsuario/{dni}")
 	public void eliminarUsuario(@PathVariable String dni) {
 		try {
-			Usuario user = userDao.findByDni(dni);
+			Usuario user = usuarioDao.findByDni(dni);
 
 			if (user.getRol().equals(RolUsuario.ADMINISTRADOR.name()))
 				throw new SigevaException(HttpStatus.FORBIDDEN, "No puede eliminar a otro administrador del sistema");
 			else
-				userDao.delete(user);
+				usuarioDao.delete(user);
 
 		} catch (Exception e) {
 
 			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
 		}
 	}
+	
+	@PostMapping("/marcarVacunado")
+	public void marcarVacunado(HttpSession session, @RequestBody Map<String, Object> datosPaciente) {
+		JSONObject jsonPaciente = new JSONObject(datosPaciente);
+		
+		String dni = jsonPaciente.optString("dni");
+		String rol = jsonPaciente.optString("rol");
+
+		
+		Usuario usuarioVacunado = usuarioDao.findByDniAndRol(dni,rol);
+		
+		if(usuarioVacunado.getEstadoVacunacion().equals(EstadoVacunacion.NO_VACUNADO.name())) {
+			usuarioDao.delete(usuarioVacunado);
+			usuarioVacunado.setEstadoVacunacion(EstadoVacunacion.VACUNADO_PRIMERA.name());
+			usuarioDao.save(usuarioVacunado);
+		}
+		else if(usuarioVacunado.getEstadoVacunacion().equals(EstadoVacunacion.VACUNADO_PRIMERA.name())){
+			usuarioDao.delete(usuarioVacunado);
+			usuarioVacunado.setEstadoVacunacion(EstadoVacunacion.VACUNADO_SEGUNDA.name());
+			usuarioDao.save(usuarioVacunado);
+		}
+			
+		
+		
+	}
 
 	@CrossOrigin(origins = "http://localhost:3000")
 	@GetMapping("/getUsuarios")
 	public List<Usuario> getUsuarios(HttpSession session){
-		return userDao.findAll();
+		return usuarioDao.findAll();
 	}
 }
