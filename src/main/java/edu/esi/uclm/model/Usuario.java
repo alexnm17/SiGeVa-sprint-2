@@ -10,6 +10,7 @@ public class Usuario {
 	private String password;
 	private String rol;
 	private String centroSalud;
+	private String estadoVacunacion;
 
 	public Usuario() {
 	}
@@ -21,6 +22,7 @@ public class Usuario {
 		this.password = password;
 		this.rol = rol;
 		this.centroSalud = centroSalud;
+		this.estadoVacunacion = EstadoVacunacion.NO_VACUNADO.name();
 	}
 
 	public String getDni() {
@@ -69,5 +71,13 @@ public class Usuario {
 
 	public void setRol(String rol) {
 		this.rol = rol;
+	}
+
+	public String getEstadoVacunacion() {
+		return estadoVacunacion;
+	}
+
+	public void setEstadoVacunacion(String estadoVacunacion) {
+		this.estadoVacunacion = estadoVacunacion;
 	}
 }
