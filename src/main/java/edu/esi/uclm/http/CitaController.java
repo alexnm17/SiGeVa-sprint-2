@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+
+
 import edu.esi.uclm.dao.CentroVacunacionDao;
 import edu.esi.uclm.dao.CitaDao;
 import edu.esi.uclm.dao.CupoDao;
@@ -53,8 +55,9 @@ public class CitaController {
 	public void solicitarCita(HttpSession session, @RequestBody Map<String, Object> datosUsuario) {
 
 		try {
-			
-			String dni = (String) session.getAttribute("dni");
+			JSONObject json = new JSONObject(datosUsuario);
+			String dni = json.optString("dni");
+			//String dni = (String) session.getAttribute("dni");
 			Usuario usuario = usuarioDao.findByDni(dni);
 
 			if (usuario == null)
@@ -80,7 +83,7 @@ public class CitaController {
 						"El usuario: "+usuario.getDni()+" ya dispone de dos citas asignadas. Si desea modificar su cita, utilice Modificar Cita");
 				
 			case 1:
-				Cita primeraDosis = citaDao.findByUsuaioDni(usuario.getDni());
+				Cita primeraDosis = citaDao.findByUsuarioDni(usuario.getDni());
 				LocalDate fechaPrimeraCita = LocalDate.parse(primeraDosis.getFecha());
 				
 				//Asignar SegundaDosis
@@ -130,7 +133,8 @@ public class CitaController {
 		try {
 			List<Cita> citas = citaDao.findAllByUsuarioDni(dni);
 			if(citas.isEmpty())
-				throw new SiGeVaException(HttpStatus.NOT_FOUND,"No se ha podido encontrar ninguna cita para el usuario. Contacte con el administrador.");
+				throw new SiGeVaException(HttpStatus.NOT_FOUND,"No se ha "
+						+ " encontrar ninguna cita para el usuario. Contacte con el administrador.");
 			
 			return citas;
 			
