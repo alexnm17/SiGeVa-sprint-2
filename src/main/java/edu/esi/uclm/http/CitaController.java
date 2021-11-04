@@ -169,7 +169,7 @@ public class CitaController {
 		for (int i = 0; i < centrosVacunacion.size(); i++) {
 			LocalDate fechaCita = LocalDate.now();
 
-			while (fechaCita.isBefore(LocalDate.parse(LocalDate.now().plusYears(1).getYear() + "-01-01"))) {
+			while (fechaCita.isBefore(LocalDate.parse(LocalDate.now().plusYears(1).getYear() + "-02-01"))) {
 
 				crearCupo(numFranjas, fechaCita, LocalTime.parse(formato.getHoraInicioVacunacion()),
 						centrosVacunacion.get(i), formato.getDuracionFranjaVacunacion(), formato.getPersonasPorFranja());
