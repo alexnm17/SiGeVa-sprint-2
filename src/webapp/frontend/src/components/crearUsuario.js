@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Breadcrumb, Button, Col, Container, Form, Row } from "react-bootstrap"
+import { Breadcrumb, Button, Col, Container, Dropdown, Form, Row } from "react-bootstrap"
 import 'bootstrap/dist/css/bootstrap.min.css'
 import axios from "axios";
 
@@ -42,7 +42,7 @@ class GestionCentroSalud extends Component {
         const { nombre, apellido, dni, password, centroSalud, rol } = this.state
         return (
             <div style={{ marginLeft: 15 }}>
-			<Breadcrumb style={{margin:30}}>
+                <Breadcrumb style={{ margin: 30 }}>
                     <Breadcrumb.Item href="/">SiGeVa</Breadcrumb.Item>
                     <Breadcrumb.Item href="/Administrador">Administrador</Breadcrumb.Item>
                     <Breadcrumb.Item href="/Administrador/GestionUsuarios">Gestion de Usuarios</Breadcrumb.Item>
@@ -74,15 +74,38 @@ class GestionCentroSalud extends Component {
                             <Row>
                                 <Col>
                                     <Form.Label>Centro de Salud</Form.Label>
-                                    <Form.Control type='text' name="centroSalud" placeholder="El bombo" onChange={this.changeHandler} value={centroSalud}></Form.Control>
+                                    <Dropdown onChange={this.changeHandler} value={centroSalud}>
+                                        <Dropdown.Toggle>
+                                            Selecciona el rol
+                                        </Dropdown.Toggle>
+                                        <Dropdown.Menu>
+                                            <Dropdown.Item >Paciente</Dropdown.Item>
+                                            <Dropdown.Item >Administrador</Dropdown.Item>
+                                            <Dropdown.Item >Sanitario</Dropdown.Item>
+                                        </Dropdown.Menu>
+                                    </Dropdown>
                                 </Col>
+
                                 <Col>
                                     <Form.Label>Rol</Form.Label>
-                                    <Form.Control type='text' name="rol" placeholder="Paciente" onChange={this.changeHandler} value={rol}></Form.Control>
+                                    <Dropdown onChange={this.changeHandler} value={rol}>
+                                        <Dropdown.Toggle>
+                                            Selecciona el rol
+                                        </Dropdown.Toggle>
+                                        <Dropdown.Menu>
+                                            <Dropdown.Item >Paciente</Dropdown.Item>
+                                            <Dropdown.Item >Administrador</Dropdown.Item>
+                                            <Dropdown.Item >Sanitario</Dropdown.Item>
+                                        </Dropdown.Menu>
+                                    </Dropdown>
                                 </Col>
                             </Row>
                             <Row style={{ marginTop: 15 }}>
-                                <Button type="submit">Crear Usuario</Button>
+                                <Col></Col>
+                                <Col>
+                                    <Button type="submit">Crear Usuario</Button>
+                                </Col>
+                                <Col></Col>
                             </Row>
                         </Form>
                     </Container>
