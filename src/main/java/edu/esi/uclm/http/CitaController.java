@@ -59,7 +59,7 @@ public class CitaController {
 
 			if (usuario == null)
 				throw new SiGeVaException(HttpStatus.NOT_FOUND, "No se ha encontrado ningun usuario con este dni");
-	
+			
 			if(usuario.getEstadoVacunacion().equals(EstadoVacunacion.VACUNADO_SEGUNDA.name()))
 				throw new SiGeVaException(HttpStatus.NOT_FOUND, "El usuario con DNI: "+usuario.getDni()+" ya ha sido vacunado de las dos dosis."
 						+ " No puede volver a solicitar cita");
@@ -80,7 +80,7 @@ public class CitaController {
 						"El usuario: "+usuario.getDni()+" ya dispone de dos citas asignadas. Si desea modificar su cita, utilice Modificar Cita");
 				
 			case 1:
-				Cita primeraDosis = citaDao.findByUsuaioDni(usuario.getDni());
+				Cita primeraDosis = citaDao.findByUsuarioDni(usuario.getDni());
 				LocalDate fechaPrimeraCita = LocalDate.parse(primeraDosis.getFecha());
 				
 				//Asignar SegundaDosis
@@ -107,7 +107,8 @@ public class CitaController {
 		
 		for (int i = 0; i < listaCupos.size(); i++) {
 			cupo = listaCupos.get(i);
-			if (LocalDate.parse(cupo.getFecha()).isAfter(fechaActualDate) && cupo.getPersonasRestantes() > 0) {
+			if (LocalDate.parse(cupo.getFecha()).isAfter(fechaActualDate)
+					&& cupo.getPersonasRestantes()>0) {
 				break;
 			}
 		}
@@ -128,20 +129,19 @@ public class CitaController {
 	public List<Cita> consultar(HttpSession session, @RequestBody String dni) {
 		try {
 			List<Cita> citas = citaDao.findAllByUsuarioDni(dni);
-			if (citas.isEmpty())
-				throw new SiGeVaException(HttpStatus.NOT_FOUND,
-						"No se ha podido encontrar ninguna cita para el usuario. Contacte con el administrador.");
-
+			if(citas.isEmpty())
+				throw new SiGeVaException(HttpStatus.NOT_FOUND,"No se ha podido encontrar ninguna cita para el usuario. Contacte con el administrador.");
+			
 			return citas;
-
-		} catch (SiGeVaException e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+			
+		}catch(SiGeVaException e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());	
 		}
 	}
 
 	@PostMapping("/crearCupo")
 	public void crearCupo(int numFranjas, LocalDate fecha, LocalTime horaInicio, CentroVacunacion centroVacunacion,
-			int duracion, int personasMax) {
+			int duracion,int personasMax) {
 		Cupo cupo;
 
 		for (int i = 0; i < numFranjas; i++) {
@@ -172,16 +172,13 @@ public class CitaController {
 			while (fechaCita.isBefore(LocalDate.parse(LocalDate.now().plusYears(1).getYear() + "-01-01"))) {
 
 				crearCupo(numFranjas, fechaCita, LocalTime.parse(formato.getHoraInicioVacunacion()),
-						centrosVacunacion.get(i), formato.getDuracionFranjaVacunacion(),
-						formato.getPersonasPorFranja());
+						centrosVacunacion.get(i), formato.getDuracionFranjaVacunacion(), formato.getPersonasPorFranja());
 
 				fechaCita = fechaCita.plusDays(1);
 			}
 		}
 	}
 
-	@CrossOrigin(origins = "http://localhost:3000")
-	@GetMapping("/getFormatoVacunacion")
 	private FormatoVacunacion getFormatoVacunacion() {
 		Optional<FormatoVacunacion> optFormato = formatoVacunacionDao.findById("Formato_Unico");
 		FormatoVacunacion formatoVacunacion = null;
@@ -211,10 +208,4 @@ public class CitaController {
 	
 
 
-	/*@CrossOrigin(origins = "http://localhost:3000")
-	@GetMapping("/getCitaByDni")
-	public List<Cita> getCitaByDni(HttpSession session, @RequestBody Map<String, Object> jsonDni) {
-		JSONObject json = new JSONObject(jsonDni);
-		return citaDao.findByUsuarioDni(json.getString("dni"));
-	}*/
 }

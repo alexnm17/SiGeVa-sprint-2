@@ -9,7 +9,6 @@ class SolicitarCita extends Component {
         this.state = {
             dni: '',
             msg: "",
-            cita:""
         }
     }
 
@@ -23,25 +22,14 @@ class SolicitarCita extends Component {
         axios.post("http://localhost:8080/solicitarCita", this.state)
             .then(res => {
                 if (res.status === 200) {
-                    this.procesarSolicitudCorrecta()
+                    window.location = "/paciente"
+                    alert("Cita creada con éxito")
                 }
                 console.log(res);
                 console.log(res.data);
             }).catch(error => {
                 alert("No se ha podido crear la cita");
             })
-    }
-
-    procesarSolicitudCorrecta(){
-        alert("Cita creada con éxito")
-        document.getElementById("txtDNI").readOnly=true;
-    }
-
-    getCitaByDni(){
-        axios.get("http://localhost:8080/getCitaByDni",this.state.dni)
-        .then(res=>{
-            console.log(res)
-        })
     }
 
     render() {
@@ -64,7 +52,7 @@ class SolicitarCita extends Component {
                             <Col></Col>
                                 <Col>
                                     <Form.Label>DNI</Form.Label>
-                                    <Form.Control id="txtDNI" type='text' name="dni" placeholder="12345678A" onChange={this.changeHandler} value={dni}></Form.Control>
+                                    <Form.Control type='text' name="dni" placeholder="12345678A" onChange={this.changeHandler} value={dni}></Form.Control>
                                 </Col>
                                 <Col></Col>
                             </Row>
