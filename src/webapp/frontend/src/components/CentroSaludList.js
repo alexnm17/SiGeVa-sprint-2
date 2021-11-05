@@ -13,7 +13,7 @@ class centroSaludList extends Component {
     }
 
     getCentrosSalud() {
-        axios.get('http://localhost:8080/getCentrosSalud')
+        axios.get('http://localhost:8080/getAllCentros')
             .then(res => {
                 this.setState({ centroSalud: res.data })
             })
@@ -37,20 +37,26 @@ class centroSaludList extends Component {
     render() {
         return (
             <table class="table" style={{ marginTop: 15, marginLeft: 15 }}>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Municipio</th>
-                </tr>
-                {this.state.centroSalud.map(centroSalud =>
-                    <tr key={centroSalud.nombre}>
-                        <td>{centroSalud.nombre}</td>
-                        <td>{centroSalud.municipio}</td>
-                        <td>
-                            <button class="btn btn-primary" id={centroSalud.nombre} style={{ marginRight: 10 }}>Modificar usuario</button>
-                            <button class="btn btn-danger" id={centroSalud.nombre}>Eliminar usuario</button>
-                        </td>
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Municipio</th>
+                        <th></th>
+                        <th></th>
                     </tr>
-                )}
+                </thead>
+                <tbody>
+                    {this.state.centroSalud.map(centroSalud =>
+                        <tr key={centroSalud.nombre}>
+                            <td>{centroSalud.nombre}</td>
+                            <td>{centroSalud.municipio}</td>
+                            <td>
+                                <button class="btn btn-primary" id={centroSalud.nombre} style={{ marginRight: 10 }}>Modificar centro</button>
+                                <button class="btn btn-danger" id={centroSalud.nombre}>Eliminar centro</button>
+                            </td>
+                        </tr>
+                    )}
+                </tbody>
             </table>
         );
     }

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Breadcrumb, Button, Col, Container, Dropdown, Form, Row } from "react-bootstrap"
 import 'bootstrap/dist/css/bootstrap.min.css'
 import axios from "axios";
+import DropdownCentros from "./DropdownCentros";
 
 class GestionCentroSalud extends Component {
     constructor(props) {
@@ -73,29 +74,22 @@ class GestionCentroSalud extends Component {
                             <Form.Control type="password" name="password" placeholder="Password" onChange={this.changeHandler} value={password}></Form.Control>
                             <Row>
                                 <Col>
-                                    <Form.Label>Centro de Salud</Form.Label>
-                                    <Dropdown onChange={this.changeHandler} value={centroSalud}>
-                                        <Dropdown.Toggle>
-                                            Selecciona el rol
-                                        </Dropdown.Toggle>
-                                        <Dropdown.Menu>
-                                            
-                                        </Dropdown.Menu>
-                                    </Dropdown>
+                                    <Form.Label>Centro de Salud: </Form.Label>
                                 </Col>
-
                                 <Col>
                                     <Form.Label>Rol</Form.Label>
-                                    <Dropdown onChange={this.changeHandler} value={rol}>
-                                        <Dropdown.Toggle>
-                                            Selecciona el rol
-                                        </Dropdown.Toggle>
-                                        <Dropdown.Menu>
-                                            <Dropdown.Item >Paciente</Dropdown.Item>
-                                            <Dropdown.Item >Administrador</Dropdown.Item>
-                                            <Dropdown.Item >Sanitario</Dropdown.Item>
-                                        </Dropdown.Menu>
-                                    </Dropdown>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col>
+                                    <DropdownCentros />
+                                </Col>
+                                <Col>
+                                    <select onChange={this.changeHandler} value={rol}>
+                                        <option>Paciente</option>
+                                        <option >Administrador</option>
+                                        <option >Sanitario</option>
+                                    </select>
                                 </Col>
                             </Row>
                             <Row style={{ marginTop: 15 }}>

@@ -27,11 +27,10 @@ class UsuariosList extends Component {
     EliminarClickHandler = e => {
         e.preventDefault()
         console.log(e.target.id)
-        /*axios.get('http://localhost:8080/',e.target.id)
+        axios.delete('http://localhost:8080/eliminarUsuario', { data: e.target.id })
             .then(res => {
-                this.setState({ usuarios: res.data })
-            })*/
-        this.getUsuarios()
+                this.getUsuarios()
+            })
     }
 
 

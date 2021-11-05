@@ -30,7 +30,7 @@ class GestionCentroSalud extends Component {
                 document.getElementById("txtNumPersonas").disabled=true;
 
             }).catch(error =>{
-                alert("No se pudo definir el formato de vacunacion")
+                alert("No se pudo definir el formato de vacunacion, ¿Seguro que no está definido ya?")
             })
     }
 

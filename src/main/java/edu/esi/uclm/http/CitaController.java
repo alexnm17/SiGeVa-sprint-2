@@ -2,6 +2,7 @@ package edu.esi.uclm.http;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -80,7 +81,7 @@ public class CitaController {
 						"El usuario: "+usuario.getDni()+" ya dispone de dos citas asignadas. Si desea modificar su cita, utilice Modificar Cita");
 				
 			case 1:
-				Cita primeraDosis = citaDao.findByUsuaioDni(usuario.getDni());
+				Cita primeraDosis = citaDao.findByUsuarioDni(usuario.getDni());
 				LocalDate fechaPrimeraCita = LocalDate.parse(primeraDosis.getFecha());
 				
 				//Asignar SegundaDosis
@@ -209,7 +210,24 @@ public class CitaController {
 		
 	}
 	
+	
+	@GetMapping("/getUsuariosAVacunar")
+	public List<Usuario> getUsuariosAVacunar(HttpSession session, @RequestBody Map<String, Object> info) {
+		List<Usuario> listaUsuariosAVacunar = new ArrayList<>();
+		JSONObject json = new JSONObject(info);
+		String fecha = json.getString("fecha");
+		String centroVacunacion = json.getString("centroVacunacion");
 
+		List<Cita> listCitasDeUnaFecha = citaDao.findAllByFechaAndCentroVacunacion(fecha, centroVacunacion);
+		
+		//Crear una lista con los usuarios contenidos en las citas de esa fecha y centro
+		for(int i=0; i<listCitasDeUnaFecha.size();i++) {
+			listaUsuariosAVacunar.add(usuarioDao.findByDni(listCitasDeUnaFecha.get(i).getUsuarioDni()));
+		}
+		
+		//Devolver la lista de usuariops
+		return listaUsuariosAVacunar;
+	}
 
 	/*@CrossOrigin(origins = "http://localhost:3000")
 	@GetMapping("/getCitaByDni")
