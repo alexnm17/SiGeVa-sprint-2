@@ -3,6 +3,7 @@ import { Breadcrumb, Button } from "react-bootstrap"
 import CentroSaludList from "./CentroSaludList";
 import 'bootstrap/dist/css/bootstrap.min.css'
 
+
 const GestionCentroSalud = () => {
     return (
         <div>

@@ -76,6 +76,7 @@ class GestionCentroSalud extends Component {
                                 <Col>
                                     <Form.Label>Centro de Salud: </Form.Label>
                                 </Col>
+
                                 <Col>
                                     <Form.Label>Rol</Form.Label>
                                 </Col>
