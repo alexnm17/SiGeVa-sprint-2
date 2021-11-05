@@ -1,5 +1,6 @@
 import React from "react";
 import { Breadcrumb, Button } from "react-bootstrap"
+import CentroSaludList from "./CentroSaludList.";
 
 const GestionCentroSalud = () => {
     return (
@@ -19,6 +20,7 @@ const GestionCentroSalud = () => {
                 </a>
                 <Button variant="secondary" style={{ marginRight: 15 }}>Modificar centro de salud</Button>
                 <Button variant="secondary" style={{ marginRight: 15 }}>Borrar centro de salud</Button>
+                <CentroSaludList />
             </div>
         </div>
     );

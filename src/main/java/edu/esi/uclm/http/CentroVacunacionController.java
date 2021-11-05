@@ -1,6 +1,7 @@
 package edu.esi.uclm.http;
 
 
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,7 +23,7 @@ import edu.esi.uclm.model.CentroVacunacion;
 public class CentroVacunacionController {
 	
 	@Autowired
-	private CentroVacunacionDao centroDao;
+	private CentroVacunacionDao centroVacunacionDao;
 	
 	//Metodo para añadir centros de vacunacion a la BD
 	@CrossOrigin(origins = "http://localhost:3000")
@@ -30,16 +31,19 @@ public class CentroVacunacionController {
 	public void darAltaCentroVacunacion(HttpServletRequest request,@RequestBody Map<String, Object> datosCentro) {
 		try {
 
-			
 			JSONObject json = new JSONObject(datosCentro);
 			String nombre = json.getString("nombre");
 			String municipio = json.getString("municipio");
 			
 			CentroVacunacion centroVacunacion = new CentroVacunacion(nombre, municipio);
-			centroDao.save(centroVacunacion);
+			centroVacunacionDao.save(centroVacunacion);
 		} catch(Exception e) {	
 			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
 		}
+	}
+	
+	public List<CentroVacunacion> getAllCentros(HttpServletRequest request){
+		return centroVacunacionDao.findAll();
 	}
 
 }

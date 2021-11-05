@@ -1,7 +1,7 @@
 package edu.esi.uclm.http;
 
+import java.util.List;
 import java.util.Map;
-
 import javax.servlet.http.HttpSession;
 
 import org.json.JSONObject;
@@ -9,13 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import edu.esi.uclm.model.Usuario;
 import edu.uclm.esi.exceptions.SiGeVaException;
-
 
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -53,6 +53,7 @@ public class UsuarioController {
 			else {
 				System.out.print("Hola, estoy modificando al usuario:\t DNI: " + user.getDni() + " || Nombre: "
 						+ user.getNombre());
+
 				Usuario antiguoUsuario = usuarioDao.findByDni(user.getDni());
 				if (antiguoUsuario==null) throw new SiGeVaException(HttpStatus.NOT_FOUND,"No existe un usuario con este identificador");
 				antiguoUsuario.setNombre(user.getNombre());
@@ -111,4 +112,9 @@ public class UsuarioController {
 		
 	}
 
+	@CrossOrigin(origins = "http://localhost:3000")
+	@GetMapping("/getUsuarios")
+	public List<Usuario> getUsuarios(HttpSession session){
+		return usuarioDao.findAll();
+	}
 }

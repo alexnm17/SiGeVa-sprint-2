@@ -1,5 +1,7 @@
 import React from "react";
 import { Breadcrumb, Button } from "react-bootstrap"
+import UsuariosList from "./UsuariosList";
+import 'bootstrap/dist/css/bootstrap.min.css'
 
 const GestionCentroSalud = () => {
     return (
@@ -15,10 +17,9 @@ const GestionCentroSalud = () => {
             <div>
                 <p>Selecciona la acción que quieres realizar: </p>
                 <a href="/administrador/GestionUsuarios/CrearUsuario">
-                    <Button style={{ marginRight: 15 }}>Crear usuario</Button>
+                    <button class="btn btn-success">Crear usuario</button>
                 </a>
-                <Button variant="secondary" style={{ marginRight: 15 }}>Modificar usuario</Button>
-                <Button variant="secondary" style={{ marginRight: 15 }}>Borrar usuario</Button>
+                <UsuariosList />
             </div>
         </div>
     );

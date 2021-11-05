@@ -17,6 +17,10 @@ public interface CitaDao extends MongoRepository<Cita, String> {
 
 	void deleteByFechaAndHora(String fecha, String hora);
 
-	Cita findByUsuarioDni(String usuarioDni);
+/*<<<<<<< HEAD
+	List<Cita> findByUsuarioDni(String dni);
+=======*/
+	Cita findByUsuaioDni(String usuarioDni);
+//>>>>>>> branch 'master' of https://SiGeVa@dev.azure.com/SiGeVa/SiGeVa/_git/SiGeVa
 	
 }
