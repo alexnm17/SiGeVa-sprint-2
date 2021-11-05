@@ -2,6 +2,9 @@ package edu.esi.uclm.http;
 
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.codec.digest.DigestUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,6 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import edu.esi.uclm.model.Usuario;
+import edu.uclm.esi.carreful.exceptions.CarrefulException;
+import edu.uclm.esi.carreful.model.User;
 import edu.uclm.esi.exceptions.SiGeVaException;
 
 
@@ -65,6 +70,21 @@ public class UsuarioController {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
 		}
 
+	}
+	@PostMapping("/login")
+	public void login() {
+		try {
+			JSONObject jso = new JSONObject(info);
+			String dni = jso.optString("dni");
+			String password= jso.optString("password");
+			String Rol= jso.optString("rol");
+			User user = userDao.findByDniAndPasswordAndRol();
+			//userDao.finBysdgsdfg();
+			
+			request.getSession().setAttribute("userEmail", email);
+		} catch (SigevaException e) {
+			throw new ResponseStatusException(e.getStatus(), e.getMensaje());
+		}
 	}
 
 	@DeleteMapping("/eliminarUsuario/{dni}")
