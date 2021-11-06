@@ -14,24 +14,26 @@ import CrearUsuario from './components/crearUsuario'
 import CrearCentroSalud from './components/crearCentroSalud'
 import CrearPlantillaCitas from './components/CrearPlantillaCitas'
 import DefinirFormatoVacunacion from './components/DefinirFormatoVacunacion'
+import Sanitario from './components/Sanitario'
 
 function Routing() {
   return (
     <Router>
-      <div  align="center">
+      <div align="center">
         <h1>SiGeVa</h1>
         <Switch>
           <Route exact path="/" component={App} />
-          <Route exact path="/administrador" component={Administrador} />
           <Route exact path="/paciente" component={Paciente} />
           <Route exact path="/paciente/SolicitarCita" component={SolicitarCita} />
+          <Route exact path="/administrador" component={Administrador} />
           <Route exact path="/administrador/GestionUsuarios" component={GestionUsuarios} />
           <Route exact path="/administrador/GestionUsuarios/CrearUsuario" component={CrearUsuario} />
           <Route exact path="/administrador/GestionCentrosSalud" component={GestionCentroSalud} />
           <Route exact path="/administrador/GestionCentrosSalud/CrearCentroSalud" component={CrearCentroSalud} />
           <Route exact path="/administrador/GestionDefinicionDeCitas" component={GestionDefinicionCitas} />
-          <Route exact path="/Administrador/GestionDefinicionDeCitas/CrearPlantillaCitas" component={CrearPlantillaCitas}/>
-          <Route exact path="/Administrador/GestionDefinicionDeCitas/DefinirFormatoVacunacion" component={DefinirFormatoVacunacion}/>
+          <Route exact path="/Administrador/GestionDefinicionDeCitas/CrearPlantillaCitas" component={CrearPlantillaCitas} />
+          <Route exact path="/Administrador/GestionDefinicionDeCitas/DefinirFormatoVacunacion" component={DefinirFormatoVacunacion} />
+          <Route exact path="/Sanitario" component={Sanitario} />
         </Switch>
       </div>
     </Router>

@@ -23,12 +23,14 @@ class GestionCentroSalud extends Component {
         console.log(this.state)
         axios.post("http://localhost:8080/definirFormatoVacunacion", this.state)
             .then(res => {
-                window.location = "/administrador/GestionDefinicionDeCitas"
                 alert("Formato de Vacunacion definido con éxito")
-                console.log(res);
-                console.log(res.data);
+                document.getElementById("txtHoraIni").disabled=true;
+                document.getElementById("txtFinVac").disabled=true;
+                document.getElementById("txtDurFranja").disabled=true;
+                document.getElementById("txtNumPersonas").disabled=true;
+
             }).catch(error =>{
-                alert("No se pudo definir el formato de vacunacion")
+                alert("No se pudo definir el formato de vacunacion, ¿Seguro que no está definido ya?")
             })
     }
 
@@ -52,21 +54,21 @@ class GestionCentroSalud extends Component {
                             <Row>
                                 <Col>
                                     <Form.Label>Hora de Inicio de Vacunacion</Form.Label>
-                                    <Form.Control type='text' name="horaInicio" placeholder="08:00" onChange={this.changeHandler} value={horaInicio} ></Form.Control>
+                                    <Form.Control id="txtHoraIni" type='text' name="horaInicio" placeholder="08:00" onChange={this.changeHandler} value={horaInicio} ></Form.Control>
                                 </Col>
                                 <Col>
                                     <Form.Label>Hora de Fin de Vacunacion</Form.Label>
-                                     <Form.Control type='text' name="horaFin" placeholder="10:00" onChange={this.changeHandler} value={horaFin} ></Form.Control>
+                                     <Form.Control id="txtFinVac" type='text' name="horaFin" placeholder="10:00" onChange={this.changeHandler} value={horaFin} ></Form.Control>
                                 </Col>
                             </Row>
                             <Row>
                                 <Col>
                                     <Form.Label>Duracion de cada franja (en minutos)</Form.Label>
-                                    <Form.Control type='text' name="duracionFranja" placeholder="30" onChange={this.changeHandler} value={duracionFranja} ></Form.Control>
+                                    <Form.Control id="txtDurFranja" type='text' name="duracionFranja" placeholder="30" onChange={this.changeHandler} value={duracionFranja} ></Form.Control>
                                 </Col>
                                 <Col>
                                     <Form.Label>Número de personas a vacunar</Form.Label>
-                                    <Form.Control type='text' name="personasAVacunar" placeholder="5" onChange={this.changeHandler} value={personasAVacunar} ></Form.Control>
+                                    <Form.Control id="txtNumPersonas" type='text' name="personasAVacunar" placeholder="5" onChange={this.changeHandler} value={personasAVacunar} ></Form.Control>
                                 </Col>
                             </Row>
                             <Row style={{ marginTop: 15 }}>
