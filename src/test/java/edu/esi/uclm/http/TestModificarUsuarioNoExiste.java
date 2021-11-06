@@ -18,7 +18,7 @@ class TestModificarUsuarioNoExiste {
 	
 	@Test
 	void test() {
-		Usuario user= new Usuario("87654321","testmod","testermodif","bbbbbbbbbbb","Tomelloso","Paciente");
+		Usuario user= new Usuario("87654321","testmod","testermodif","bbbbbbbbbbb","Tomelloso","Paciente","");
 		Exception e = assertThrows(ResponseStatusException.class,()->usuarioController.modificarUsuario(user));
 		
 		Assert.assertEquals("409 CONFLICT No existe un usuario con este identificador",e.getMessage());

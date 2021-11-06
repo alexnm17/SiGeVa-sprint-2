@@ -17,7 +17,7 @@ class TestModificarUsuarioAdmin {
 	@Test
 	void test() {
 		Usuario user = new Usuario("PruebaAdmin", "testadm", "testeradmin", "bbbbbbbbbbb", "Tomelloso",
-				"Administrador");
+				"Administrador","");
 		Exception e = assertThrows(ResponseStatusException.class, () -> usuarioController.modificarUsuario(user));
 		assertEquals(e.getMessage(), "409 CONFLICT No puede modificar a otro administrador del sistema");
 	}
