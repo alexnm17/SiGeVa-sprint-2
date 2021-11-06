@@ -17,8 +17,13 @@ public class Usuario {
 	private String password;
 	private String rol;
 	private String centroSalud;
+<<<<<<< HEAD
 	private String estadoPaciente;
 	
+=======
+	private String estadoVacunacion;
+
+>>>>>>> branch 'master' of https://SiGeVa@dev.azure.com/SiGeVa/SiGeVa/_git/SiGeVa
 	public Usuario() {
 	}
 
@@ -29,7 +34,11 @@ public class Usuario {
 		this.password = password;
 		this.rol = rol;
 		this.centroSalud = centroSalud;
+<<<<<<< HEAD
 		this.estadoPaciente= estadoPaciente;
+=======
+		this.estadoVacunacion = EstadoVacunacion.NO_VACUNADO.name();
+>>>>>>> branch 'master' of https://SiGeVa@dev.azure.com/SiGeVa/SiGeVa/_git/SiGeVa
 	}
 
 	public String getDni() {
@@ -80,6 +89,7 @@ public class Usuario {
 		this.rol = rol;
 	}
 
+<<<<<<< HEAD
 	public String getEstadoPaciente() {
 		return estadoPaciente;
 	}
@@ -105,5 +115,13 @@ public class Usuario {
 
 	public void comprobarEstado() throws SiGeVaException {
 			if (!estadoPaciente.equals("No Vacunado")) throw new SiGeVaException(HttpStatus.CONFLICT,"No se puede completar este proceso ya que el usuario ya esta vacunado");
+=======
+	public String getEstadoVacunacion() {
+		return estadoVacunacion;
+	}
+
+	public void setEstadoVacunacion(String estadoVacunacion) {
+		this.estadoVacunacion = estadoVacunacion;
+>>>>>>> branch 'master' of https://SiGeVa@dev.azure.com/SiGeVa/SiGeVa/_git/SiGeVa
 	}
 }
