@@ -14,6 +14,6 @@ public interface CupoDao extends MongoRepository<Cupo, String> {
 
 	Cupo findByFechaAndHora(String fecha, String hora);
 
-	void deleteByFechaAndHora(String fecha, String hora);
+	void deleteByFechaAndHoraAndCentroVacunacion(String fecha, String hora,CentroVacunacion Vacunacion);
 	
 }

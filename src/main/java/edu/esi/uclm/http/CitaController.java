@@ -2,6 +2,7 @@ package edu.esi.uclm.http;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,7 @@ import edu.esi.uclm.dao.UsuarioDao;
 import edu.esi.uclm.model.CentroVacunacion;
 import edu.esi.uclm.model.Cita;
 import edu.esi.uclm.model.Cupo;
+import edu.esi.uclm.model.EstadoVacunacion;
 import edu.esi.uclm.model.FormatoVacunacion;
 import edu.esi.uclm.model.Usuario;
 import edu.uclm.esi.exceptions.SiGeVaException;
@@ -43,88 +45,71 @@ public class CitaController {
 	private CentroVacunacionDao centroVacunacionDao;
 	@Autowired
 	private UsuarioDao usuarioDao;
-	
+
 	@Autowired
 	private CupoDao cupoDao;
 
 	@CrossOrigin(origins = "http://localhost:3000")
 	@PostMapping("/solicitarCita")
 	public void solicitarCita(HttpSession session, @RequestBody Map<String, Object> datosUsuario) {
-	
-		try {
-			JSONObject json = new JSONObject(datosUsuario);
-			String dni = json.getString("dni");
 
+		try {
+			
+			String dni = (String) session.getAttribute("dni");
 			Usuario usuario = usuarioDao.findByDni(dni);
 
 			if (usuario == null)
 				throw new SiGeVaException(HttpStatus.NOT_FOUND, "No se ha encontrado ningun usuario con este dni");
-			
-			
-			
-			CentroVacunacion centroVacunacion = centroVacunacionDao.findByNombre(usuario.getCentroSalud());
-
-			LocalDate fechaActualDate = LocalDate.now();
-
-			List<Cupo> listaCupos = cupoDao.findAllByCentroVacunacion(centroVacunacion);
-		//Posible throw de exception
-		
-			Cupo primerCupo = buscarCupoLibre(fechaActualDate, listaCupos);
-			
-				if (primerCupo == null) {
-					throw new SiGeVaException(HttpStatus.NOT_FOUND,
-							"No se ha podido encontrar ninguna cita libre para su primera dosis. Contacte con el administrador.");
-				}
-
-				Cupo segundoCupo = buscarSegundoCupo(primerCupo, listaCupos);
-				
-				//Disminuyendo el numero de personas
-				primerCupo.restarPersona(1);
-				segundoCupo.restarPersona(1);
-				
-				Cita primeraCita= new Cita(primerCupo.getFecha(),primerCupo.getHora(),primerCupo.getCentroVacunacion(), usuario.getDni());
-				Cita segundaCita= new Cita(segundoCupo.getFecha(),segundoCupo.getHora(),segundoCupo.getCentroVacunacion(), usuario.getDni());
-				
-				citaDao.save(primeraCita);
-				citaDao.save(segundaCita);
-				
-				//cupor.daoMeter los cupos actualizados
-				
-				
-			
-		} catch (SiGeVaException e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-		}
-	}
-
-	private Cupo buscarSegundoCupo(Cupo cupoLibre, List<Cupo> listaCupos) {
-		LocalDate fechaPrimera = LocalDate.parse(cupoLibre.getFecha());
-		LocalDate fechaSegunda = fechaPrimera.plusDays(21);
-
-		Cupo segundoCupo = buscarCupoLibre(fechaSegunda, listaCupos);
-
-		try {
-			if (segundoCupo == null) {
-				throw new SiGeVaException(HttpStatus.NOT_FOUND,
-						"No se ha podido encontrar ninguna cita libre para la segunda dosis. Contacte con el administrador.");
-			}
-		} catch (SiGeVaException e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-		}
-
-		return segundoCupo;
-	}
-
-	private Cupo buscarCupoLibre(LocalDate fechaActualDate, List<Cupo> listaCupos) {
-		Cupo cupo = null;
 	
+			if(usuario.getEstadoVacunacion().equals(EstadoVacunacion.VACUNADO_SEGUNDA.name()))
+				throw new SiGeVaException(HttpStatus.NOT_FOUND, "El usuario con DNI: "+usuario.getDni()+" ya ha sido vacunado de las dos dosis."
+						+ " No puede volver a solicitar cita");
+			
+
+			int citasAsignadas = citaDao.findAllByUsuarioDni(usuario.getDni()).size();
+
+			switch(citasAsignadas) {
+			case 0:
+				//Primera
+				asignarDosis(usuario,LocalDate.now());
+				//Segunda
+				asignarDosis(usuario,LocalDate.now().plusDays(21));
+				break;
+			
+			case 2:
+				throw new SiGeVaException(HttpStatus.FORBIDDEN,
+						"El usuario: "+usuario.getDni()+" ya dispone de dos citas asignadas. Si desea modificar su cita, utilice Modificar Cita");
+				
+			case 1:
+				Cita primeraDosis = citaDao.findByUsuarioDni(usuario.getDni());
+				LocalDate fechaPrimeraCita = LocalDate.parse(primeraDosis.getFecha());
+			
+				//Asignar SegundaDosis
+				asignarDosis(usuario,fechaPrimeraCita.plusDays(21));
+				
+				break;
+				
+			default:
+				break;
+		
+			}
+			
+		} catch (SiGeVaException e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+		}
+	}
+
+
+	private Cupo buscarCupoLibre(LocalDate fechaActualDate,CentroVacunacion centroVacunacion) {
+		Cupo cupo = null;
+		
 		//Para poder coger siempre la primera con un hueco libre por fecha
+		List<Cupo> listaCupos = cupoDao.findAllByCentroVacunacion(centroVacunacion);
 		listaCupos.sort(Comparator.comparing(Cupo::getFecha));
 		
 		for (int i = 0; i < listaCupos.size(); i++) {
 			cupo = listaCupos.get(i);
-			if (LocalDate.parse(cupo.getFecha()).isAfter(fechaActualDate)
-					&& cupo.getPersonasRestantes()>0) {
+			if (LocalDate.parse(cupo.getFecha()).isAfter(fechaActualDate) && cupo.getPersonasRestantes() > 0) {
 				break;
 			}
 		}
@@ -142,13 +127,23 @@ public class CitaController {
 	}
 
 	@GetMapping("/consultarCita")
-	public void consultar(HttpSession session, @RequestBody String idCita) {
-		citaDao.findById(idCita);
+	public List<Cita> consultar(HttpSession session, @RequestBody String dni) {
+		try {
+			List<Cita> citas = citaDao.findAllByUsuarioDni(dni);
+			if (citas.isEmpty())
+				throw new SiGeVaException(HttpStatus.NOT_FOUND,
+						"No se ha podido encontrar ninguna cita para el usuario. Contacte con el administrador.");
+
+			return citas;
+
+		} catch (SiGeVaException e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+		}
 	}
 
 	@PostMapping("/crearCupo")
 	public void crearCupo(int numFranjas, LocalDate fecha, LocalTime horaInicio, CentroVacunacion centroVacunacion,
-			int duracion,int personasMax) {
+			int duracion, int personasMax) {
 		Cupo cupo;
 
 		for (int i = 0; i < numFranjas; i++) {
@@ -179,17 +174,66 @@ public class CitaController {
 			while (fechaCita.isBefore(LocalDate.parse(LocalDate.now().plusYears(1).getYear() + "-01-01"))) {
 
 				crearCupo(numFranjas, fechaCita, LocalTime.parse(formato.getHoraInicioVacunacion()),
-						centrosVacunacion.get(i), formato.getDuracionFranjaVacunacion(), formato.getPersonasPorFranja());
+						centrosVacunacion.get(i), formato.getDuracionFranjaVacunacion(),
+						formato.getPersonasPorFranja());
 
 				fechaCita = fechaCita.plusDays(1);
 			}
 		}
 	}
 
+	@CrossOrigin(origins = "http://localhost:3000")
+	@GetMapping("/getFormatoVacunacion")
 	private FormatoVacunacion getFormatoVacunacion() {
 		Optional<FormatoVacunacion> optFormato = formatoVacunacionDao.findById("Formato_Unico");
-		FormatoVacunacion formatoVacunacion = optFormato.get();
+		FormatoVacunacion formatoVacunacion = null;
+		if(optFormato.isPresent())
+			formatoVacunacion = optFormato.get();
+		else {
+			throw new ResponseStatusException(HttpStatus.NO_CONTENT,"No existe un formato de Vacunacion definido");
+		}
 		return formatoVacunacion;
 	}
+	
+	
+	public void asignarDosis(Usuario usuario,LocalDate fechaActual) throws SiGeVaException {
+		CentroVacunacion centroUsuario = centroVacunacionDao.findByNombre(usuario.getCentroSalud());
+		Cupo cupoAsignado = buscarCupoLibre(fechaActual,centroUsuario);
+		if(cupoAsignado == null)
+			throw new SiGeVaException(HttpStatus.NOT_FOUND,"No se ha podido encontrar un cupo disponible en estos momentos");
+		cupoDao.deleteByFechaAndHoraAndCentroVacunacion(cupoAsignado.getFecha(),cupoAsignado.getHora(),cupoAsignado.getCentroVacunacion());
+		cupoAsignado.setPersonasRestantes(cupoAsignado.getPersonasRestantes()-1);
+		cupoDao.save(cupoAsignado);
+		
 
+		Cita cita= new Cita(cupoAsignado.getFecha(),cupoAsignado.getHora(),cupoAsignado.getCentroVacunacion(), usuario.getDni());
+		citaDao.save(cita);
+		
+	}
+	
+	
+	@GetMapping("/getUsuariosAVacunar")
+	public List<Usuario> getUsuariosAVacunar(HttpSession session, @RequestBody Map<String, Object> info) {
+		List<Usuario> listaUsuariosAVacunar = new ArrayList<>();
+		JSONObject json = new JSONObject(info);
+		String fecha = json.getString("fecha");
+		String centroVacunacion = json.getString("centroVacunacion");
+
+		List<Cita> listCitasDeUnaFecha = citaDao.findAllByFechaAndCentroVacunacion(fecha, centroVacunacion);
+		
+		//Crear una lista con los usuarios contenidos en las citas de esa fecha y centro
+		for(int i=0; i<listCitasDeUnaFecha.size();i++) {
+			listaUsuariosAVacunar.add(usuarioDao.findByDni(listCitasDeUnaFecha.get(i).getUsuarioDni()));
+		}
+		
+		//Devolver la lista de usuariops
+		return listaUsuariosAVacunar;
+	}
+
+	/*@CrossOrigin(origins = "http://localhost:3000")
+	@GetMapping("/getCitaByDni")
+	public List<Cita> getCitaByDni(HttpSession session, @RequestBody Map<String, Object> jsonDni) {
+		JSONObject json = new JSONObject(jsonDni);
+		return citaDao.findByUsuarioDni(json.getString("dni"));
+	}*/
 }
