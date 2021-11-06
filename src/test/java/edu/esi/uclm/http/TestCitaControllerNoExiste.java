@@ -6,12 +6,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.web.server.ResponseStatusException;
 
+@SpringBootTest
 class TestCitaControllerNoExiste {
 
 	@Test
-	void test() {
+	public void test() {
 		CitaController citaController = new CitaController();
 		Map<String, Object> mapa = new HashMap<String, Object>();
 		mapa.put("dni", "NoExiste");

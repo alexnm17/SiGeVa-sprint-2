@@ -12,6 +12,7 @@ import javax.servlet.http.HttpSession;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,10 +43,11 @@ public class CitaController {
 	@Autowired
 	private UsuarioDao usuarioDao;
 
-	@GetMapping("/solicitarCita")
+	@CrossOrigin(origins = "http://localhost:3000")
+	@PostMapping("/solicitarCita")
 	public void solicitarCita(HttpSession session, @RequestBody Map<String, Object> datosUsuario) {
-		try {
 
+		try {
 			JSONObject json = new JSONObject(datosUsuario);
 			String dni = json.getString("dni");
 
@@ -61,30 +63,28 @@ public class CitaController {
 			LocalDate fechaActualDate = LocalDate.parse(fechaActual);
 
 			List<Cita> listaCitas;
-
 			listaCitas = citaDao.findAllByCentroVacunacion(centroVacunacion);
-
+			
 			Cita primeraCita = buscarCitaLibre(fechaActualDate, listaCitas);
-			if (primeraCita == null) {
-				throw new SiGeVaException(HttpStatus.NOT_FOUND,
-						"No se ha podido encontrar ninguna cita libre. Contacte con el administrador.");
+				if (primeraCita == null) {
+					throw new SiGeVaException(HttpStatus.NOT_FOUND,
+							"No se ha podido encontrar ninguna cita libre. Contacte con el administrador.");
+				}
+
+				Cita segundaCita = buscarSegundaCita(usuario, primeraCita, listaCitas);
+
+				primeraCita.getListaUsuario().add(usuario);
+				segundaCita.getListaUsuario().add(usuario);
+				
+				citaDao.deleteByFechaAndHora(primeraCita.getFecha(), primeraCita.getHora());
+				citaDao.deleteByFechaAndHora(segundaCita.getFecha(), segundaCita.getHora());
+				
+				citaDao.save(primeraCita);
+				citaDao.save(segundaCita);
+			}catch(SiGeVaException e) {
+				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+
 			}
-
-			Cita segundaCita = buscarSegundaCita(usuario, primeraCita, listaCitas);
-
-			primeraCita.getListaUsuario().add(usuario);
-			segundaCita.getListaUsuario().add(usuario);
-
-			citaDao.deleteByFechaAndHora(primeraCita.getFecha(), primeraCita.getHora());
-			citaDao.deleteByFechaAndHora(segundaCita.getFecha(), segundaCita.getHora());
-
-			citaDao.save(primeraCita);
-			citaDao.save(segundaCita);
-
-			usuarioDao.save(usuario);
-		} catch (SiGeVaException e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-		}
 	}
 
 	private Cita buscarSegundaCita(Usuario usuario, Cita citaLibre, List<Cita> listaCitas) {
@@ -153,7 +153,8 @@ public class CitaController {
 
 	}
 
-	@GetMapping("/crearPlantillasCitaVacunacion")
+	@CrossOrigin(origins = "http://localhost:3000")
+	@PostMapping("/crearPlantillasCitaVacunacion")
 	public void crearPlantillasCitaVacunacion() {
 		FormatoVacunacion formato = getFormatoVacunacion();
 		List<CentroVacunacion> centrosVacunacion = centroVacunacionDao.findAll();
@@ -181,5 +182,4 @@ public class CitaController {
 		FormatoVacunacion formatoVacunacion = optFormato.get();
 		return formatoVacunacion;
 	}
-
 }
