@@ -68,23 +68,7 @@ public class CitaController {
 
 			int citasAsignadas = citaDao.findAllByUsuarioDni(usuario.getDni()).size();
 
-<<<<<<< HEAD
-			LocalDate fechaActualDate = LocalDate.parse(fechaActual);
 
-			List<Cita> listaCitas;
-			listaCitas = citaDao.findAllByCentroVacunacion(centroVacunacion);
-			
-			Cita primeraCita = buscarCitaLibre(fechaActualDate, listaCitas);
-				if (primeraCita == null) {
-					throw new SiGeVaException(HttpStatus.NOT_FOUND,
-							"No se ha podido encontrar ninguna cita libre. Contacte con el administrador.");
-				}
-
-				Cita segundaCita = buscarSegundaCita(usuario, primeraCita, listaCitas);
-
-				primeraCita.getListaUsuario().add(usuario);
-				segundaCita.getListaUsuario().add(usuario);
-=======
 			switch(citasAsignadas) {
 			case 0:
 				//Primera
@@ -96,19 +80,13 @@ public class CitaController {
 			case 2:
 				throw new SiGeVaException(HttpStatus.FORBIDDEN,
 						"El usuario: "+usuario.getDni()+" ya dispone de dos citas asignadas. Si desea modificar su cita, utilice Modificar Cita");
->>>>>>> branch 'master' of https://SiGeVa@dev.azure.com/SiGeVa/SiGeVa/_git/SiGeVa
+
 				
 			case 1:
 				Cita primeraDosis = citaDao.findByUsuarioDni(usuario.getDni());
 				LocalDate fechaPrimeraCita = LocalDate.parse(primeraDosis.getFecha());
 				
-<<<<<<< HEAD
-				citaDao.save(primeraCita);
-				citaDao.save(segundaCita);
-			}catch(SiGeVaException e) {
-				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 
-=======
 				//Asignar SegundaDosis
 				asignarDosis(usuario,fechaPrimeraCita.plusDays(21));
 				
@@ -117,7 +95,6 @@ public class CitaController {
 			default:
 				break;
 			
->>>>>>> branch 'master' of https://SiGeVa@dev.azure.com/SiGeVa/SiGeVa/_git/SiGeVa
 			}
 			
 		} catch (SiGeVaException e) {
@@ -125,19 +102,7 @@ public class CitaController {
 		}
 	}
 
-<<<<<<< HEAD
-	private Cita buscarCitaLibre(LocalDate fechaActualDate, List<Cita> listaCitas) {
-		Cita cita = null;
-		FormatoVacunacion formato = getFormatoVacunacion();
 
-		// Para poder coger siempre la primera con un hueco libre por fecha
-		listaCitas.sort(Comparator.comparing(Cita::getFecha));
-
-		for (int i = 0; i < listaCitas.size(); i++) {
-			cita = listaCitas.get(i);
-			if (LocalDate.parse(cita.getFecha()).isAfter(fechaActualDate)
-					&& cita.getListaUsuario().size() < formato.getPersonasPorFranja()) {
-=======
 	private Cupo buscarCupoLibre(LocalDate fechaActualDate,CentroVacunacion centroVacunacion) {
 		Cupo cupo = null;
 		
@@ -148,7 +113,6 @@ public class CitaController {
 		for (int i = 0; i < listaCupos.size(); i++) {
 			cupo = listaCupos.get(i);
 			if (LocalDate.parse(cupo.getFecha()).isAfter(fechaActualDate) && cupo.getPersonasRestantes() > 0) {
->>>>>>> branch 'master' of https://SiGeVa@dev.azure.com/SiGeVa/SiGeVa/_git/SiGeVa
 				break;
 			}
 		}
