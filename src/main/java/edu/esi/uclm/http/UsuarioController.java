@@ -1,7 +1,7 @@
 package edu.esi.uclm.http;
 
+import java.util.List;
 import java.util.Map;
-
 import javax.servlet.http.HttpSession;
 
 import org.json.JSONObject;
@@ -9,13 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import edu.esi.uclm.model.Usuario;
 import edu.uclm.esi.exceptions.SiGeVaException;
-
 
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -30,7 +29,7 @@ public class UsuarioController {
 
 	@Autowired
 	private UsuarioDao usuarioDao;
-	
+
 	@CrossOrigin(origins = "http://localhost:3000")
 	@PostMapping("/crearUsuario")
 	public void crearUsuario(@RequestBody Map<String, Object> datosUsuario) {
@@ -53,8 +52,10 @@ public class UsuarioController {
 			else {
 				System.out.print("Hola, estoy modificando al usuario:\t DNI: " + user.getDni() + " || Nombre: "
 						+ user.getNombre());
+
 				Usuario antiguoUsuario = usuarioDao.findByDni(user.getDni());
-				if (antiguoUsuario==null) throw new SiGeVaException(HttpStatus.NOT_FOUND,"No existe un usuario con este identificador");
+				if (antiguoUsuario == null)
+					throw new SiGeVaException(HttpStatus.NOT_FOUND, "No existe un usuario con este identificador");
 				antiguoUsuario.setNombre(user.getNombre());
 				antiguoUsuario.setApellido(user.getApellido());
 				antiguoUsuario.setCentroSalud(user.getCentroSalud());
@@ -70,9 +71,13 @@ public class UsuarioController {
 
 	}
 
-	@DeleteMapping("/eliminarUsuario/{dni}")
-	public void eliminarUsuario(@PathVariable String dni) {
+	@CrossOrigin(origins = "http://localhost:3000")
+	@DeleteMapping("/eliminarUsuario")
+	public void eliminarUsuario(@RequestBody Map<String, Object> datosUsuario) {
 		try {
+			JSONObject json = new JSONObject(datosUsuario);
+			String dni = json.getString("dni");
+
 			Usuario user = usuarioDao.findByDni(dni);
 
 			if (user.getRol().equals(RolUsuario.ADMINISTRADOR.name()))
@@ -85,30 +90,31 @@ public class UsuarioController {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
 		}
 	}
-	
+
 	@PostMapping("/marcarVacunado")
 	public void marcarVacunado(HttpSession session, @RequestBody Map<String, Object> datosPaciente) {
 		JSONObject jsonPaciente = new JSONObject(datosPaciente);
-		
+
 		String dni = jsonPaciente.optString("dni");
 		String rol = jsonPaciente.optString("rol");
 
-		
-		Usuario usuarioVacunado = usuarioDao.findByDniAndRol(dni,rol);
-		
-		if(usuarioVacunado.getEstadoVacunacion().equals(EstadoVacunacion.NO_VACUNADO.name())) {
+		Usuario usuarioVacunado = usuarioDao.findByDniAndRol(dni, rol);
+
+		if (usuarioVacunado.getEstadoVacunacion().equals(EstadoVacunacion.NO_VACUNADO.name())) {
 			usuarioDao.delete(usuarioVacunado);
 			usuarioVacunado.setEstadoVacunacion(EstadoVacunacion.VACUNADO_PRIMERA.name());
 			usuarioDao.save(usuarioVacunado);
-		}
-		else if(usuarioVacunado.getEstadoVacunacion().equals(EstadoVacunacion.VACUNADO_PRIMERA.name())){
+		} else if (usuarioVacunado.getEstadoVacunacion().equals(EstadoVacunacion.VACUNADO_PRIMERA.name())) {
 			usuarioDao.delete(usuarioVacunado);
 			usuarioVacunado.setEstadoVacunacion(EstadoVacunacion.VACUNADO_SEGUNDA.name());
 			usuarioDao.save(usuarioVacunado);
 		}
-			
-		
-		
+
 	}
 
+	@CrossOrigin(origins = "http://localhost:3000")
+	@GetMapping("/getUsuarios")
+	public List<Usuario> getUsuarios(HttpSession session) {
+		return usuarioDao.findAll();
+	}
 }
