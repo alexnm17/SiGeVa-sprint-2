@@ -21,4 +21,5 @@ public interface CitaDao extends MongoRepository<Cita, String> {
 
 	List<Cita> findAllByFechaAndCentroVacunacion(String fecha, String centroVacunacion);
 	
+	List<Cita> findAllByUsuarioDni(String dni);
 }
