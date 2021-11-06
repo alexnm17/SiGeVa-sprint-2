@@ -17,13 +17,8 @@ public class Usuario {
 	private String password;
 	private String rol;
 	private String centroSalud;
-<<<<<<< HEAD
-	private String estadoPaciente;
-	
-=======
 	private String estadoVacunacion;
 
->>>>>>> branch 'master' of https://SiGeVa@dev.azure.com/SiGeVa/SiGeVa/_git/SiGeVa
 	public Usuario() {
 	}
 
@@ -34,11 +29,8 @@ public class Usuario {
 		this.password = password;
 		this.rol = rol;
 		this.centroSalud = centroSalud;
-<<<<<<< HEAD
-		this.estadoPaciente= estadoPaciente;
-=======
 		this.estadoVacunacion = EstadoVacunacion.NO_VACUNADO.name();
->>>>>>> branch 'master' of https://SiGeVa@dev.azure.com/SiGeVa/SiGeVa/_git/SiGeVa
+
 	}
 
 	public String getDni() {
@@ -89,39 +81,31 @@ public class Usuario {
 		this.rol = rol;
 	}
 
-<<<<<<< HEAD
-	public String getEstadoPaciente() {
-		return estadoPaciente;
-	}
-
-	public void setEstadoPaciente(String estadoPaciente) {
-		this.estadoPaciente = estadoPaciente;
-	}
-
 	public void controlarContraseña() throws SiGeVaException{
-		if (password.length()!=8) throw new SiGeVaException(HttpStatus.CONFLICT,"La contraseña no tiene la longitud adecuada");
+		if (password.length()<8) throw new SiGeVaException(HttpStatus.CONFLICT,"La contraseña no tiene la longitud adecuada");
 		if (password.equals(password.toLowerCase())) throw new SiGeVaException(HttpStatus.CONFLICT,"La contraseña no contiene una letra mayuscula");
 		if (password.equals(password.toUpperCase())) throw new SiGeVaException(HttpStatus.CONFLICT,"La contraseña no contiene una letra minuscula");
-		if (!(password.contains(".") || password.contains(",")||  password.contains("-")|| password.contains("_"))) throw new SiGeVaException(HttpStatus.CONFLICT,"La contraseña no tiene ningun signo de los indicados");
+		//if (!(password.contains(".") || password.contains(",")||  password.contains("-")|| password.contains("_"))) throw new SiGeVaException(HttpStatus.CONFLICT,"La contraseña no tiene ningun signo de los indicados");
 		
 	}
 	public void comprobarDni() throws SiGeVaException{
 		char[] cadenaDni = dni.toCharArray();
 		for(int i=0; i<7;i++)
 			if (!Character.isDigit(cadenaDni[i])) throw new SiGeVaException(HttpStatus.CONFLICT,"No cumple con el formato de un DNI");
-		if (!Character.isLetter(cadenaDni[7])) throw new SiGeVaException(HttpStatus.CONFLICT,"No cumple con el formato de un DNI");
+		if (!Character.isLetter(cadenaDni[8])) throw new SiGeVaException(HttpStatus.CONFLICT,"No cumple con el formato de un DNI");
 	}
 	
 
 	public void comprobarEstado() throws SiGeVaException {
-			if (!estadoPaciente.equals("No Vacunado")) throw new SiGeVaException(HttpStatus.CONFLICT,"No se puede completar este proceso ya que el usuario ya esta vacunado");
-=======
+			if (!estadoVacunacion.equals(EstadoVacunacion.NO_VACUNADO.name())) 
+				throw new SiGeVaException(HttpStatus.CONFLICT,"No se puede completar este proceso ya que el usuario ya esta vacunado");
+	}
+
 	public String getEstadoVacunacion() {
 		return estadoVacunacion;
 	}
 
 	public void setEstadoVacunacion(String estadoVacunacion) {
 		this.estadoVacunacion = estadoVacunacion;
->>>>>>> branch 'master' of https://SiGeVa@dev.azure.com/SiGeVa/SiGeVa/_git/SiGeVa
 	}
 }
