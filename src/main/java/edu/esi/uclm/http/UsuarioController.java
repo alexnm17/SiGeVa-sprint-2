@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpSession;
 
+import javax.servlet.http.HttpServletRequest;
+
+
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,14 +20,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import edu.esi.uclm.model.Usuario;
+
 import edu.uclm.esi.exceptions.SiGeVaException;
 
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import edu.esi.uclm.dao.CentroVacunacionDao;
 import edu.esi.uclm.dao.CitaDao;
 import edu.esi.uclm.dao.UsuarioDao;
 import edu.esi.uclm.exceptions.SigevaException;
+import edu.esi.uclm.model.CentroVacunacion;
 import edu.esi.uclm.model.EstadoVacunacion;
 import edu.esi.uclm.model.RolUsuario;
 
@@ -33,8 +39,11 @@ public class UsuarioController {
 
 	@Autowired
 	private UsuarioDao usuarioDao;
+	@Autowired
 	private CitaDao citaDao;
-
+	@Autowired
+	private CentroVacunacionDao centroVacunacionDao;
+	
 	@CrossOrigin(origins = "http://localhost:3000")
 	@PostMapping("/crearUsuario")
 	public void crearUsuario(@RequestBody Map<String, Object> datosUsuario) {
@@ -89,6 +98,24 @@ public class UsuarioController {
 
 	}
 
+	@PostMapping("/login")
+    public void login(HttpServletRequest request, HttpSession session, @RequestBody Map<String, Object> datosUsuario) {
+        try {
+            JSONObject jso = new JSONObject(datosUsuario);
+            String dni = jso.optString("dni");
+            String password= jso.optString("password");
+            String rol= jso.optString("rol");
+            if (dni.length()==0) throw new SigevaException(HttpStatus.FORBIDDEN, "Por favor, escribe tu DNI");
+            
+            Usuario usuario = usuarioDao.findByDniAndPasswordAndRol(dni, password, rol);
+            if (usuario==null) throw new SigevaException(HttpStatus.UNAUTHORIZED, "Credenciales inválidas");
+            request.getSession().setAttribute("dniUsuario", dni);
+            request.getSession().setAttribute("rolUsuario", rol);
+        } catch (SigevaException e) {
+        	throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
+        }
+    }
+
 	@CrossOrigin(origins = "http://localhost:3000")
 	@DeleteMapping("/eliminarUsuario")
 	public void eliminarUsuario(@RequestBody Map<String, Object> datosUsuario) {
@@ -131,6 +158,12 @@ public class UsuarioController {
 		String rol = jsonPaciente.optString("rol");
 
 		Usuario usuarioVacunado = usuarioDao.findByDniAndRol(dni, rol);
+		CentroVacunacion centroVacunacion = centroVacunacionDao.findByNombre(usuarioVacunado.getCentroSalud());
+		
+		centroVacunacionDao.delete(centroVacunacion);
+		centroVacunacion.setDosis(centroVacunacion.getDosis()-1);
+		
+		centroVacunacionDao.save(centroVacunacion);
 
 		if (usuarioVacunado.getEstadoVacunacion().equals(EstadoVacunacion.NO_VACUNADO.name())) {
 			usuarioDao.delete(usuarioVacunado);
