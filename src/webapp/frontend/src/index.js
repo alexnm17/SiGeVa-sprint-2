@@ -15,6 +15,7 @@ import CrearCentroSalud from './components/crearCentroSalud'
 import CrearPlantillaCitas from './components/CrearPlantillaCitas'
 import DefinirFormatoVacunacion from './components/DefinirFormatoVacunacion'
 import Sanitario from './components/Sanitario'
+import Login from './components/login'
 
 function Routing() {
   return (
@@ -22,7 +23,7 @@ function Routing() {
       <div align="center">
         <h1>SiGeVa</h1>
         <Switch>
-          <Route exact path="/" component={App} />
+          <Route exact path="/" component={Login} />
           <Route exact path="/paciente" component={Paciente} />
           <Route exact path="/paciente/SolicitarCita" component={SolicitarCita} />
           <Route exact path="/administrador" component={Administrador} />

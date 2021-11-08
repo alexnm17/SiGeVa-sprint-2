@@ -210,7 +210,7 @@ public class CitaController {
 		
 	}
 	
-	
+	@CrossOrigin(origins = "http://localhost:3000")
 	@GetMapping("/getUsuariosAVacunar")
 	public List<Usuario> getUsuariosAVacunar(HttpSession session, @RequestBody Map<String, Object> info) {
 		List<Usuario> listaUsuariosAVacunar = new ArrayList<>();
@@ -233,6 +233,6 @@ public class CitaController {
 	@GetMapping("/getCitaByDni")
 	public List<Cita> getCitaByDni(HttpSession session, @RequestBody Map<String, Object> jsonDni) {
 		JSONObject json = new JSONObject(jsonDni);
-		return citaDao.findByUsuarioDni(json.getString("dni"));
+		return citaDao.findAllByUsuarioDni(json.getString("dni"));
 	}*/
 }
