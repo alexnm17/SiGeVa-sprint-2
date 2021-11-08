@@ -42,8 +42,8 @@ public class UsuarioController {
 	@Autowired
 	private CitaDao citaDao;
 	@Autowired
-	private CentroVacunacionDao centroDao;
-
+	private CentroVacunacionDao centroVacunacionDao;
+	
 	@CrossOrigin(origins = "http://localhost:3000")
 	@PostMapping("/crearUsuario")
 	public void crearUsuario(@RequestBody Map<String, Object> datosUsuario) {
@@ -99,22 +99,7 @@ public class UsuarioController {
 	}
 
 
-	@PostMapping("/modificarCentro")
-	public void modificarCentro(@RequestBody CentroVacunacion centro) {
-		try {
-			CentroVacunacion antiguoCentro = centroDao.findByNombre(centro.getNombre());
-
-			if (antiguoCentro == null)
-				throw new SiGeVaException(HttpStatus.NOT_FOUND, "No existe un centro con este nombre");
-			
-			antiguoCentro.setMunicipio(centro.getMunicipio());
-			centroDao.save(antiguoCentro);
-		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
-		}
-
-	}
-
+	
 	@PostMapping("/login")
 	public void login(HttpServletRequest request, HttpSession session, @RequestBody Map<String, Object> datosUsuario) {
 		try {
@@ -175,6 +160,12 @@ public class UsuarioController {
 		String rol = jsonPaciente.optString("rol");
 
 		Usuario usuarioVacunado = usuarioDao.findByDniAndRol(dni, rol);
+		CentroVacunacion centroVacunacion = centroVacunacionDao.findByNombre(usuarioVacunado.getCentroSalud());
+		
+		centroVacunacionDao.delete(centroVacunacion);
+		centroVacunacion.setDosis(centroVacunacion.getDosis()-1);
+		
+		centroVacunacionDao.save(centroVacunacion);
 
 		if (usuarioVacunado.getEstadoVacunacion().equals(EstadoVacunacion.NO_VACUNADO.name())) {
 			usuarioDao.delete(usuarioVacunado);

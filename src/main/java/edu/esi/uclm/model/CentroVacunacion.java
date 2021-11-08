@@ -6,14 +6,16 @@ public class CentroVacunacion {
 	@Id
 	private String nombre;
 	private String municipio;
+	private int dosis;
 
 	public CentroVacunacion() {
 
 	}
 
-	public CentroVacunacion(String nombre, String municipio) {
+	public CentroVacunacion(String nombre, String municipio, int dosis) {
 		this.nombre = nombre;
 		this.municipio = municipio;
+		this.dosis = dosis;
 	}
 
 	public String getNombre() {
@@ -30,6 +32,14 @@ public class CentroVacunacion {
 
 	public void setMunicipio(String municipio) {
 		this.municipio = municipio;
+	}
+
+	public int getDosis() {
+		return dosis;
+	}
+
+	public void setDosis(int dosis) {
+		this.dosis = dosis;
 	}
 
 }
