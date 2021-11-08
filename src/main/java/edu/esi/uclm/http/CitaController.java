@@ -83,7 +83,7 @@ public class CitaController {
 			case 1:
 				Cita primeraDosis = citaDao.findByUsuarioDni(usuario.getDni());
 				LocalDate fechaPrimeraCita = LocalDate.parse(primeraDosis.getFecha());
-				
+			
 				//Asignar SegundaDosis
 				asignarDosis(usuario,fechaPrimeraCita.plusDays(21));
 				
@@ -91,13 +91,14 @@ public class CitaController {
 				
 			default:
 				break;
-			
+		
 			}
 			
 		} catch (SiGeVaException e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 		}
 	}
+
 
 	private Cupo buscarCupoLibre(LocalDate fechaActualDate,CentroVacunacion centroVacunacion) {
 		Cupo cupo = null;
