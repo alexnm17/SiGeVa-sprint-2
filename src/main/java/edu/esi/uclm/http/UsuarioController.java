@@ -26,9 +26,11 @@ import edu.uclm.esi.exceptions.SiGeVaException;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import edu.esi.uclm.dao.CentroVacunacionDao;
 import edu.esi.uclm.dao.CitaDao;
 import edu.esi.uclm.dao.UsuarioDao;
 import edu.esi.uclm.exceptions.SigevaException;
+import edu.esi.uclm.model.CentroVacunacion;
 import edu.esi.uclm.model.EstadoVacunacion;
 import edu.esi.uclm.model.RolUsuario;
 
@@ -39,7 +41,9 @@ public class UsuarioController {
 	private UsuarioDao usuarioDao;
 	@Autowired
 	private CitaDao citaDao;
-
+	@Autowired
+	private CentroVacunacionDao centroVacunacionDao;
+	
 	@CrossOrigin(origins = "http://localhost:3000")
 	@PostMapping("/crearUsuario")
 	public void crearUsuario(@RequestBody Map<String, Object> datosUsuario) {
@@ -154,6 +158,12 @@ public class UsuarioController {
 		String rol = jsonPaciente.optString("rol");
 
 		Usuario usuarioVacunado = usuarioDao.findByDniAndRol(dni, rol);
+		CentroVacunacion centroVacunacion = centroVacunacionDao.findByNombre(usuarioVacunado.getCentroSalud());
+		
+		centroVacunacionDao.delete(centroVacunacion);
+		centroVacunacion.setDosis(centroVacunacion.getDosis()-1);
+		
+		centroVacunacionDao.save(centroVacunacion);
 
 		if (usuarioVacunado.getEstadoVacunacion().equals(EstadoVacunacion.NO_VACUNADO.name())) {
 			usuarioDao.delete(usuarioVacunado);
