@@ -5,7 +5,8 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 public class Cita {
 	private String fecha;
 	private String hora;
-	private String usuarioDni;
+	@DBRef
+	private Usuario usuario;
 	@DBRef
 	private CentroVacunacion centroVacunacion;
 
@@ -13,11 +14,11 @@ public class Cita {
 		// El constructor vacio ha sido crado por exigencias del Spring
 	}
 
-	public Cita(String fecha, String hora, CentroVacunacion centro, String usuarioDni) {
+	public Cita(String fecha, String hora, CentroVacunacion centro, Usuario usuario) {
 		this.fecha = fecha;
 		this.hora = hora;
 		this.centroVacunacion = centro;
-		this.usuarioDni = usuarioDni;
+		this.usuario = usuario;
 	}
 
 	public String getFecha() {
@@ -44,12 +45,12 @@ public class Cita {
 		this.centroVacunacion = centroVacunacion;
 	}
 
-	public String getUsuarioDni() {
-		return usuarioDni;
+	public Usuario getUsuario() {
+		return usuario;
 	}
 
-	public void setUsuarioDni(String usuarioDni) {
-		this.usuarioDni = usuarioDni;
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
 	}
 
 }
