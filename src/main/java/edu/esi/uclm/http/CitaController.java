@@ -211,7 +211,7 @@ public class CitaController {
 		
 	}
 	
-	
+	/*
 	@GetMapping("/getUsuariosAVacunar")
 	public List<Usuario> getUsuariosAVacunar(HttpSession session, @RequestBody Map<String, Object> info) {
 		List<Usuario> listaUsuariosAVacunar = new ArrayList<>();
@@ -229,7 +229,7 @@ public class CitaController {
 		//Devolver la lista de usuariops
 		return listaUsuariosAVacunar;
 	}
-	
+	*/
 	
 	
 	@GetMapping("/getCitasPorDia")
@@ -237,7 +237,8 @@ public class CitaController {
 
 		JSONObject json = new JSONObject(info);
 		String fecha = json.getString("fecha");
-		String centroVacunacion = json.getString("centroVacunacion");
+		String email = (String) session.getAttribute("emailUsuario");
+		CentroVacunacion centroVacunacion = usuarioDao.findByEmail(email).getCentroVacunacion(); 
 		
 		return citaDao.findAllByFechaAndCentroVacunacion(fecha, centroVacunacion);
 	}
