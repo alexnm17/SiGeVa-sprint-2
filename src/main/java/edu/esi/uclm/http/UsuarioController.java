@@ -103,6 +103,7 @@ public class UsuarioController {
 
 	}
 
+
 	@PostMapping("/login")
     public void login(HttpServletRequest request, HttpSession session, @RequestBody Map<String, Object> datosUsuario) {
         try {
@@ -135,12 +136,11 @@ public class UsuarioController {
 			if(user.getRol().equals(RolUsuario.PACIENTE.name()) && !user.getEstadoVacunacion().equals(EstadoVacunacion.NO_VACUNADO.name()))
 				throw new SigevaException(HttpStatus.FORBIDDEN, "No puede eliminar a un paciente vacunado del sistema");
 			
-			
 			borrarCitas(user);
 			usuarioDao.delete(user);
-				
-			
-				
+
+
+
 		} catch (Exception e) {
 
 			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
