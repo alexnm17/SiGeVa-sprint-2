@@ -229,6 +229,18 @@ public class CitaController {
 		//Devolver la lista de usuariops
 		return listaUsuariosAVacunar;
 	}
+	
+	
+	
+	@GetMapping("/getCitasPorDia")
+	public List<Cita> getCitasPorDia(HttpSession session, @RequestBody Map<String, Object> info) {
+
+		JSONObject json = new JSONObject(info);
+		String fecha = json.getString("fecha");
+		String centroVacunacion = json.getString("centroVacunacion");
+		
+		return citaDao.findAllByFechaAndCentroVacunacion(fecha, centroVacunacion);
+	}
 
 	/*@CrossOrigin(origins = "http://localhost:3000")
 	@GetMapping("/getCitaByDni")
