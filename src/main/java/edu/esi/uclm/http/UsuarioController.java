@@ -98,23 +98,25 @@ public class UsuarioController {
 
 	}
 
+
+	
 	@PostMapping("/login")
-    public void login(HttpServletRequest request, HttpSession session, @RequestBody Map<String, Object> datosUsuario) {
-        try {
-            JSONObject jso = new JSONObject(datosUsuario);
-            String dni = jso.optString("dni");
-            String password= jso.optString("password");
-            String rol= jso.optString("rol");
-            if (dni.length()==0) throw new SigevaException(HttpStatus.FORBIDDEN, "Por favor, escribe tu DNI");
-            
-            Usuario usuario = usuarioDao.findByDniAndPasswordAndRol(dni, password, rol);
-            if (usuario==null) throw new SigevaException(HttpStatus.UNAUTHORIZED, "Credenciales inválidas");
-            request.getSession().setAttribute("dniUsuario", dni);
-            request.getSession().setAttribute("rolUsuario", rol);
-        } catch (SigevaException e) {
-        	throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
-        }
-    }
+	public void login(HttpServletRequest request, HttpSession session, @RequestBody Map<String, Object> datosUsuario) {
+		try {
+			JSONObject jso = new JSONObject(datosUsuario);
+			String dni = jso.optString("dni");
+			String password= jso.optString("password");
+			String rol= jso.optString("rol");
+			if (dni.length()==0) throw new SigevaException(HttpStatus.FORBIDDEN, "Por favor, escribe tu DNI");
+
+			Usuario usuario = usuarioDao.findByDniAndPasswordAndRol(dni, password, rol);
+			if (usuario==null) throw new SigevaException(HttpStatus.UNAUTHORIZED, "Credenciales inválidas");
+			request.getSession().setAttribute("dniUsuario", dni);
+			request.getSession().setAttribute("rolUsuario", rol);
+		} catch (SigevaException e) {
+			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
+		}
+	}
 
 	@CrossOrigin(origins = "http://localhost:3000")
 	@DeleteMapping("/eliminarUsuario")
@@ -132,13 +134,13 @@ public class UsuarioController {
 
 			if(user.getRol().equals(RolUsuario.PACIENTE.name()) && !user.getEstadoVacunacion().equals(EstadoVacunacion.NO_VACUNADO.name()))
 				throw new SigevaException(HttpStatus.FORBIDDEN, "No puede eliminar a un paciente vacunado del sistema");
-			
-			
+
+
 			borrarCitas(user.getDni());
 			usuarioDao.delete(user);
-				
-			
-				
+
+
+
 		} catch (Exception e) {
 
 			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());

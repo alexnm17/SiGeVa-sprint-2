@@ -1,6 +1,12 @@
 package edu.esi.uclm.model;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.springframework.data.mongodb.core.mapping.DBRef;
+
+import edu.uclm.esi.exceptions.SiGeVaException;
 
 public class Cita {
 	private String fecha;
@@ -51,5 +57,4 @@ public class Cita {
 	public void setUsuarioDni(String usuarioDni) {
 		this.usuarioDni = usuarioDni;
 	}
-
 }
