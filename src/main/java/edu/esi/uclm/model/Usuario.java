@@ -1,36 +1,40 @@
 package edu.esi.uclm.model;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.http.HttpStatus;
-
 import edu.uclm.esi.exceptions.SiGeVaException;
 
 public class Usuario {
 	@Id
+	private String email;
 	private String dni;
 	private String nombre;
 	private String apellido;
 	private String password;
 	private String rol;
-	private String centroSalud;
+	@DBRef
+	private CentroVacunacion centroVacunacion;
+	
 	private String estadoVacunacion;
 
 	public Usuario() {
 	}
 
-	public Usuario(String dni, String nombre, String apellido, String password, String rol, String centroSalud, String estadoPaciente) {
+	public Usuario(String email, String dni, String nombre, String apellido, String password, String rol, CentroVacunacion centroVacunacion) {
+		this.email = email;
 		this.dni = dni;
 		this.nombre = nombre;
 		this.apellido = apellido;
 		this.password = password;
 		this.rol = rol;
-		this.centroSalud = centroSalud;
+		this.centroVacunacion = centroVacunacion;
 		this.estadoVacunacion = EstadoVacunacion.NO_VACUNADO.name();
 
+	}
+
+	public String getEmail() {
+		return email;
 	}
 
 	public String getDni() {
@@ -53,12 +57,12 @@ public class Usuario {
 		return rol;
 	}
 
-	public String getCentroSalud() {
-		return centroSalud;
+	public CentroVacunacion getCentroVacunacion() {
+		return centroVacunacion;
 	}
 
-	public void setCentroSalud(String centroSalud) {
-		this.centroSalud = centroSalud;
+	public void setCentroVacunacion(CentroVacunacion centroVacunacion) {
+		this.centroVacunacion=centroVacunacion;
 	}
 
 	public void setDni(String dni) {
@@ -79,6 +83,9 @@ public class Usuario {
 
 	public void setRol(String rol) {
 		this.rol = rol;
+	}
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public void controlarContraseña() throws SiGeVaException{

@@ -18,6 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import edu.esi.uclm.dao.CentroVacunacionDao;
 import edu.esi.uclm.model.CentroVacunacion;
+import edu.uclm.esi.exceptions.SiGeVaException;
 
 
 @RestController
@@ -35,13 +36,33 @@ public class CentroVacunacionController {
 			JSONObject json = new JSONObject(datosCentro);
 			String nombre = json.getString("nombre");
 			String municipio = json.getString("municipio");
+			int dosis = Integer.parseInt(json.getString("dosis"));
 			
-			CentroVacunacion centroVacunacion = new CentroVacunacion(nombre, municipio);
+			CentroVacunacion centroVacunacion = new CentroVacunacion(nombre, municipio,dosis);
 			centroVacunacionDao.save(centroVacunacion);
 		} catch(Exception e) {	
 			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
 		}
 	}
+	
+	@PostMapping("/modificarCentro")
+	public void modificarCentro(@RequestBody CentroVacunacion centro) {
+		try {
+			CentroVacunacion antiguoCentro = centroVacunacionDao.findByNombre(centro.getNombre());
+
+			if (antiguoCentro == null)
+				throw new SiGeVaException(HttpStatus.NOT_FOUND, "No existe un centro con este nombre");
+			
+			antiguoCentro.setMunicipio(centro.getMunicipio());
+			antiguoCentro.setDosis(centro.getDosis());
+			
+			centroVacunacionDao.save(antiguoCentro);
+		} catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
+		}
+
+	}
+
 	
 	@CrossOrigin(origins = "http://localhost:3000")
 	@GetMapping("/getAllCentros")
