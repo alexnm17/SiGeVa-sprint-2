@@ -8,7 +8,7 @@ class centroSaludList extends Component {
     state = {
         centroSalud: [],
         modalModificar: false,
-        nombreCentro:""
+        nombreCentro: ""
     }
 
     componentDidMount() {
@@ -34,7 +34,7 @@ class centroSaludList extends Component {
 
     mostrarModalModificar = (centro) => {
         this.setState({ modalModificar: true })
-        this.setState({nombreCentro:centro})
+        this.setState({ nombreCentro: centro })
     }
 
     ocultarModalModificar = () => {
@@ -44,7 +44,7 @@ class centroSaludList extends Component {
     render() {
         return (
             <div>
-                <table class="table" style={{ marginTop: 15, marginLeft: 15 }}>
+                <table className="table" style={{ marginTop: 15, marginLeft: 15}}>
                     <thead>
                         <tr>
                             <th>Nombre</th>
@@ -59,8 +59,8 @@ class centroSaludList extends Component {
                                 <td>{centroSalud.nombre}</td>
                                 <td>{centroSalud.municipio}</td>
                                 <td>
-                                    <button class="btn btn-primary" id={centroSalud.nombre} style={{ marginRight: 10 }} onClick={() => this.mostrarModalModificar(centroSalud.nombre)}>Modificar centro</button>
-                                    <button class="btn btn-danger" id={centroSalud.nombre}>Eliminar centro</button>
+                                    <button className="btn btn-primary" id={centroSalud.nombre} style={{ marginRight: 10 }} onClick={() => this.mostrarModalModificar(centroSalud.nombre)}>Modificar centro</button>
+                                    <button className="btn btn-danger" id={centroSalud.nombre}>Eliminar centro</button>
                                 </td>
                             </tr>
                         )}
@@ -74,7 +74,7 @@ class centroSaludList extends Component {
 
                     <ModalBody>
                         <FormGroup>
-                            <label style={{marginRight:15}}>Nombre:</label>
+                            <label style={{ marginRight: 15 }}>Nombre:</label>
                             <label>{this.state.nombreCentro}</label>
                         </FormGroup>
                         <FormGroup>

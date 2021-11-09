@@ -10,11 +10,12 @@ class UsuariosList extends Component {
             dni: "",
             nombre: "",
             apellido: "",
+            email: "",
             centroVacunacion: "",
             rol: ""
         },
         modalModificar: false,
-        butttonDni:""
+        butttonDni: ""
     }
 
     componentDidMount() {
@@ -37,10 +38,10 @@ class UsuariosList extends Component {
             }
         });
     }
- 
+
     mostrarModalModificar = (dni) => {
         console.log(dni)
-        this.setState({butttonDni:dni})
+        this.setState({ butttonDni: dni })
         this.setState({ modalModificar: true })
     }
 
@@ -51,8 +52,7 @@ class UsuariosList extends Component {
 
     EliminarClickHandler = e => {
         e.preventDefault()
-        console.log(e.target.id)
-        axios.delete('http://localhost:8080/eliminarUsuario', { data: e.target.id })
+        axios.delete('http://localhost:8080/eliminarUsuario', { data: { email : e.target.id }})
             .then(res => {
                 this.getUsuarios()
             })
@@ -68,20 +68,22 @@ class UsuariosList extends Component {
                         <th>Nombre</th>
                         <th>Apellidos</th>
                         <th>Dni</th>
+                        <th>Email</th>
                         <th>Centro de Vacunacion</th>
                         <th>Rol</th>
                         <th>Acciones</th>
                     </tr>
                     {this.state.usuarios.map(usuario =>
-                        <tr key={usuario.dni}>
+                        <tr key={usuario.email}>
                             <td>{usuario.nombre}</td>
                             <td>{usuario.apellido}</td>
                             <td>{usuario.dni}</td>
-                            <td>{usuario.centroSalud}</td>
+                            <td>{usuario.email}</td>
+                            <td>{usuario.centroVacunacion.nombre}</td>
                             <td>{usuario.rol}</td>
                             <td>
-                                <Button color="primary" id={usuario.dni} onClick={()=>this.mostrarModalModificar(usuario.dni)} style={{ marginRight: 10 }}>Modificar usuario</Button>
-                                <Button color="danger" id={usuario.dni} onClick={this.EliminarClickHandler}>Eliminar usuario</Button>
+                                <Button color="primary" id={usuario.email} onClick={() => this.mostrarModalModificar(usuario.email)} style={{ marginRight: 10 }}>Modificar usuario</Button>
+                                <Button color="danger" id={usuario.email} onClick={this.EliminarClickHandler}>Eliminar usuario</Button>
                             </td>
                         </tr>
                     )}
@@ -93,7 +95,7 @@ class UsuariosList extends Component {
 
                     <ModalBody>
                         <FormGroup>
-                            <label style={{marginRight: 15 }}>Dni: </label>
+                            <label style={{ marginRight: 15 }}>Dni: </label>
                             <label>{this.state.butttonDni}</label>
                         </FormGroup>
                         <FormGroup>

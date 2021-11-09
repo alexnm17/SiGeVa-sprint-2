@@ -3,11 +3,16 @@ import { Breadcrumb } from "react-bootstrap"
 import CentroSaludList from "./CentroSaludList";
 import 'bootstrap/dist/css/bootstrap.min.css'
 import {Button, Modal, ModalBody, FormGroup, ModalFooter, ModalHeader } from 'reactstrap'
-
+import axios from 'axios'
 
 class GestionCentroSalud extends Component {
     state = {
-        modalCrear: false,
+        form: {
+            nombre: "",
+            municipio: "",
+            dosis: ""
+        },
+        modalCrear: false
     }
 
     mostrarModalCrear = () => {
@@ -18,7 +23,32 @@ class GestionCentroSalud extends Component {
         this.setState({ modalCrear: false })
     }
 
+    changeHandler = async e => {
+        await this.setState({
+            form: {
+                ...this.state.form,
+                [e.target.name]: e.target.value
+            }
+        })
+        console.log(this.state.form)
+    }
+
+    submitHandler = e => {
+        e.preventDefault()
+        axios.post("http://localhost:8080/addCentro", this.state.form)
+            .then(res => {
+                if (res.status === 200) {
+                    alert("Centro creado con éxito")
+                    this.ocultarModalCrear()
+                    window.location.reload(true);
+                }
+            }).catch(error => {
+                alert("No se ha podido crear el usuario");
+            })
+    }
+
     render() {
+        const {nombre, municipio, dosis} = this.state.form
         return (
             <div>
                 <Breadcrumb style={{ margin: 30 }}>
@@ -31,9 +61,7 @@ class GestionCentroSalud extends Component {
                 </div>
                 <div>
                     <p>Selecciona la acción que quieres realizar: </p>
-                    {/* <a href="/administrador/GestionCentrosSalud/CrearCentroSalud"> */}
-                        <button class="btn btn-success" style={{ marginRight: 15 }} onClick={() => this.mostrarModalCrear()}>Crear centro de salud</button>
-                    {/* </a> */}
+                        <button className="btn btn-success" style={{ marginRight: 15 }} onClick={() => this.mostrarModalCrear()}>Crear centro de salud</button>
                     <CentroSaludList />
                 </div>
 
@@ -44,27 +72,26 @@ class GestionCentroSalud extends Component {
                     <ModalBody>
                         <FormGroup>
                             <label>Nombre:</label>
-                            <input className="form-control" type="text"></input>
+                            <input className="form-control" type="text" name="nombre"  onChange={this.changeHandler} value={nombre}></input>
                         </FormGroup>
                         <FormGroup>
                             <label>Municipio:</label>
-                            <input className="form-control" type="text" name="nombre" onChange={this.handleChange}></input>
+                            <input className="form-control" type="text" name="municipio" onChange={this.changeHandler} value={municipio}></input>
                         </FormGroup>
                         <FormGroup>
                             <label>Dosis:</label>
-                            <input className="form-control" type="text" name="apellidos" onChange={this.handleChange}></input>
+                            <input className="form-control" type="text" name="dosis" onChange={this.changeHandler} value={dosis}></input>
                         </FormGroup>
                     </ModalBody>
 
                     <ModalFooter>
-                        <Button color="primary">Aceptar</Button>
+                        <Button color="primary" onClick={this.submitHandler}>Aceptar</Button>
                         <Button color="danger" onClick={() => this.ocultarModalCrear()}>Cancelar</Button>
                     </ModalFooter>
                 </Modal>
             </div>
         );
     }
-
 }
 
 export default GestionCentroSalud
