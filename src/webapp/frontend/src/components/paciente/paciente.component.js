@@ -7,16 +7,17 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 class Paciente extends Component {
     state = {
         citaUsuario: [],
-        dni: "12345678A"
+        dni: ""
     }
 
     componentDidMount() {
+       // this.setState({dni:localStorage.getItem("dniUsuario")})
         this.getCitaPaciente()
     }
 
     getCitaPaciente() {
         console.log(this.state.dni)
-        axios.post('http://localhost:8080/getCitaByDni', { dni: this.state.dni })
+        axios.post('http://localhost:8080/getCitaByDni', { dni: localStorage.getItem("dniUsuario")})
             .then(res => {
                 console.log(res.data)
                 this.setState({ citaUsuario: res.data })
