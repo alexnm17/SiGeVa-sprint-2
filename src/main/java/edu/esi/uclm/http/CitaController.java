@@ -55,8 +55,8 @@ public class CitaController {
 
 		try {
 			
-			String dni = (String) session.getAttribute("dni");
-			Usuario usuario = usuarioDao.findByDni(dni);
+			String email = (String) session.getAttribute("email");
+			Usuario usuario = usuarioDao.findByEmail(email);
 
 			if (usuario == null)
 				throw new SiGeVaException(HttpStatus.NOT_FOUND, "No se ha encontrado ningun usuario con este dni");
@@ -66,7 +66,7 @@ public class CitaController {
 						+ " No puede volver a solicitar cita");
 			
 
-			int citasAsignadas = citaDao.findAllByUsuarioDni(usuario.getDni()).size();
+			int citasAsignadas = citaDao.findAllByUsuario(usuario).size();
 
 			switch(citasAsignadas) {
 			case 0:
@@ -81,7 +81,7 @@ public class CitaController {
 						"El usuario: "+usuario.getDni()+" ya dispone de dos citas asignadas. Si desea modificar su cita, utilice Modificar Cita");
 				
 			case 1:
-				Cita primeraDosis = citaDao.findByUsuarioDni(usuario.getDni());
+				Cita primeraDosis = citaDao.findByUsuario(usuario);
 				LocalDate fechaPrimeraCita = LocalDate.parse(primeraDosis.getFecha());
 			
 				//Asignar SegundaDosis
@@ -127,9 +127,10 @@ public class CitaController {
 	}
 
 	@GetMapping("/consultarCita")
-	public List<Cita> consultar(HttpSession session, @RequestBody String dni) {
+	public List<Cita> consultar(HttpSession session) {
 		try {
-			List<Cita> citas = citaDao.findAllByUsuarioDni(dni);
+			Usuario usuario = usuarioDao.findByEmail((String) session.getAttribute("emailUsuario"));
+			List<Cita> citas = citaDao.findAllByUsuario(usuario);
 			if (citas.isEmpty())
 				throw new SiGeVaException(HttpStatus.NOT_FOUND,
 						"No se ha podido encontrar ninguna cita para el usuario. Contacte con el administrador.");
@@ -184,7 +185,7 @@ public class CitaController {
 
 	@CrossOrigin(origins = "http://localhost:3000")
 	@GetMapping("/getFormatoVacunacion")
-	private FormatoVacunacion getFormatoVacunacion() {
+	public FormatoVacunacion getFormatoVacunacion() {
 		Optional<FormatoVacunacion> optFormato = formatoVacunacionDao.findById("Formato_Unico");
 		FormatoVacunacion formatoVacunacion = null;
 		if(optFormato.isPresent())
@@ -197,8 +198,7 @@ public class CitaController {
 	
 	
 	public void asignarDosis(Usuario usuario,LocalDate fechaActual) throws SiGeVaException {
-		CentroVacunacion centroUsuario = centroVacunacionDao.findByNombre(usuario.getCentroSalud());
-		Cupo cupoAsignado = buscarCupoLibre(fechaActual,centroUsuario);
+		Cupo cupoAsignado = buscarCupoLibre(fechaActual,usuario.getCentroVacunacion());
 		if(cupoAsignado == null)
 			throw new SiGeVaException(HttpStatus.NOT_FOUND,"No se ha podido encontrar un cupo disponible en estos momentos");
 		cupoDao.deleteByFechaAndHoraAndCentroVacunacion(cupoAsignado.getFecha(),cupoAsignado.getHora(),cupoAsignado.getCentroVacunacion());
@@ -206,7 +206,7 @@ public class CitaController {
 		cupoDao.save(cupoAsignado);
 		
 
-		Cita cita= new Cita(cupoAsignado.getFecha(),cupoAsignado.getHora(),cupoAsignado.getCentroVacunacion(), usuario.getDni());
+		Cita cita= new Cita(cupoAsignado.getFecha(),cupoAsignado.getHora(),cupoAsignado.getCentroVacunacion(), usuario);
 		citaDao.save(cita);
 		
 	}
@@ -223,7 +223,7 @@ public class CitaController {
 		
 		//Crear una lista con los usuarios contenidos en las citas de esa fecha y centro
 		for(int i=0; i<listCitasDeUnaFecha.size();i++) {
-			listaUsuariosAVacunar.add(usuarioDao.findByDni(listCitasDeUnaFecha.get(i).getUsuarioDni()));
+			listaUsuariosAVacunar.add(usuarioDao.findByDni(listCitasDeUnaFecha.get(i).getUsuario().getDni()));
 		}
 		
 		//Devolver la lista de usuariops
