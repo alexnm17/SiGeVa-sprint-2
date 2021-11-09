@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.json.JSONObject;
@@ -231,9 +232,10 @@ public class CitaController {
 	}
 
 	@CrossOrigin(origins = "http://localhost:3000")
-	@GetMapping("/getCitaByDni")
-	public List<Cita> getCitaByDni(HttpSession session, @RequestBody Map<String, Object> jsonDni) {
-		JSONObject json = new JSONObject(jsonDni);
-		return citaDao.findAllByUsuarioDni(json.getString("dni"));
+	@PostMapping("/getCitaByDni")
+	public List<Cita> getCitaByDni(HttpServletRequest request, @RequestBody Map<String, Object> info) {
+		JSONObject json = new JSONObject(info);
+		String dni = json.getString("dni");
+		return citaDao.findAllByUsuarioDni(dni);
 	}
 }

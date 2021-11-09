@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { Row, Table, Col, Button } from 'reactstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import axios from "axios"
-import { Redirect } from 'react-router'
 
 class Login extends Component {
     state = {
@@ -68,7 +67,7 @@ class Login extends Component {
                         <Col></Col>
                         <Col>
                             <select class="form-control" onChange={this.onChangeHandler} style={{ marginTop: 15 }} name="rol">
-                                <option hidden selected>Selecciona un rol...</option>
+                                <option defaultValue>Selecciona un rol...</option>
                                 <option>Paciente</option>
                                 <option >Administrador</option>
                                 <option >Sanitario</option>

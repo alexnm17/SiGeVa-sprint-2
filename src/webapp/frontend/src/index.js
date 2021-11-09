@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom'
 import './index.css'
 import reportWebVitals from './reportWebVitals'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
-import App from './App'
 import Administrador from './components/administrador.component'
 import Paciente from './components/paciente.component'
 import GestionUsuarios from './components/GestionUsuarios'
@@ -24,8 +23,7 @@ function Routing() {
         <h1>SiGeVa</h1>
         <Switch>
           <Route exact path="/" component={Login} />
-          {/* <Route exact path="/paciente" component={Paciente} /> */}
-          <Route exact path="/paciente" render={props => (<Paciente {...props} />)} />
+          <Route exact path="/paciente" component={Paciente} />
           <Route exact path="/paciente/SolicitarCita" component={SolicitarCita} />
           <Route exact path="/administrador" component={Administrador} />
           <Route exact path="/administrador/GestionUsuarios" component={GestionUsuarios} />

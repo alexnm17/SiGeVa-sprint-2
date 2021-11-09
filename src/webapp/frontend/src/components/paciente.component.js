@@ -1,22 +1,26 @@
 import React, { Component } from "react";
-import { Button, Breadcrumb, Table, Row, Col } from "react-bootstrap"
+import {Breadcrumb} from "react-bootstrap"
+import { Button, Table, Row, Col } from "reactstrap"
 import axios from "axios"
+import 'bootstrap/dist/css/bootstrap.min.css'
 
 class Paciente extends Component {
     state = {
-        citaUsuario: []
+        citaUsuario: [],
+        dni: "12345678A"
     }
 
     componentDidMount() {
-        //this.setState({dni:localStorage.getItem("dniUsuario")}
-        this.getCitaPaciente(localStorage.getItem("dniUsuario"))
+        this.getCitaPaciente()
     }
 
-    getCitaPaciente(dniUsuario) {
-        axios.get('http://localhost:8080/getCitaByDni', dniUsuario)
+    getCitaPaciente() {
+        console.log(this.state.dni)
+        axios.post('http://localhost:8080/getCitaByDni', { dni: this.state.dni })
             .then(res => {
                 console.log(res.data)
                 this.setState({ citaUsuario: res.data })
+                console.log(this.citaUsuario)
             })
     }
 
@@ -34,24 +38,33 @@ class Paciente extends Component {
                     <a href="/paciente/SolicitarCita">
                         <Button style={{ marginRight: 15 }}>Solicitar cita</Button>
                     </a>
-                    <Button variant="secondary" style={{ marginRight: 15 }}>Consultar cita</Button>
                 </div>
-                <Table>
+                <h5>Tus citas</h5>
+                <Table class="table">
                     <Row>
                         <Col></Col>
-                        <Col><h6>Fecha:</h6></Col>
+                        <Col><h6>Día</h6></Col>
+                        <Col><h6>Hora</h6></Col>
+                        <Col><h6>Centro Vacunacion</h6></Col>
+                        <Col><h6>Municipio</h6></Col>
+                        <Col><h6>Acciones</h6></Col>
                         <Col></Col>
                     </Row>
-                    <Row>
-                        <Col></Col>
-                        <Col><h6>Hora:</h6></Col>
-                        <Col></Col>
-                    </Row>
-                    <Row>
-                        <Col></Col>
-                        <Col><h6>Centro:</h6></Col>
-                        <Col></Col>
-                    </Row>
+                    {this.state.citaUsuario.map(cita =>
+                        <Row style={{ marginBottom: 15 }}>
+                            <Col></Col>
+                            <Col>{cita.fecha}</Col>
+                            <Col>{cita.hora}</Col>
+                            <Col>{cita.centroVacunacion.nombre}</Col>
+                            <Col>{cita.centroVacunacion.municipio} </Col>
+                            <Col>
+                                <Button color="primary" style={{ marginRight: 15 }}>Modificar</Button>
+                                <Button color="danger">Anular</Button>
+                            </Col>
+                            <Col></Col>
+                        </Row>
+                    )
+                    }
                 </Table>
             </div>
         );
