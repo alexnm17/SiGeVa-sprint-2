@@ -19,12 +19,13 @@ import Login from './components/login'
 
 function Routing() {
   return (
-    <Router>
-      <div align="center">
+    <div align="center">
+      <Router>
         <h1>SiGeVa</h1>
         <Switch>
           <Route exact path="/" component={Login} />
-          <Route exact path="/paciente" component={Paciente} />
+          {/* <Route exact path="/paciente" component={Paciente} /> */}
+          <Route exact path="/paciente" render={props => (<Paciente {...props} />)} />
           <Route exact path="/paciente/SolicitarCita" component={SolicitarCita} />
           <Route exact path="/administrador" component={Administrador} />
           <Route exact path="/administrador/GestionUsuarios" component={GestionUsuarios} />
@@ -36,8 +37,9 @@ function Routing() {
           <Route exact path="/Administrador/GestionDefinicionDeCitas/DefinirFormatoVacunacion" component={DefinirFormatoVacunacion} />
           <Route exact path="/Sanitario" component={Sanitario} />
         </Switch>
-      </div>
-    </Router>
+      </Router>
+    </div>
+
   )
 }
 

@@ -2,13 +2,13 @@ import React, { Component } from 'react'
 import { Row, Table, Col, Button } from 'reactstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import axios from "axios"
+import { Redirect } from 'react-router'
 
 class Login extends Component {
-
     state = {
         form: {
             "dni": '',
-            "contrasena": '',
+            "password": '',
             "rol": ''
         },
         error: false,
@@ -26,12 +26,24 @@ class Login extends Component {
 
     submitHandler = e => {
         e.preventDefault()
-        axios.post("http://localhost:8080/Login", this.state)
-        .then(res => {
-           
-        }).catch(error =>{
-            alert("No se pudo definir el formato de vacunacion, ¿Seguro que no está definido ya?")
-        })    }
+        axios.post("http://localhost:8080/login", this.state.form)
+            .then(res => {
+                localStorage.setItem('dniUsuario', this.state.form.dni);
+                localStorage.setItem('rolUsuario', this.state.form.rol);
+                if (this.state.form.rol === 'Paciente') {
+                this.props.history.push("/paciente");
+                } else if (this.state.form.rol === 'Administrador') {
+                    this.props.history.push("/administrador");
+                } else if (this.state.form.rol === 'Sanitario') {
+                    this.props.history.push("/sanitario");
+                } else {
+                    alert('Hubo un problema durante la autenticación')
+                }
+
+            }).catch(error => {
+                alert("No has podido acceder")
+            })
+    }
 
     render() {
         return (
@@ -48,7 +60,7 @@ class Login extends Component {
                     <Row>
                         <Col></Col>
                         <Col>
-                            <input type="password" onChange={this.onChangeHandler} class="form-control" name="contrasena" placeholder="Password" style={{ marginTop: 15 }} />
+                            <input type="password" onChange={this.onChangeHandler} class="form-control" name="password" placeholder="Password" style={{ marginTop: 15 }} />
                         </Col>
                         <Col></Col>
                     </Row>

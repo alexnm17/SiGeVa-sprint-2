@@ -1,14 +1,10 @@
 package edu.esi.uclm.http;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpSession;
 
 import javax.servlet.http.HttpServletRequest;
-
+import javax.servlet.http.HttpSession;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +14,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
-import edu.esi.uclm.model.Usuario;
-
-import edu.uclm.esi.exceptions.SiGeVaException;
-
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -33,6 +24,8 @@ import edu.esi.uclm.exceptions.SigevaException;
 import edu.esi.uclm.model.CentroVacunacion;
 import edu.esi.uclm.model.EstadoVacunacion;
 import edu.esi.uclm.model.RolUsuario;
+import edu.esi.uclm.model.Usuario;
+import edu.uclm.esi.exceptions.SiGeVaException;
 
 @RestController
 public class UsuarioController {
@@ -97,9 +90,10 @@ public class UsuarioController {
 		}
 
 	}
-
+	
+	@CrossOrigin(origins = "http://localhost:3000")
 	@PostMapping("/login")
-    public void login(HttpServletRequest request, HttpSession session, @RequestBody Map<String, Object> datosUsuario) {
+    public void login(HttpServletRequest request, @RequestBody Map<String, Object> datosUsuario) {
         try {
             JSONObject jso = new JSONObject(datosUsuario);
             String dni = jso.optString("dni");

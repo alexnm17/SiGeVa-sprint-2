@@ -230,10 +230,10 @@ public class CitaController {
 		return listaUsuariosAVacunar;
 	}
 
-	/*@CrossOrigin(origins = "http://localhost:3000")
+	@CrossOrigin(origins = "http://localhost:3000")
 	@GetMapping("/getCitaByDni")
 	public List<Cita> getCitaByDni(HttpSession session, @RequestBody Map<String, Object> jsonDni) {
 		JSONObject json = new JSONObject(jsonDni);
 		return citaDao.findAllByUsuarioDni(json.getString("dni"));
-	}*/
+	}
 }
