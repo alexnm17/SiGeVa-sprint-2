@@ -15,8 +15,7 @@ class TestFormatoVacunacionCorrecto {
 			boolean resultado = formato.horasCorrectas();
 			assertTrue(resultado);
 		} catch (SiGeVaException e) {
-			
-			e.printStackTrace();
+
 		}
 	}
 

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import edu.esi.uclm.model.Usuario;
+
 import edu.uclm.esi.exceptions.SiGeVaException;
 
 import org.springframework.web.bind.annotation.RestController;
@@ -61,6 +62,7 @@ public class UsuarioController {
 		}
 	}
 
+	@CrossOrigin(origins = "http://localhost:3000")
 	@PostMapping("/crearUsuario")
 	public void crearUsuario(@RequestBody Map<String, Object> datosUsuario) {
 
@@ -72,11 +74,10 @@ public class UsuarioController {
 			String apellido = json.getString("apellido");
 			String password = json.getString("password");
 			String centroSalud = json.getString("centroSalud");
-			String estadoPaciente = "No Vacunado";
 			String rol = json.getString("rol");
-			Usuario nuevoUsuario = new Usuario(dni, nombre, apellido, password, rol, centroSalud, estadoPaciente);
-			ComprobarCentro(centroSalud);
-			nuevoUsuario.controlarContraseña();
+			Usuario nuevoUsuario = new Usuario(dni, nombre, apellido, password, rol, centroSalud);
+			comprobarCentro(centroSalud);
+			nuevoUsuario.controlarContrasena();
 			nuevoUsuario.comprobarDni();
 			usuarioDao.save(nuevoUsuario);
 		} catch (SiGeVaException e) {
@@ -91,21 +92,22 @@ public class UsuarioController {
 			if (user.getRol().equals(RolUsuario.ADMINISTRADOR.name()))
 				throw new SigevaException(HttpStatus.FORBIDDEN, "No puede modificar a otro administrador del sistema");
 			else {
-				Usuario antiguoUsuario = usuarioDao.findByDni(user.getDni());
-				if (antiguoUsuario == null)
+				Optional<Usuario> recogido = usuarioDao.findById(user.getDni());
+				if (!recogido.isPresent())
 					throw new SiGeVaException(HttpStatus.NOT_FOUND, "No existe un usuario con este identificador");
+				Usuario antiguoUsuario = recogido.get();
 				antiguoUsuario.setNombre(user.getNombre());
 				antiguoUsuario.setApellido(user.getApellido());
 				if (!antiguoUsuario.getCentroSalud().equals(user.getCentroSalud()))
-					ComprobarCentro(user.getCentroSalud());
+					comprobarCentro(user.getCentroSalud());
 				antiguoUsuario.comprobarEstado();
 				antiguoUsuario.setCentroSalud(user.getCentroSalud());
 				antiguoUsuario.setPassword(user.getPassword());
 
-				antiguoUsuario.controlarContraseña();
+				antiguoUsuario.controlarContrasena();
 				usuarioDao.save(antiguoUsuario);
-
 			}
+
 		} catch (Exception e) {
 
 			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
@@ -120,7 +122,9 @@ public class UsuarioController {
 
 			JSONObject json = new JSONObject(datosUsuario);
 			String dni = json.getString("dni");
-			Usuario user = usuarioDao.findByDni(dni);
+			String rol = json.optString("rol");
+
+			Usuario user = usuarioDao.findByDniAndRol(dni, rol);
 
 			if (user == null)
 				throw new SigevaException(HttpStatus.FORBIDDEN, "No existe este usuario");
@@ -134,6 +138,13 @@ public class UsuarioController {
 			borrarCitas(dni);
 			usuarioDao.delete(user);
 
+			if (user.getRol().equals(RolUsuario.PACIENTE.name())
+					&& !user.getEstadoVacunacion().equals(EstadoVacunacion.NO_VACUNADO.name()))
+				throw new SigevaException(HttpStatus.FORBIDDEN, "No puede eliminar a un paciente vacunado del sistema");
+
+			borrarCitas(user.getDni());
+			usuarioDao.delete(user);
+
 		} catch (Exception e) {
 
 			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
@@ -142,6 +153,7 @@ public class UsuarioController {
 
 	private void borrarCitas(String dni) {
 		citaDao.deleteByUsuarioDni(dni);
+
 	}
 
 	@PostMapping("/marcarVacunado")
@@ -152,6 +164,12 @@ public class UsuarioController {
 		String rol = jsonPaciente.optString("rol");
 
 		Usuario usuarioVacunado = usuarioDao.findByDniAndRol(dni, rol);
+		CentroVacunacion centroVacunacion = centroVacunacionDao.findByNombre(usuarioVacunado.getCentroSalud());
+
+		centroVacunacionDao.delete(centroVacunacion);
+		centroVacunacion.setDosis(centroVacunacion.getDosis() - 1);
+
+		centroVacunacionDao.save(centroVacunacion);
 
 		if (usuarioVacunado.getEstadoVacunacion().equals(EstadoVacunacion.NO_VACUNADO.name())) {
 			usuarioDao.delete(usuarioVacunado);
@@ -171,11 +189,10 @@ public class UsuarioController {
 		return usuarioDao.findAll();
 	}
 
-	private void ComprobarCentro(String centroSalud) throws SiGeVaException {
-		CentroVacunacion centro = centroVacunacionDao.findByNombre(centroSalud);
-		if (centro==null)
+	private void comprobarCentro(String centroSalud) throws SiGeVaException {
+		Optional<CentroVacunacion> centro = centroVacunacionDao.findById(centroSalud);
+		if (centro.isPresent())
 			throw new SiGeVaException(HttpStatus.NOT_FOUND, "No existe el centro de salud introducido");
-
 	}
 
 }

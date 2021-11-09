@@ -68,7 +68,10 @@ public class CitaController {
 
 			int citasAsignadas = citaDao.findAllByUsuarioDni(usuario.getDni()).size();
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> branch 'master' of https://SiGeVa@dev.azure.com/SiGeVa/SiGeVa/_git/SiGeVa
 			switch(citasAsignadas) {
 			case 0:
 				//Primera
@@ -80,13 +83,20 @@ public class CitaController {
 			case 2:
 				throw new SiGeVaException(HttpStatus.FORBIDDEN,
 						"El usuario: "+usuario.getDni()+" ya dispone de dos citas asignadas. Si desea modificar su cita, utilice Modificar Cita");
+<<<<<<< HEAD
 
+=======
+>>>>>>> branch 'master' of https://SiGeVa@dev.azure.com/SiGeVa/SiGeVa/_git/SiGeVa
 				
 			case 1:
 				Cita primeraDosis = citaDao.findByUsuarioDni(usuario.getDni());
 				LocalDate fechaPrimeraCita = LocalDate.parse(primeraDosis.getFecha());
+<<<<<<< HEAD
 				
 
+=======
+			
+>>>>>>> branch 'master' of https://SiGeVa@dev.azure.com/SiGeVa/SiGeVa/_git/SiGeVa
 				//Asignar SegundaDosis
 				asignarDosis(usuario,fechaPrimeraCita.plusDays(21));
 				
@@ -94,7 +104,11 @@ public class CitaController {
 				
 			default:
 				break;
+<<<<<<< HEAD
 			
+=======
+		
+>>>>>>> branch 'master' of https://SiGeVa@dev.azure.com/SiGeVa/SiGeVa/_git/SiGeVa
 			}
 			
 		} catch (SiGeVaException e) {

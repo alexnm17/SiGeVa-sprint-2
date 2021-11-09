@@ -10,14 +10,13 @@ class TestComrpobarDniCorrecto {
 
 	@Test
 	void test() {
-		Usuario user = new Usuario("1234567B","","", null, null, null, null);
+		Usuario user = new Usuario("12345678B", "", "", null, null, null);
 		try {
 			user.comprobarDni();
-		} catch (SiGeVaException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new Exception("Se ha completado este proceso correctamente");
+		} catch (Exception e) {
+			assertEquals("Se ha completado este proceso correctamente", e.getMessage());
 		}
-		fail("Not yet implemented");
 	}
 
 }
