@@ -4,10 +4,8 @@ import UsuariosList from "./UsuariosList"
 import { Button, Modal, ModalBody, FormGroup, ModalFooter, ModalHeader } from 'reactstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import axios from 'axios'
-// import DropdownCentros from "./DropdownCentros"
 
-
-class GestionCentroSalud extends Component {
+class GestionUsuarios extends Component {
     state = {
         form: {
             dni: "",
@@ -112,7 +110,7 @@ class GestionCentroSalud extends Component {
                         <FormGroup>
                             <label style={{ marginRight: 10 }}>Centro de Vacunacion:</label>
                             <select name="centroSalud" onChange={this.changeHandler} value={centroSalud}>
-                                <option defaultValue>Selecciona un centro de salud...</option>
+                                <option defaultValue>Selecciona un centro de salud...</option> 
                                 {this.state.centroSalud.map(centroSalud =>
                                     <option key={centroSalud.nombre}>{centroSalud.nombre}</option>
                                 )}
@@ -139,4 +137,4 @@ class GestionCentroSalud extends Component {
 
 }
 
-export default GestionCentroSalud
+export default GestionUsuarios
