@@ -66,6 +66,7 @@ public class UsuarioController {
 
 	}
 
+	@CrossOrigin(origins = "http://localhost:3000")
 	@PostMapping("/modificarUsuario")
 	public void modificarUsuario(@RequestBody Usuario user) {
 		try {
@@ -80,6 +81,10 @@ public class UsuarioController {
 				
 				antiguoUsuario.setNombre(user.getNombre());
 				antiguoUsuario.setApellido(user.getApellido());
+				antiguoUsuario.setDni(user.getDni());
+				antiguoUsuario.setRol(user.getRol());
+				antiguoUsuario.setNombre(user.getNombre());
+
 				
 				if (!antiguoUsuario.getCentroVacunacion().equals(user.getCentroVacunacion()))
 					antiguoUsuario.comprobarEstado();
