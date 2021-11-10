@@ -78,7 +78,7 @@ public class CitaController {
 			
 			case 2:
 				throw new SiGeVaException(HttpStatus.FORBIDDEN,
-						"El usuario: "+usuario.getDni()+" ya dispone de dos citas asignadas. Si desea modificar su cita, utilice Modificar Cita");
+						"El paciente: "+usuario.getDni()+" ya dispone de dos citas asignadas. Si desea modificar su cita, utilice Modificar Cita");
 				
 			case 1:
 				Cita primeraDosis = citaDao.findByUsuario(usuario);
@@ -206,7 +206,7 @@ public class CitaController {
 		cupoDao.save(cupoAsignado);
 		
 
-		Cita cita= new Cita(cupoAsignado.getFecha(),cupoAsignado.getHora(),cupoAsignado.getCentroVacunacion(), usuario);
+		Cita cita= new Cita(cupoAsignado.getFecha(),cupoAsignado.getHora(),usuario);
 		citaDao.save(cita);
 		
 	}
