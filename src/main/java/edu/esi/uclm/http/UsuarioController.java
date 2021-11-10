@@ -101,16 +101,18 @@ public class UsuarioController {
 
 	@CrossOrigin(origins = "http://localhost:3000")
 	@PostMapping("/login")
-    public void login(HttpServletRequest request, @RequestBody Map<String, Object> datosUsuario) {
+    public String login(HttpServletRequest request, @RequestBody Map<String, Object> datosUsuario) {
         try {
             JSONObject jso = new JSONObject(datosUsuario);
-            String email = jso.optString(EMAIL);
+            String email = jso.optString("email");
             String password= jso.optString("password");
             if (email.length()==0) throw new SigevaException(HttpStatus.FORBIDDEN, "Por favor, escribe tu Direccion de Correo");
             
             Usuario usuario = usuarioDao.findByEmailAndPassword(email, password);
             if (usuario==null) throw new SigevaException(HttpStatus.UNAUTHORIZED, "Credenciales inválidas");
             request.getSession().setAttribute("emailUsuario", email);
+            System.out.println(usuario.getRol());
+            return usuario.getRol();
         } catch (SigevaException e) {
         	throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
         }
