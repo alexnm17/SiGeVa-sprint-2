@@ -15,7 +15,7 @@ class TestModificarUsuarioCorrecto {
 	@Test
 	void test() {
 		
-		Usuario user= new Usuario("Prueba","Sujetomod","Pruebamodif","maniqui","Tomelloso","Paciente","");
+		Usuario user= new Usuario("Prueba","Sujetomod","Pruebamodif","maniqui","Paciente","El bombo");
 		usuarioController.modificarUsuario(user);
 		Usuario resultado = dao.findByDni("Prueba");
 		Assert.assertEquals(user, resultado);

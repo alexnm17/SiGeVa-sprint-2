@@ -8,10 +8,11 @@ import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 
 import edu.esi.uclm.dao.FormatoVacunacionDao;
 import edu.esi.uclm.model.FormatoVacunacion;
-
+@DataMongoTest
 class TestFormatoVacunacionControllerCorrecto {
 
 	private FormatoVacunacionDao dao;

@@ -1,21 +1,26 @@
 package edu.esi.uclm.http;
 
-import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 
 import edu.esi.uclm.http.UsuarioController;
 import edu.uclm.esi.exceptions.SiGeVaException;
-
+@DataMongoTest
 class TestEliminarNoExiste {
 	
 	private UsuarioController usuarioController= new UsuarioController();
 	@Test
 	void test() {
-		Exception e = assertThrows(SiGeVaException.class, () -> usuarioController.eliminarUsuario("87654321"));
-		Assert.assertEquals(e.getMessage(), "No existe un usuario con este identificador");
+		Map<String, Object> datos = new HashMap<String, Object>();
+		datos.put("dni","Eliminar");
+		Exception e = assertThrows(SiGeVaException.class, () -> usuarioController.eliminarUsuario(datos));
+		Assert.assertEquals( "No existe un usuario con este identificador",e.getMessage());
 	}
 
 }

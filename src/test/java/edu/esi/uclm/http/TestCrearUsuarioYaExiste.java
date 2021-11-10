@@ -7,10 +7,11 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.web.server.ResponseStatusException;
 
 import edu.esi.uclm.dao.UsuarioDao;
-
+@DataMongoTest
 class TestCrearUsuarioYaExiste {
 
 	UsuarioController usuarioController= new UsuarioController();
@@ -25,7 +26,7 @@ class TestCrearUsuarioYaExiste {
 		datos.put("nombre", "Sujeto");
 		datos.put("apellido", "Prueba");
 		datos.put("password", "maniqui");
-		datos.put("centroSalud", "Tomelloso");
+		datos.put("centroSalud", "El bombo");
 		datos.put("rol", "Paciente");
 
 		usuarioController.crearUsuario(datos);

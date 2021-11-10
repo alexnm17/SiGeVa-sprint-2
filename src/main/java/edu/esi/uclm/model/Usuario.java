@@ -87,6 +87,7 @@ public class Usuario {
 
 	public boolean comprobarDni() throws SiGeVaException {
 		char[] cadenaDni = dni.toCharArray();
+		if(cadenaDni.length != 9) throw new SiGeVaException(HttpStatus.CONFLICT, "No cumple con el formato de un DNI");
 		for (int i = 0; i < 7; i++)
 			if (!Character.isDigit(cadenaDni[i]))
 				throw new SiGeVaException(HttpStatus.CONFLICT, "No cumple con el formato de un DNI");

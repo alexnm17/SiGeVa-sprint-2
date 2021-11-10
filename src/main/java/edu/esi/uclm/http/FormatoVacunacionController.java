@@ -34,13 +34,11 @@ public class FormatoVacunacionController {
 
 			FormatoVacunacion formatoVacunacion = new FormatoVacunacion(horaInicio, horaFin, duracionFranja,
 					personasAVacunar);
-			if (formatoVacunacion.horasCorrectas() /*&& formatoVacunacion.condicionesValidas()*/) {
+			if (formatoVacunacion.horasCorrectas()) {
 				formatoVacunacionDao.insert(formatoVacunacion);
 			} else {
 				if (!formatoVacunacion.horasCorrectas())
 					throw new SiGeVaException(HttpStatus.CONFLICT, "Las horas del formato no son correctas");
-			/*	else
-					throw new SiGeVaException(HttpStatus.CONFLICT, "Las condiciones no estan bien");*/
 			}
 
 		} catch (SiGeVaException e) {
@@ -48,7 +46,7 @@ public class FormatoVacunacionController {
 		}
 
 	}
-
+/*
 	@PostMapping("/setPersonalVacunacion")
 	public void setPersonalVacunacion() {
 
@@ -63,5 +61,5 @@ public class FormatoVacunacionController {
 	public void setDosisDisponibles() {
 
 	}
-
+*/
 }
