@@ -13,7 +13,7 @@ public interface CitaDao extends MongoRepository<Cita, String> {
 
 	void deleteByFechaAndHora(String fecha, String hora);
 
-	List<Cita> findAllByFechaAndCentroVacunacion(String fecha, String centroVacunacion);
+	List<Cita> findAllByFechaAndCentroVacunacion(String fecha, CentroVacunacion centroVacunacion);
 
 	List<Cita> findAllByUsuario(Usuario usuario);
 
@@ -21,10 +21,5 @@ public interface CitaDao extends MongoRepository<Cita, String> {
 
 	void deleteAllByUsuario(Usuario usuario);
 
-	/*void deleteAllByUsuarioDni(String dni);
-	 * Cita findByUsuarioDni(String dni);
-	 * List<Cita> findAllByUsuarioDni(String usuarioDni);
-	 */
-
-	
+	List<Cita> findAllByUsuarioDni(String dni);
 }

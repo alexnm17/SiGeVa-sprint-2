@@ -2,12 +2,12 @@ package edu.esi.uclm.http;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.json.JSONObject;
@@ -209,43 +209,24 @@ public class CitaController {
 		Cita cita= new Cita(cupoAsignado.getFecha(),cupoAsignado.getHora(),usuario);
 		citaDao.save(cita);
 		
-	}
-	
-	
-	@GetMapping("/getUsuariosAVacunar")
-	public List<Usuario> getUsuariosAVacunar(HttpSession session, @RequestBody Map<String, Object> info) {
-		List<Usuario> listaUsuariosAVacunar = new ArrayList<>();
-		JSONObject json = new JSONObject(info);
-		String fecha = json.getString("fecha");
-		String centroVacunacion = json.getString("centroVacunacion");
-
-		List<Cita> listCitasDeUnaFecha = citaDao.findAllByFechaAndCentroVacunacion(fecha, centroVacunacion);
-		
-		//Crear una lista con los usuarios contenidos en las citas de esa fecha y centro
-		for(int i=0; i<listCitasDeUnaFecha.size();i++) {
-			listaUsuariosAVacunar.add(usuarioDao.findByDni(listCitasDeUnaFecha.get(i).getUsuario().getDni()));
-		}
-		
-		//Devolver la lista de usuariops
-		return listaUsuariosAVacunar;
-	}
-	
-	
+	}	
 	
 	@GetMapping("/getCitasPorDia")
 	public List<Cita> getCitasPorDia(HttpSession session, @RequestBody Map<String, Object> info) {
 
 		JSONObject json = new JSONObject(info);
 		String fecha = json.getString("fecha");
-		String centroVacunacion = json.getString("centroVacunacion");
+		String email = (String) session.getAttribute("emailUsuario");
+		CentroVacunacion centroVacunacion = usuarioDao.findByEmail(email).getCentroVacunacion(); 
 		
 		return citaDao.findAllByFechaAndCentroVacunacion(fecha, centroVacunacion);
 	}
 
-	/*@CrossOrigin(origins = "http://localhost:3000")
-	@GetMapping("/getCitaByDni")
-	public List<Cita> getCitaByDni(HttpSession session, @RequestBody Map<String, Object> jsonDni) {
-		JSONObject json = new JSONObject(jsonDni);
-		return citaDao.findByUsuarioDni(json.getString("dni"));
-	}*/
+	@CrossOrigin(origins = "http://localhost:3000")
+	@PostMapping("/getCitaByDni")
+	public List<Cita> getCitaByDni(HttpServletRequest request, @RequestBody Map<String, Object> info) {
+		JSONObject json = new JSONObject(info);
+		String dni = json.getString("dni");
+		return citaDao.findAllByUsuarioDni(dni);
+	}
 }
