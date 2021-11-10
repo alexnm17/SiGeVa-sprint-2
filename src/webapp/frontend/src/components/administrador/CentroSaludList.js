@@ -47,20 +47,21 @@ class centroSaludList extends Component {
                 <table className="table" style={{ marginTop: 15, marginLeft: 15 }}>
                     <thead>
                         <tr>
-                            <th></th>
                             <th>Nombre</th>
                             <th>Municipio</th>
+                            <th>Dosis</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         {this.state.centroSalud.map(centroSalud =>
                             <tr key={centroSalud.nombre}>
-                                <td></td>
                                 <td>{centroSalud.nombre}</td>
                                 <td>{centroSalud.municipio}</td>
-                                <td></td>
-
+                                <td>{centroSalud.dosis}</td>
+                                <td>
+                                    <button className="btn btn-primary" id={centroSalud.nombre} style={{ marginRight: 10 }} onClick={() => this.mostrarModalModificar(centroSalud.nombre)}>Modificar centro</button>
+                                </td>
                             </tr>
                         )}
                     </tbody>
