@@ -70,7 +70,7 @@ public class UsuarioController {
 	@PostMapping("/modificarUsuario")
 	public void modificarUsuario(@RequestBody Usuario user) {
 		try {
-			if (user.getRol().equals(RolUsuario.ADMINISTRADOR.name()))
+			if (user.getRol().equalsIgnoreCase(RolUsuario.ADMINISTRADOR.name()))
 				throw new SigevaException(HttpStatus.FORBIDDEN, "No puede modificar a otro administrador del sistema");
 			else {
 
@@ -131,7 +131,7 @@ public class UsuarioController {
 
 			Usuario user = usuarioDao.findByEmail(email);
 
-			if (user.getRol().equals(RolUsuario.ADMINISTRADOR.name()))
+			if (user.getRol().equalsIgnoreCase(RolUsuario.ADMINISTRADOR.name()))
 				throw new SigevaException(HttpStatus.FORBIDDEN, "No puede eliminar a otro administrador del sistema");
 
 			if(user.getRol().equals(RolUsuario.PACIENTE.name()) && !user.getEstadoVacunacion().equals(EstadoVacunacion.NO_VACUNADO.name()))
@@ -162,17 +162,14 @@ public class UsuarioController {
 		Usuario usuarioVacunado = usuarioDao.findByEmail(email);
 		CentroVacunacion centroVacunacion = usuarioVacunado.getCentroVacunacion();
 		
-		centroVacunacionDao.delete(centroVacunacion);
 		centroVacunacion.setDosis(centroVacunacion.getDosis()-1);
-		
 		centroVacunacionDao.save(centroVacunacion);
 
 		if (usuarioVacunado.getEstadoVacunacion().equals(EstadoVacunacion.NO_VACUNADO.name())) {
-			usuarioDao.delete(usuarioVacunado);
 			usuarioVacunado.setEstadoVacunacion(EstadoVacunacion.VACUNADO_PRIMERA.name());
 			usuarioDao.save(usuarioVacunado);
+			
 		} else if (usuarioVacunado.getEstadoVacunacion().equals(EstadoVacunacion.VACUNADO_PRIMERA.name())) {
-			usuarioDao.delete(usuarioVacunado);
 			usuarioVacunado.setEstadoVacunacion(EstadoVacunacion.VACUNADO_SEGUNDA.name());
 			usuarioDao.save(usuarioVacunado);
 		}
