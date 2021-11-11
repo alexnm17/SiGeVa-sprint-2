@@ -1,14 +1,12 @@
 package edu.esi.uclm.model;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
+import java.util.UUID;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
-import edu.uclm.esi.exceptions.SiGeVaException;
-
 public class Cita {
+	@Id
+	private String idCita;
 	private String fecha;
 	private String hora;
 	@DBRef
@@ -16,8 +14,9 @@ public class Cita {
 	@DBRef
 	private CentroVacunacion centroVacunacion;
 
+
 	public Cita() {
-		// El constructor vacio ha sido crado por exigencias del Spring
+		this.idCita = UUID.randomUUID().toString();
 	}
 
 	public Cita(String fecha, String hora, Usuario usuario) {
@@ -57,5 +56,13 @@ public class Cita {
 
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
+	}
+
+	public String getIdCita() {
+		return idCita;
+	}
+
+	public void setIdCita(String idCita) {
+		this.idCita = idCita;
 	}
 }
