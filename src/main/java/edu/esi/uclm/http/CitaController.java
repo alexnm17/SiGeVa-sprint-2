@@ -116,14 +116,44 @@ public class CitaController {
 		return cupo;
 	}
 
-	@PostMapping("/modificarCita")
-	public void modificarCita(HttpSession session, @RequestBody Map<String, Object> datosCita) {
+	public void modificarCita(@RequestBody Map<String, Object> datosCita) {
 
+		try {
+		
+			JSONObject json = new JSONObject(datosCita);
+			String idCita = json.getString("idCita");
+			String fecha = json.optString("fecha");
+			String hora = json.getString("hora");
+			String emailUsuario = json.getString("emailUsuario");
+			Usuario usuario = usuarioDao.findByEmail(emailUsuario);
+		
+			int citasAsignadas = citaDao.findAllByUsuarioDni(usuario.getDni()).size();
+			
+			if(citasAsignadas <1) 
+				throw new SiGeVaException(HttpStatus.NOT_FOUND, "No se puede modificar citas puesto que no dispone de ninguna cita asignada");
+			
+			Cupo cupoElegido = cupoDao.findByFechaAndHoraAndCentro(fecha, hora, usuario.getCentroVacunacion());
+			if(cupoElegido.getPersonasRestantes()<1)
+				throw new SiGeVaException(HttpStatus.FORBIDDEN,"No hay hueco para cita el dia "+fecha+" a las "+hora);
+			
+			
+			Cita citaModificar = citaDao.findByIdCita(idCita);
+			citaModificar.setFecha(fecha);
+			citaModificar.setHora(hora);
+			citaDao.save(citaModificar);
+			
+			cupoElegido.setPersonasRestantes(cupoElegido.getPersonasRestantes()-1);
+			cupoDao.save(cupoElegido);
+			
+		
+		} catch (SiGeVaException e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+		}
 	}
 
 	@DeleteMapping("/anularCita")
 	public void anularCita(HttpSession session, @RequestBody String idCita) {
-		citaDao.deleteById(idCita);
+		citaDao.deleteByIdCita(idCita);
 	}
 
 	@GetMapping("/consultarCita")
