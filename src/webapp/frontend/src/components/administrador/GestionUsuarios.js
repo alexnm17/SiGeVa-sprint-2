@@ -76,9 +76,7 @@ class GestionUsuarios extends Component {
                 </div>
                 <div>
                     <p>Selecciona la acción que quieres realizar: </p>
-                    {/* <a href="/administrador/GestionUsuarios/CrearUsuario"> */}
                     <Button color="success" onClick={() => this.mostrarModalCrear()}>Crear usuario</Button>
-                    {/* </a> */}
                     <UsuariosList />
                 </div>
 
