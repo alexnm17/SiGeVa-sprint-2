@@ -68,8 +68,19 @@ public class UsuarioController {
 
 	@CrossOrigin(origins = "http://localhost:3000")
 	@PostMapping("/modificarUsuario")
-	public void modificarUsuario(@RequestBody Usuario user) {
+	public void modificarUsuario(@RequestBody Map<String, Object> datosUsuario) {
 		try {
+			JSONObject json = new JSONObject(datosUsuario);
+			String email = json.getString(EMAIL);
+			String dni = json.getString("dni");
+			String nombre = json.getString("nombre");
+			String apellido = json.getString("apellido");
+			String password = json.getString("password");
+			CentroVacunacion centroVacunacion = centroVacunacionDao.findByNombre(json.getString("centroSalud"));
+			String rol = json.getString("rol");
+			
+			Usuario user = new Usuario(email,dni, nombre, apellido, password, rol, centroVacunacion);
+			
 			if (user.getRol().equalsIgnoreCase(RolUsuario.ADMINISTRADOR.name()))
 				throw new SigevaException(HttpStatus.FORBIDDEN, "No puede modificar a otro administrador del sistema");
 			else {

@@ -13,6 +13,7 @@ class UsuariosList extends Component {
             apellido: "",
             email: "",
             centroVacunacion: "",
+            password: "",
             rol: ""
         },
         modalModificar: false,
@@ -40,12 +41,12 @@ class UsuariosList extends Component {
 
     changeHandler = e => {
         e.preventDefault()
-            this.setState({
-                form: {
-                    ...this.state.form,
-                    [e.target.name]: e.target.value,
-                }
-            });
+        this.setState({
+            form: {
+                ...this.state.form,
+                [e.target.name]: e.target.value,
+            }
+        });
     }
 
     mostrarModalModificar = (usuario) => {
@@ -76,7 +77,7 @@ class UsuariosList extends Component {
     }
 
     render() {
-        const {centroVacunacion} = this.state.form
+        const { centroVacunacion } = this.state.form
         return (
             <div>
                 <Table className="table" style={{ marginTop: 15, marginLeft: 15 }}>
@@ -117,6 +118,10 @@ class UsuariosList extends Component {
                             <label>{this.state.form.email}</label>
                         </FormGroup>
                         <FormGroup>
+                            <label style={{ marginRight: 15 }}>Contraseña: </label>
+                            <input className="form-control" type="password" name="password" onChange={this.changeHandler} value={this.state.form.password}></input>
+                        </FormGroup>
+                        <FormGroup>
                             <label>DNI:</label>
                             <input className="form-control" type="text" name="dni" onChange={this.changeHandler} value={this.state.form.dni}></input>
                         </FormGroup>
@@ -132,7 +137,7 @@ class UsuariosList extends Component {
                             <label style={{ marginRight: 10 }}>Centro de Vacunacion: </label>
                             <select className="form-select" name="centroVacunacion" onChange={this.changeHandler} value={centroVacunacion}>
                                 {this.state.centroSalud.map(centro =>
-                                    <option  key={centro.nombre}>{centro.nombre}</option>
+                                    <option key={centro.nombre}>{centro.nombre}</option>
                                 )}
                             </select>
                         </FormGroup>
