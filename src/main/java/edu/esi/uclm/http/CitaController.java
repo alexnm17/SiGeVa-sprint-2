@@ -132,7 +132,7 @@ public class CitaController {
 			if(citasAsignadas <1) 
 				throw new SiGeVaException(HttpStatus.NOT_FOUND, "No se puede modificar citas puesto que no dispone de ninguna cita asignada");
 			
-			Cupo cupoElegido = cupoDao.findByFechaAndHoraAndCentro(fecha, hora, usuario.getCentroVacunacion());
+			Cupo cupoElegido = cupoDao.findByFechaAndHoraAndCentroVacunacion(fecha, hora, usuario.getCentroVacunacion());
 			if(cupoElegido.getPersonasRestantes()<1)
 				throw new SiGeVaException(HttpStatus.FORBIDDEN,"No hay hueco para cita el dia "+fecha+" a las "+hora);
 			
