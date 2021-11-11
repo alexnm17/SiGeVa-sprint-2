@@ -20,10 +20,10 @@ public class Cita {
 		// El constructor vacio ha sido crado por exigencias del Spring
 	}
 
-	public Cita(String fecha, String hora, CentroVacunacion centro, Usuario usuario) {
+	public Cita(String fecha, String hora, Usuario usuario) {
 		this.fecha = fecha;
 		this.hora = hora;
-		this.centroVacunacion = centro;
+		this.centroVacunacion = usuario.getCentroVacunacion();
 		this.usuario = usuario;
 	}
 
