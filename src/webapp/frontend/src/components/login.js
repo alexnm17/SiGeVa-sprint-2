@@ -28,7 +28,7 @@ class Login extends Component {
             .then(res => {
                 const rol = res.data;
                 localStorage.setItem('emailUsuario', this.state.form.email);
-                localStorage.setItem('rolUsuario', this.state.form.rol);
+                localStorage.setItem('rolUsuario', rol);
                 if (rol === 'Paciente') {
                 this.props.history.push("/paciente");
                 } else if (rol === 'Administrador') {

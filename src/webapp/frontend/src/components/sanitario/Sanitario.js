@@ -42,38 +42,51 @@ class Sanitario extends Component {
 
     render() {
         const { fechaSeleccionada, listaVacunacion } = this.state
-        return (
-            <div>
-                <Breadcrumb style={{ margin: 30 }}>
-                    <Breadcrumb.Item href="/">SiGeVa</Breadcrumb.Item>
-                    <Breadcrumb.Item href="/Sanitario">Sanitario</Breadcrumb.Item>
-                </Breadcrumb>
+        if(localStorage.getItem('rolUsuario')=="Sanitario"){
+            return (
                 <div>
-                    <h6>Selecciona una fecha para ver la lista de vacunacion</h6>
-                    {/* <input type="date" onChange={this.changeHandler} name="fechaSeleccionada" value={fechaSeleccionada}></input> */}
-                    <Button>Ver lista de otro día</Button>
-                </div>
-                <Table style={{ marginTop: 15 }}>
-                    <Row>
-                        <Col></Col>
-                        <Col><h6>DNI</h6></Col>
-                        <Col><h6>Hora Vacunacion</h6></Col>
-                        <Col><h6>Acciones</h6></Col>
-                        <Col></Col>
-                    </Row>
-                    {this.state.listaVacunacion.map(usuario =>
-                        <Row style={{ marginBottom: 15 }}>
+                    <Breadcrumb style={{ margin: 30 }}>
+                        <Breadcrumb.Item href="/">SiGeVa</Breadcrumb.Item>
+                        <Breadcrumb.Item href="/Sanitario">Sanitario</Breadcrumb.Item>
+                    </Breadcrumb>
+                    <div>
+                        <h6>Selecciona una fecha para ver la lista de vacunacion</h6>
+                        {/* <input type="date" onChange={this.changeHandler} name="fechaSeleccionada" value={fechaSeleccionada}></input> */}
+                        <Button>Ver lista de otro día</Button>
+                    </div>
+                    <Table style={{ marginTop: 15 }}>
+                        <Row>
                             <Col></Col>
-                            <Col>{this.listaVacunacion.dni}</Col>
-                            <Col>{this.listaVacunacion.hora}</Col>
-                            <Col><Button>Vacunar</Button></Col>
+                            <Col><h6>DNI</h6></Col>
+                            <Col><h6>Hora Vacunacion</h6></Col>
+                            <Col><h6>Acciones</h6></Col>
                             <Col></Col>
                         </Row>
-                    )
-                    }
-                </Table>
-            </div>
-        );
+                        {this.state.listaVacunacion.map(usuario =>
+                            <Row style={{ marginBottom: 15 }}>
+                                <Col></Col>
+                                <Col>{this.listaVacunacion.dni}</Col>
+                                <Col>{this.listaVacunacion.hora}</Col>
+                                <Col><Button>Vacunar</Button></Col>
+                                <Col></Col>
+                            </Row>
+                        )
+                        }
+                    </Table>
+                </div>
+            );
+        }else{
+            return(
+                <div>
+                    <Breadcrumb style={{margin:30}}>
+                            <Breadcrumb.Item href="/">SiGeVa</Breadcrumb.Item>
+                            <Breadcrumb.Item href="/Sanitairo">Sanitario</Breadcrumb.Item>
+                    </Breadcrumb>
+                    <p>A esta sección solo pueden acceder los Sanitarios.</p>
+                    <p>Inicie sesión como sanitario o contacte con un administrador.</p>
+                </div>
+            );
+        }
     }
 }
 
