@@ -49,48 +49,62 @@ class GestionCentroSalud extends Component {
 
     render() {
         const {nombre, municipio, dosis} = this.state.form
-        return (
-            <div>
-                <Breadcrumb style={{ margin: 30 }}>
-                    <Breadcrumb.Item href="/">SiGeVa</Breadcrumb.Item>
-                    <Breadcrumb.Item href="/Administrador">Administrador</Breadcrumb.Item>
-                    <Breadcrumb.Item href="/Administrador/GestionCentrosSalud">Gestion de Centros de Salud</Breadcrumb.Item>
-                </Breadcrumb>
-                <div style={{ marginBotton: 20 }}>
-                    <h5>Estas en la página de Gestión de Centros de Salud</h5>
-                </div>
+        if(localStorage.getItem('rolUsuario')==="Administrador"){
+            return (
                 <div>
-                    <p>Selecciona la acción que quieres realizar: </p>
-                        <button className="btn btn-success" style={{ marginRight: 15 }} onClick={() => this.mostrarModalCrear()}>Crear centro de salud</button>
-                    <CentroSaludList />
+                    <Breadcrumb style={{ margin: 30 }}>
+                        <Breadcrumb.Item href="/">SiGeVa</Breadcrumb.Item>
+                        <Breadcrumb.Item href="/Administrador">Administrador</Breadcrumb.Item>
+                        <Breadcrumb.Item href="/Administrador/GestionCentrosSalud">Gestion de Centros de Salud</Breadcrumb.Item>
+                    </Breadcrumb>
+                    <div style={{ marginBotton: 20 }}>
+                        <h5>Estas en la página de Gestión de Centros de Salud</h5>
+                    </div>
+                    <div>
+                        <p>Selecciona la acción que quieres realizar: </p>
+                            <button className="btn btn-success" style={{ marginRight: 15 }} onClick={() => this.mostrarModalCrear()}>Crear centro de salud</button>
+                        <CentroSaludList />
+                    </div>
+
+                    <Modal isOpen={this.state.modalCrear}>
+                        <ModalHeader>
+                            <div><h3>Crear Centro de Salud</h3></div>
+                        </ModalHeader>
+                        <ModalBody>
+                            <FormGroup>
+                                <label>Nombre:</label>
+                                <input className="form-control" type="text" name="nombre"  onChange={this.changeHandler} value={nombre}></input>
+                            </FormGroup>
+                            <FormGroup>
+                                <label>Municipio:</label>
+                                <input className="form-control" type="text" name="municipio" onChange={this.changeHandler} value={municipio}></input>
+                            </FormGroup>
+                            <FormGroup>
+                                <label>Dosis:</label>
+                                <input className="form-control" type="text" name="dosis" onChange={this.changeHandler} value={dosis}></input>
+                            </FormGroup>
+                        </ModalBody>
+
+                        <ModalFooter>
+                            <Button color="primary" onClick={this.submitHandler}>Aceptar</Button>
+                            <Button color="danger" onClick={() => this.ocultarModalCrear()}>Cancelar</Button>
+                        </ModalFooter>
+                    </Modal>
                 </div>
+            );
+        }else{
+            return(
+                <div>
+                    <Breadcrumb style={{margin:30}}>
+                            <Breadcrumb.Item href="/">SiGeVa</Breadcrumb.Item>
+                            <Breadcrumb.Item href="/Administrador">Administrador</Breadcrumb.Item>
+                    </Breadcrumb>
+                    <p>A esta sección solo pueden acceder los Administradores.</p>
+                    <p>Inicie sesión como administrador para continuar.</p>
+                </div>
+            );
+        }
 
-                <Modal isOpen={this.state.modalCrear}>
-                    <ModalHeader>
-                        <div><h3>Crear Centro de Salud</h3></div>
-                    </ModalHeader>
-                    <ModalBody>
-                        <FormGroup>
-                            <label>Nombre:</label>
-                            <input className="form-control" type="text" name="nombre"  onChange={this.changeHandler} value={nombre}></input>
-                        </FormGroup>
-                        <FormGroup>
-                            <label>Municipio:</label>
-                            <input className="form-control" type="text" name="municipio" onChange={this.changeHandler} value={municipio}></input>
-                        </FormGroup>
-                        <FormGroup>
-                            <label>Dosis:</label>
-                            <input className="form-control" type="text" name="dosis" onChange={this.changeHandler} value={dosis}></input>
-                        </FormGroup>
-                    </ModalBody>
-
-                    <ModalFooter>
-                        <Button color="primary" onClick={this.submitHandler}>Aceptar</Button>
-                        <Button color="danger" onClick={() => this.ocultarModalCrear()}>Cancelar</Button>
-                    </ModalFooter>
-                </Modal>
-            </div>
-        );
     }
 }
 

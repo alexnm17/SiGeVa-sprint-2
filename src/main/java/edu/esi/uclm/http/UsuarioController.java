@@ -127,7 +127,7 @@ public class UsuarioController {
             Usuario usuario = usuarioDao.findByEmailAndPassword(email, password);
             if (usuario==null) throw new SigevaException(HttpStatus.UNAUTHORIZED, "Credenciales inválidas");
             request.getSession().setAttribute("emailUsuario", email);
-            System.out.println(usuario.getRol());
+            
             return usuario.getRol();
         } catch (SigevaException e) {
         	throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
