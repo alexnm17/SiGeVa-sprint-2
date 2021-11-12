@@ -14,7 +14,6 @@ class listUsuariosAVacunarHoy extends Component {
     }
 
     getCitasHoy() {
-        console.log(localStorage.getItem("emailUsuario"))
         axios.post('http://localhost:8080/getCitasHoy', { "emailUsuario": localStorage.getItem("emailUsuario") }
         ).then(res => {
             this.setState({ citas: res.data })
