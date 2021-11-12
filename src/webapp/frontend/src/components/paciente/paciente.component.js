@@ -26,7 +26,7 @@ class Paciente extends Component {
     }
 
     render() {
-        if(localStorage.getItem('rolUsuario')=="Paciente"){
+        if(localStorage.getItem('rolUsuario')==="Paciente"){
             return (
                 <div>
                     <Breadcrumb style={{ margin: 30 }}>

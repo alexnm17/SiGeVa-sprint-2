@@ -1,48 +1,40 @@
 import React, { Component } from "react";
 import { Breadcrumb, Button } from "react-bootstrap"
-import { Table, Col, Row } from 'reactstrap'
-import axios from "axios"
 import 'bootstrap/dist/css/bootstrap.min.css'
+import ListUsuariosAVacunarHoy from "./listUsuariosAVacunarHoy";
+import { Modal, ModalBody, FormGroup, ModalFooter, ModalHeader } from 'reactstrap'
+import axios from 'axios'
 
 class Sanitario extends Component {
-    constructor() {
-        super()
-
-        var today = new Date()
-        var diaFormateado = ''
-        if (today.getDate() < 10)
-            diaFormateado = '-0' + today.getDate()
-        else
-            diaFormateado = '-' + today.getDate.value
-
-        var date = today.getFullYear() + '-' + (today.getMonth() + 1) + diaFormateado;
-
-        this.state = {
-            fechaHoy: date,
-            fechaSeleccionada: "",
-            listaVacunacion: [],
-            isOpenListaHoy: "hidden"
-        }
+    state = {
+        modalModificar: false,
+        citasFechaOtroDia: []
     }
 
+    mostrarModalConsultarFecha = (usuario) => {
+        this.setState({ modalModificar: true })
+    }
+
+    ocultarModalConsultarFecha = e => {
+        e.preventDefault()
+        this.setState({ modalModificar: false })
+        this.setState({ citasFechaOtroDia: [] })
+    }
 
     changeHandler = e => {
-        this.setState({ [e.target.name]: e.target.value })
-        this.mostrarTablaVacunacion(this.state.fechaSeleccionada)
+        e.preventDefault()
+        this.getCitasDiaSeleccionado(e.target.value)
     }
 
-    mostrarTablaVacunacion(fechaSeleccionada) {
-        axios.post('http://localhost:8080/getCitasPorDia', { dni: localStorage.getItem("dniUsuario"), fecha: fechaSeleccionada })
-            .then(res => {
-                console.log(res.data)
-                this.setState({ listaVacunacion: res.data })
-            })
+    getCitasDiaSeleccionado(fecha) {
+        axios.post('http://localhost:8080/getCitasOtroDia', { "emailUsuario": localStorage.getItem("emailUsuario"), "fecha": fecha }
+        ).then(res => {
+            this.setState({ citasFechaOtroDia: res.data })
+        })
     }
-
 
     render() {
-        const { fechaSeleccionada, listaVacunacion } = this.state
-        if(localStorage.getItem('rolUsuario')=="Sanitario"){
+        if (localStorage.getItem('rolUsuario') === "Sanitario") {
             return (
                 <div>
                     <Breadcrumb style={{ margin: 30 }}>
@@ -52,40 +44,58 @@ class Sanitario extends Component {
                     <div>
                         <h6>Selecciona una fecha para ver la lista de vacunacion</h6>
                         {/* <input type="date" onChange={this.changeHandler} name="fechaSeleccionada" value={fechaSeleccionada}></input> */}
-                        <Button>Ver lista de otro día</Button>
+                        <Button onClick={() => this.mostrarModalConsultarFecha()}>Ver lista de otro día</Button>
                     </div>
-                    <Table style={{ marginTop: 15 }}>
-                        <Row>
-                            <Col></Col>
-                            <Col><h6>DNI</h6></Col>
-                            <Col><h6>Hora Vacunacion</h6></Col>
-                            <Col><h6>Acciones</h6></Col>
-                            <Col></Col>
-                        </Row>
-                        {this.state.listaVacunacion.map(usuario =>
-                            <Row style={{ marginBottom: 15 }}>
-                                <Col></Col>
-                                <Col>{this.listaVacunacion.dni}</Col>
-                                <Col>{this.listaVacunacion.hora}</Col>
-                                <Col><Button>Vacunar</Button></Col>
-                                <Col></Col>
-                            </Row>
-                        )
-                        }
-                    </Table>
+                    <ListUsuariosAVacunarHoy />
+
+                    <Modal size="lg" style={{ maxWidth: '700px', width: '100%' }} isOpen={this.state.modalModificar}>
+                        <ModalHeader>
+                            <div><h3>Ver lista de otro día</h3></div>
+                        </ModalHeader>
+                        <ModalBody>
+                            <FormGroup>
+                                <label style={{ marginRight: 15 }}>Fecha seleccionada: </label>
+                                <input className="form-control" type="date" name="fechaOtroDia" onChange={this.changeHandler} value={this.state.fechaOtroDia}></input>
+                            </FormGroup>
+                            <div style={{ width: 120 }}>
+                                <table class="table" style={{ marginTop: 15, marginLeft: 15 }}>
+                                    <tr>
+                                        <th>Hora de Vacunación</th>
+                                        <th>Nombre</th>
+                                        <th>Apellido</th>
+                                        <th>DNI</th>
+                                        <th>Estado de Vacunación</th>
+                                    </tr>
+                                    {this.state.citasFechaOtroDia.map(cita =>
+                                        <tr key={cita.dni}>
+                                            <td>{cita.hora}</td>
+                                            <td>{cita.usuario.nombre}</td>
+                                            <td>{cita.usuario.apellido}</td>
+                                            <td>{cita.usuario.dni}</td>
+                                            <td>{cita.usuario.estadoVacunacion}</td>
+                                        </tr>
+                                    )}
+
+                                </table>
+                            </div>
+                        </ModalBody>
+                        <ModalFooter>
+                            <Button color="danger" onClick={this.ocultarModalConsultarFecha}>Salir</Button>
+                        </ModalFooter>
+                    </Modal>
                 </div>
             );
-        }else{
-            return(
+        } else {
+            return (
                 <div>
-                    <Breadcrumb style={{margin:30}}>
-                            <Breadcrumb.Item href="/">SiGeVa</Breadcrumb.Item>
-                            <Breadcrumb.Item href="/Sanitairo">Sanitario</Breadcrumb.Item>
+                    <Breadcrumb style={{ margin: 30 }}>
+                        <Breadcrumb.Item href="/">SiGeVa</Breadcrumb.Item>
+                        <Breadcrumb.Item href="/Sanitario">Sanitario</Breadcrumb.Item>
                     </Breadcrumb>
-                    <p>A esta sección solo pueden acceder los Sanitarios.</p>
+                    <p>A esta sección solo pueden acceder los sanitarios.</p>
                     <p>Inicie sesión como sanitario o contacte con un administrador.</p>
                 </div>
-            );
+            )
         }
     }
 }

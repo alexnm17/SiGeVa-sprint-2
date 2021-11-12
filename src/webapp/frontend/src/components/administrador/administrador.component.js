@@ -8,7 +8,7 @@ class Administrador extends Component {
     }
 
     render() {
-        if(localStorage.getItem('rolUsuario')=="Administrador"){
+        if(localStorage.getItem('rolUsuario')==="Administrador"){
             return (
                 <div>
                 <Breadcrumb style={{margin:30}}>

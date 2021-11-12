@@ -4,10 +4,8 @@ import UsuariosList from "./UsuariosList"
 import { Button, Modal, ModalBody, FormGroup, ModalFooter, ModalHeader } from 'reactstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import axios from 'axios'
-// import DropdownCentros from "./DropdownCentros"
 
-
-class GestionCentroSalud extends Component {
+class GestionUsuarios extends Component {
     state = {
         form: {
             dni: "",
@@ -66,25 +64,14 @@ class GestionCentroSalud extends Component {
 
     render() {
         const { dni, nombre, apellido, centroSalud, rol, email, password } = this.state.form
-        if(localStorage.getItem('rolUsuario')=="Administrador"){
+        if (localStorage.getItem('rolUsuario') === "Administrador") {
             return (
                 <div>
-                    <Breadcrumb style={{ margin: 30 }}>
-                        <Breadcrumb.Item href="/">SiGeVa</Breadcrumb.Item>
-                        <Breadcrumb.Item href="/Administrador">Administrador</Breadcrumb.Item>
-                        <Breadcrumb.Item href="/Administrador/GestionUsuarios">Gestion de Usuarios</Breadcrumb.Item>
-                    </Breadcrumb>
-                    <div style={{ marginBotton: 20 }}>
-                        <h5>Estas en la página de Gestion de Usuarios</h5>
-                    </div>
                     <div>
                         <p>Selecciona la acción que quieres realizar: </p>
-                        {/* <a href="/administrador/GestionUsuarios/CrearUsuario"> */}
                         <Button color="success" onClick={() => this.mostrarModalCrear()}>Crear usuario</Button>
-                        {/* </a> */}
                         <UsuariosList />
                     </div>
-
                     <Modal isOpen={this.state.modalCrear}>
                         <ModalHeader>
                             <div><h3>Crear usuario</h3></div>
@@ -136,20 +123,17 @@ class GestionCentroSalud extends Component {
                     </Modal>
                 </div>
             );
-        }else{
-            return(
-                <div>
-                    <Breadcrumb style={{margin:30}}>
-                            <Breadcrumb.Item href="/">SiGeVa</Breadcrumb.Item>
-                            <Breadcrumb.Item href="/Administrador">Administrador</Breadcrumb.Item>
-                    </Breadcrumb>
-                    <p>A esta sección solo pueden acceder los Administradores.</p>
-                    <p>Inicie sesión como administrador para continuar.</p>
-                </div>
-            );
-        }    
+        } else {
+            <div>
+                <Breadcrumb style={{ margin: 30 }}>
+                    <Breadcrumb.Item href="/">SiGeVa</Breadcrumb.Item>
+                    <Breadcrumb.Item href="/Administrador">Administrador</Breadcrumb.Item>
+                </Breadcrumb>
+                <p>A esta sección solo pueden acceder los Administradores.</p>
+                <p>Inicie sesión como administrador para continuar.</p>
+            </div>
+        }
     }
-
 }
 
-export default GestionCentroSalud
+export default GestionUsuarios

@@ -51,11 +51,11 @@ public class CitaController {
 
 	@CrossOrigin(origins = "http://localhost:3000")
 	@PostMapping("/solicitarCita")
-	public void solicitarCita(HttpSession session, @RequestBody Map<String, Object> datosUsuario) {
+	public void solicitarCita(HttpSession session, @RequestBody Map<String, Object> info) {
 
 		try {
-			
-			String email = (String) session.getAttribute("email");
+			JSONObject json = new JSONObject(info);
+			String email = json.getString("email");
 			Usuario usuario = usuarioDao.findByEmail(email);
 
 			if (usuario == null)
@@ -98,7 +98,6 @@ public class CitaController {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 		}
 	}
-
 
 	private Cupo buscarCupoLibre(LocalDate fechaActualDate,CentroVacunacion centroVacunacion) {
 		Cupo cupo = null;
@@ -226,7 +225,6 @@ public class CitaController {
 		return formatoVacunacion;
 	}
 	
-	
 	public void asignarDosis(Usuario usuario,LocalDate fechaActual) throws SiGeVaException {
 		Cupo cupoAsignado = buscarCupoLibre(fechaActual,usuario.getCentroVacunacion());
 		if(cupoAsignado == null)
@@ -241,14 +239,28 @@ public class CitaController {
 		
 	}	
 	
-	@GetMapping("/getCitasPorDia")
-	public List<Cita> getCitasPorDia(HttpSession session, @RequestBody Map<String, Object> info) {
+	@CrossOrigin(origins = "http://localhost:3000")
+	@PostMapping("/getCitasHoy")
+	public List<Cita> getCitasHoy(@RequestBody Map<String, Object> info) {
+		JSONObject json = new JSONObject(info);
+		String email = json.getString("emailUsuario");
+		String fecha = LocalDate.now().toString();
+		return getCitasPorDia(fecha, email);
+	}
+	
+	@CrossOrigin(origins = "http://localhost:3000")	
+	@PostMapping("/getCitasOtroDia")
+	public List<Cita> getCitasOtroDia(HttpSession session, @RequestBody Map<String, Object> info) {
 
 		JSONObject json = new JSONObject(info);
 		String fecha = json.getString("fecha");
-		String email = (String) session.getAttribute("emailUsuario");
-		CentroVacunacion centroVacunacion = usuarioDao.findByEmail(email).getCentroVacunacion(); 
+		String email = json.getString("emailUsuario");
 		
+		return getCitasPorDia(fecha, email);
+	}
+	
+	public List<Cita> getCitasPorDia(String fecha, String email) {
+		CentroVacunacion centroVacunacion = usuarioDao.findByEmail(email).getCentroVacunacion(); 
 		return citaDao.findAllByFechaAndCentroVacunacion(fecha, centroVacunacion);
 	}
 

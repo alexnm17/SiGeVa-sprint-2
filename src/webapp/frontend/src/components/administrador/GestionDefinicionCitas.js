@@ -1,13 +1,17 @@
 import React, { Component } from 'react';
 import { Breadcrumb, Button } from "react-bootstrap"
 import axios from 'axios';
+import { Modal, ModalBody, FormGroup, ModalFooter, ModalHeader } from 'reactstrap'
 
-
-
-class GestionCentroSalud extends Component {
+class GestionDefinicionDeCitas extends Component {
     state = {
         formatoVacunacion: [],
-        buttonDisabled: false
+        buttonDisabled: false,
+        modalDefinir: false,
+        horaInicio: '',
+        horaFin: '',
+        duracionFranja: '',
+        personasAVacunar: ''
     }
 
     componentDidMount() {
@@ -21,28 +25,52 @@ class GestionCentroSalud extends Component {
             })
     }
 
+    definirHandler = e => {
+        e.preventDefault()
+        this.ocultarModalDefinir()
+        alert("Ya puedes navegar por la aplicación, si hay algun problema en la creación se te notificará.")
+        axios.post("http://localhost:8080/definirFormatoVacunacion", this.state)
+            .then(res => {
+                window.location.reload(true);
+                this.crearPlantillaCitas()
+            }).catch(error => {
+                alert("No se pudo definir el formato de vacunacion, ¿Seguro que no está definido ya?")
+            })
+    }
+
+    crearPlantillaCitas() {
+        axios.post("http://localhost:8080/crearPlantillasCitaVacunacion")
+            .then(res => {
+                alert("Plantilla de citas generada totalmente con éxito")
+            }).catch(error => {
+                alert("No se pudo generar la plantilla de citas")
+            })
+    }
+
+    mostrarModalDefinir = () => {
+        this.setState({ modalDefinir: true })
+    }
+
+    ocultarModalDefinir = () => {
+        this.setState({ modalDefinir: false })
+    }
+
+    changeHandler = e => {
+        this.setState({ [e.target.name]: e.target.value })
+    }
+
     render() {
         const { formatoVacunacion } = this.state
-        if(localStorage.getItem('rolUsuario')=="Administrador"){
+        if (localStorage.getItem('rolUsuario') === "Administrador") {
             return (
                 <div>
-                    <Breadcrumb style={{ margin: 30 }}>
-                        <Breadcrumb.Item href="/">SiGeVa</Breadcrumb.Item>
-                        <Breadcrumb.Item href="/Administrador">Administrador</Breadcrumb.Item>
-                        <Breadcrumb.Item href="/Administrador/GestionDefinicionDeCitas">Gestión de Definición De Citas</Breadcrumb.Item>
-                    </Breadcrumb>
-                    <div style={{ marginBotton: 20 }}>
-                        <h5>Estas en la página de Gestión de la Definición de Citas</h5>
-                    </div>
                     <div>
                         <p>Selecciona la acción que quieres realizar: </p>
-                        <a href="/Administrador/GestionDefinicionDeCitas/DefinirFormatoVacunacion">
-                            <Button style={{ marginRight: 15 }}>Definir formato de vacunacion</Button>
-                        </a>
+                        <Button style={{ marginRight: 15 }} onClick={() => this.mostrarModalDefinir()}>Definir formato de vacunacion</Button>
                         <a href="/Administrador/GestionDefinicionDeCitas/CrearPlantillaCitas">
                             <Button style={{ marginRight: 15 }}>Crear plantilla de citas</Button>
                         </a>
-                        <table class="table" style={{ marginTop: 15, marginLeft: 15 }}>
+                        <table className="table" style={{ marginTop: 15, marginLeft: 15 }}>
                             <thead>
                                 <tr>
                                     <th></th>
@@ -65,14 +93,41 @@ class GestionCentroSalud extends Component {
                             </tbody>
                         </table>
                     </div>
+                    <Modal isOpen={this.state.modalDefinir}>
+                        <ModalHeader>
+                            <div><h3>Definir formato de vacunación</h3></div>
+                        </ModalHeader>
+                        <ModalBody>
+                            <FormGroup>
+                                <label style={{ marginRight: 15 }}>Hora Inicio de Vacunación: </label>
+                                <input className="form-control" placeholder="08:00" type="text" name="horaInicio" onChange={this.changeHandler} value={this.state.horaInicio}></input>
+                            </FormGroup>
+                            <FormGroup>
+                                <label style={{ marginRight: 15 }}>Hora Fin de Vacunación: </label>
+                                <input className="form-control" placeholder="09:00" type="text" name="horaFin" onChange={this.changeHandler} value={this.state.horaFin}></input>
+                            </FormGroup>
+                            <FormGroup>
+                                <label>Duración de cada franja:</label>
+                                <input className="form-control" placeholder="30" type="text" name="duracionFranja" onChange={this.changeHandler} value={this.state.duracionFranja}></input>
+                            </FormGroup>
+                            <FormGroup>
+                                <label>Número de personas por franja:</label>
+                                <input className="form-control" placeholder="5" type="text" name="personasAVacunar" onChange={this.changeHandler} value={this.state.personasAVacunar}></input>
+                            </FormGroup>
+                        </ModalBody>
+                        <ModalFooter>
+                            <Button color="primary" onClick={this.definirHandler}>Aceptar y crear los cupos de citas</Button>
+                            <Button color="danger" onClick={() => this.ocultarModalDefinir()}>Cancelar</Button>
+                        </ModalFooter>
+                    </Modal>
                 </div>
             );
-        }else{
-            return(
+        } else {
+            return (
                 <div>
-                    <Breadcrumb style={{margin:30}}>
-                            <Breadcrumb.Item href="/">SiGeVa</Breadcrumb.Item>
-                            <Breadcrumb.Item href="/Administrador">Administrador</Breadcrumb.Item>
+                    <Breadcrumb style={{ margin: 30 }}>
+                        <Breadcrumb.Item href="/">SiGeVa</Breadcrumb.Item>
+                        <Breadcrumb.Item href="/Administrador">Administrador</Breadcrumb.Item>
                     </Breadcrumb>
                     <p>A esta sección solo pueden acceder los Administradores.</p>
                     <p>Inicie sesión como administrador para continuar.</p>
@@ -82,4 +137,4 @@ class GestionCentroSalud extends Component {
     }
 }
 
-export default GestionCentroSalud
+export default GestionDefinicionDeCitas
