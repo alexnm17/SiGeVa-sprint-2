@@ -115,6 +115,8 @@ public class CitaController {
 		return cupo;
 	}
 
+	@CrossOrigin(origins = "http://localhost:3000")
+	@PostMapping("/modificarCita")
 	public void modificarCita(@RequestBody Map<String, Object> datosCita) {
 
 		try {
