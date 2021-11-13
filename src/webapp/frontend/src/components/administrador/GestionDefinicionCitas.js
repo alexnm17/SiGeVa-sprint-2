@@ -64,6 +64,11 @@ class GestionDefinicionDeCitas extends Component {
         if (localStorage.getItem('rolUsuario') === "Administrador") {
             return (
                 <div>
+                    <Breadcrumb style={{ margin: 30 }}>
+                        <Breadcrumb.Item href="/">SiGeVa</Breadcrumb.Item>
+                        <Breadcrumb.Item href="/Administrador">Administrador</Breadcrumb.Item>
+                        <Breadcrumb.Item href="/Administrador/GestionDefinicionDeCitas">Gestión de Definicón de Citas</Breadcrumb.Item>
+                    </Breadcrumb>
                     <div>
                         <p>Selecciona la acción que quieres realizar: </p>
                         <Button style={{ marginRight: 15 }} onClick={() => this.mostrarModalDefinir()}>Definir formato de vacunacion</Button>
