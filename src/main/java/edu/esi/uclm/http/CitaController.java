@@ -150,8 +150,11 @@ public class CitaController {
 		}
 	}
 
+	@CrossOrigin(origins = "http://localhost:3000")
 	@DeleteMapping("/anularCita")
-	public void anularCita(HttpSession session, @RequestBody String idCita) {
+	public void anularCita(HttpServletRequest request, @RequestBody Map<String, Object> info) {
+		JSONObject json = new JSONObject(info);
+		String idCita = json.getString("idCita");
 		citaDao.deleteByIdCita(idCita);
 	}
 
