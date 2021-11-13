@@ -67,6 +67,11 @@ class GestionUsuarios extends Component {
         if (localStorage.getItem('rolUsuario') === "Administrador") {
             return (
                 <div>
+                    <Breadcrumb style={{ margin: 30 }}>
+                        <Breadcrumb.Item href="/">SiGeVa</Breadcrumb.Item>
+                        <Breadcrumb.Item href="/Administrador">Administrador</Breadcrumb.Item>
+                        <Breadcrumb.Item href="/Administrador/GestionUsuarios">Gestión de Usuarios</Breadcrumb.Item>
+                    </Breadcrumb>
                     <div>
                         <p>Selecciona la acción que quieres realizar: </p>
                         <Button color="success" onClick={() => this.mostrarModalCrear()}>Crear usuario</Button>

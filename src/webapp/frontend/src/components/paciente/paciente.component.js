@@ -24,13 +24,20 @@ class Paciente extends Component {
     }
 
     SolicitarClickHandler = () => {
-        axios.post("http://localhost:8080/solicitarCita", { email: localStorage.getItem("emailUsuario")  } )
+        axios.post("http://localhost:8080/solicitarCita", { email: localStorage.getItem("emailUsuario") })
             .then(res => {
                 this.ocultarModalSolicitar()
                 window.location.reload(true);
             }).catch(error => {
                 this.ocultarModalSolicitar()
                 alert("No se ha podido crear la cita");
+            })
+    }
+
+    anularHandler = e => {
+        axios.delete('http://localhost:8080/anularCita', { data: { idCita: e.target.id } })
+            .then(res => {
+                window.location.reload(true);
             })
     }
 
@@ -52,17 +59,19 @@ class Paciente extends Component {
                     </Breadcrumb>
                     <div>
                         <p>Selecciona la acción que quieres realizar: </p>
-                        <Button onClick={this.mostrarModalSolicitar} style={{ marginRight: 15 }}>Solicitar cita</Button>
+                        <Button color="primary" onClick={this.mostrarModalSolicitar} style={{ marginRight: 15, marginBottom: 20 }}>Solicitar cita</Button>
                     </div>
                     <div>
                         <h5>Tus citas</h5>
                         <table className="table">
                             <thead>
+                                <tr>
                                     <th>Día</th>
                                     <th>Hora</th>
                                     <th>Centro Vacunacion</th>
                                     <th>Municipio</th>
                                     <th>Acciones</th>
+                                </tr>
                             </thead>
                             <tbody>
                                 {this.state.citaUsuario.map(cita =>
@@ -73,7 +82,7 @@ class Paciente extends Component {
                                         <td>{cita.centroVacunacion.municipio} </td>
                                         <td>
                                             <Button color="primary" style={{ marginRight: 15 }}>Modificar</Button>
-                                            <Button color="danger">Anular</Button>
+                                            <Button color="danger" id={cita.idCita} onClick={this.anularHandler}>Anular</Button>
                                         </td>
                                     </tr>
                                 )
