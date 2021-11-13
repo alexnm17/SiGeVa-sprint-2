@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -51,11 +52,10 @@ public class CitaController {
 
 	@CrossOrigin(origins = "http://localhost:3000")
 	@PostMapping("/solicitarCita")
-	public void solicitarCita(HttpSession session, @RequestBody Map<String, Object> info) {
-
+	public void solicitarCita(HttpSession session,  @RequestBody Map<String, Object> info) {
+		JSONObject json = new JSONObject(info);
+		String email = json.getString("email");
 		try {
-			JSONObject json = new JSONObject(info);
-			String email = json.getString("email");
 			Usuario usuario = usuarioDao.findByEmail(email);
 
 			if (usuario == null)
@@ -126,7 +126,7 @@ public class CitaController {
 			String emailUsuario = json.getString("emailUsuario");
 			Usuario usuario = usuarioDao.findByEmail(emailUsuario);
 		
-			int citasAsignadas = citaDao.findAllByUsuarioDni(usuario.getDni()).size();
+			int citasAsignadas = citaDao.findAllByUsuarioEmail(usuario.getEmail()).size();
 			
 			if(citasAsignadas <1) 
 				throw new SiGeVaException(HttpStatus.NOT_FOUND, "No se puede modificar citas puesto que no dispone de ninguna cita asignada");
@@ -265,10 +265,9 @@ public class CitaController {
 	}
 
 	@CrossOrigin(origins = "http://localhost:3000")
-	@PostMapping("/getCitaByDni")
-	public List<Cita> getCitaByDni(HttpServletRequest request, @RequestBody Map<String, Object> info) {
-		JSONObject json = new JSONObject(info);
-		String dni = json.getString("dni");
-		return citaDao.findAllByUsuarioDni(dni);
+	@GetMapping("/getCitaByEmail")
+	public List<Cita> getCitaByEmail(HttpServletRequest request, @RequestParam String email) {
+		List<Cita> citas = citaDao.findAllByUsuarioEmail(email); 
+		return citas;
 	}
 }
