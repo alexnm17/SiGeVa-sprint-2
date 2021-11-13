@@ -165,7 +165,7 @@ public class UsuarioController {
 		citaDao.deleteAllByUsuario(usuario);
 	}
 
-
+	@CrossOrigin(origins = "http://localhost:3000")
 	@PostMapping("/marcarVacunado")
 	public void marcarVacunado(HttpSession session, @RequestBody Map<String, Object> datosPaciente) {
 		JSONObject jsonPaciente = new JSONObject(datosPaciente);
