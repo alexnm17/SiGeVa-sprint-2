@@ -46,18 +46,24 @@ public class CentroVacunacionController {
 	}
 	
 	@PostMapping("/modificarCentro")
-	public void modificarCentro(@RequestBody CentroVacunacion centro) {
+	public void modificarCentro(@RequestBody Map<String, Object> datosCentro) {
 		try {
-			CentroVacunacion antiguoCentro = centroVacunacionDao.findByNombre(centro.getNombre());
+
+			JSONObject json = new JSONObject(datosCentro);
+			String nombre = json.getString("nombre");
+			String municipio = json.getString("municipio");
+			int dosis = Integer.parseInt(json.getString("dosis"));
+			
+			CentroVacunacion antiguoCentro = centroVacunacionDao.findById(nombre).get();
 
 			if (antiguoCentro == null)
 				throw new SiGeVaException(HttpStatus.NOT_FOUND, "No existe un centro con este nombre");
 			
-			antiguoCentro.setMunicipio(centro.getMunicipio());
-			antiguoCentro.setDosis(centro.getDosis());
+			antiguoCentro.setMunicipio(municipio);
+			antiguoCentro.setDosis(dosis);
 			
 			centroVacunacionDao.save(antiguoCentro);
-		} catch (Exception e) {
+		} catch (SiGeVaException e) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
 		}
 

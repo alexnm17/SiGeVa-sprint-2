@@ -4,9 +4,10 @@ import java.util.UUID;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 public class Cupo {
-	@Id
+	@Id @Field("idCupo")
 	private String idCupo;
 	private String fecha;
 	private String hora;

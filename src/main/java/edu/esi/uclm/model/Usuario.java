@@ -2,11 +2,12 @@ package edu.esi.uclm.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.http.HttpStatus;
 import edu.uclm.esi.exceptions.SiGeVaException;
 
 public class Usuario {
-	@Id
+	@Id @Field("email")
 	private String email;
 	private String dni;
 	private String nombre;
