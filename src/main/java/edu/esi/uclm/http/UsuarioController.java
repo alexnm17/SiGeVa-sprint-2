@@ -76,7 +76,7 @@ public class UsuarioController {
 			String nombre = json.getString("nombre");
 			String apellido = json.getString("apellido");
 			String password = json.getString("password");
-			CentroVacunacion centroVacunacion = centroVacunacionDao.findByNombre(json.getString("centroVacunacion"));
+			CentroVacunacion centroVacunacion = centroVacunacionDao.findByNombre(json.getJSONObject("centroVacunacion").getString("nombre"));
 			String rol = json.getString("rol");
 			
 			Usuario user = new Usuario(email,dni, nombre, apellido, password, rol, centroVacunacion);

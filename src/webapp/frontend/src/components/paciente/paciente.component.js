@@ -7,9 +7,11 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 class Paciente extends Component {
     state = {
         citaUsuario: [],
+        cuposList: [],
         email: "",
-        modalSolicitar: false
-
+        modalSolicitar: false,
+        modalModificar: false,
+        citaSeleccionada: ""
     }
 
     componentDidMount() {
@@ -35,10 +37,31 @@ class Paciente extends Component {
     }
 
     anularHandler = e => {
+        e.preventDefault()
         axios.delete('http://localhost:8080/anularCita', { data: { idCita: e.target.id } })
             .then(res => {
                 window.location.reload(true);
             })
+    }
+
+    getCentrosSalud() {
+        axios.get('http://localhost:8080/getAllCuposConHueco', { params: { email: localStorage.getItem("emailUsuario") } })
+            .then(res => {
+                this.setState({ cuposList: res.data })
+            })
+    }
+
+    seleccionarHandler = e => {
+        e.preventDefault()
+        axios.post('http://localhost:8080/modificarCita', { emailUsuario: localStorage.getItem("emailUsuario"), idCupo: e.target.id, idCita: this.state.citaSeleccionada })
+            .then(res => {
+                this.ocultarModalSolicitar()
+                window.location.reload(true);
+            })
+    }
+
+    ModificarClickHandler = e => {
+        e.preventDefault()
     }
 
     mostrarModalSolicitar = () => {
@@ -48,6 +71,18 @@ class Paciente extends Component {
     ocultarModalSolicitar = () => {
         this.setState({ modalSolicitar: false })
     }
+
+    mostrarModalModificar = e => {
+        e.preventDefault()
+        this.setState({ modalModificar: true })
+        this.setState({ citaSeleccionada: e.target.id })
+        this.getCentrosSalud()
+    }
+
+    ocultarModalModificar = () => {
+        this.setState({ modalModificar: false })
+    }
+
 
     render() {
         if (localStorage.getItem('rolUsuario') === "Paciente") {
@@ -75,13 +110,13 @@ class Paciente extends Component {
                             </thead>
                             <tbody>
                                 {this.state.citaUsuario.map(cita =>
-                                    <tr style={{ marginBottom: 15 }}>
+                                    <tr key={cita.idCita} style={{ marginBottom: 15 }}>
                                         <td>{cita.fecha}</td>
                                         <td>{cita.hora}</td>
                                         <td>{cita.centroVacunacion.nombre}</td>
                                         <td>{cita.centroVacunacion.municipio} </td>
                                         <td>
-                                            <Button color="primary" style={{ marginRight: 15 }}>Modificar</Button>
+                                            <Button color="primary" id={cita.idCita} style={{ marginRight: 15 }} onClick={this.mostrarModalModificar}>Modificar</Button>
                                             <Button color="danger" id={cita.idCita} onClick={this.anularHandler}>Anular</Button>
                                         </td>
                                     </tr>
@@ -104,6 +139,41 @@ class Paciente extends Component {
                         <ModalFooter>
                             <Button color="success" onClick={this.SolicitarClickHandler}>Solicitar</Button>
                             <Button color="danger" onClick={this.ocultarModalSolicitar}>Salir</Button>
+                        </ModalFooter>
+                    </Modal>
+
+                    {/* Modal para modificar citas */}
+                    <Modal isOpen={this.state.modalModificar}>
+                        <ModalHeader>
+                            <div><h3>Modificar cita</h3></div>
+                        </ModalHeader>
+                        <ModalBody>
+                            <FormGroup>
+                                <label style={{ marginRight: 15 }}>Selecciona el cupo al que quieres cambiar la cita</label>
+                                {/* <ListCupos /> */}
+                                <table className="table" style={{ marginTop: 15, marginLeft: 15 }}>
+                                    <thead>
+                                        <tr>
+                                            <th>Fecha</th>
+                                            <th>Hora</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {this.state.cuposList.map(cupo =>
+                                            <tr key={cupo.idCupo}>
+                                                <td>{cupo.fecha}</td>
+                                                <td>{cupo.hora}</td>
+                                                <td>
+                                                    <button className="btn btn-primary" id={cupo.idCupo} onClick={this.seleccionarHandler} style={{ marginRight: 10 }}>Seleccionar</button>
+                                                </td>
+                                            </tr>
+                                        )}
+                                    </tbody>
+                                </table>
+                            </FormGroup>
+                        </ModalBody>
+                        <ModalFooter>
+                            <Button color="danger" onClick={this.ocultarModalModificar}>Salir</Button>
                         </ModalFooter>
                     </Modal>
                 </div>

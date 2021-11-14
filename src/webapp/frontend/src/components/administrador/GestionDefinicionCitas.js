@@ -72,9 +72,6 @@ class GestionDefinicionDeCitas extends Component {
                     <div>
                         <p>Selecciona la acción que quieres realizar: </p>
                         <Button style={{ marginRight: 15 }} onClick={() => this.mostrarModalDefinir()}>Definir formato de vacunacion</Button>
-                        <a href="/Administrador/GestionDefinicionDeCitas/CrearPlantillaCitas">
-                            <Button style={{ marginRight: 15 }}>Crear plantilla de citas</Button>
-                        </a>
                         <table className="table" style={{ marginTop: 15, marginLeft: 15 }}>
                             <thead>
                                 <tr>

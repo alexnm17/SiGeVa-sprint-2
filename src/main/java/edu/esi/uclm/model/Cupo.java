@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 public class Cupo {
-	@Id @Field("idCupo")
+	@Id
 	private String idCupo;
 	private String fecha;
 	private String hora;
