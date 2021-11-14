@@ -147,7 +147,7 @@ public class UsuarioController {
 			if (user.getRol().equalsIgnoreCase(RolUsuario.ADMINISTRADOR.name()))
 				throw new SigevaException(HttpStatus.FORBIDDEN, "No puede eliminar a otro administrador del sistema");
 
-			if(user.getRol().equals(RolUsuario.PACIENTE.name()) && !user.getEstadoVacunacion().equals(EstadoVacunacion.NO_VACUNADO.name()))
+			if(user.getRol().equalsIgnoreCase(RolUsuario.PACIENTE.name()) && !user.getEstadoVacunacion().equals(EstadoVacunacion.NO_VACUNADO.name()))
 				throw new SigevaException(HttpStatus.FORBIDDEN, "No puede eliminar a un paciente vacunado del sistema");
 			
 			borrarCitas(user);
