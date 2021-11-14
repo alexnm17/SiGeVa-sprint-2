@@ -49,19 +49,4 @@ public class FormatoVacunacionController {
 
 	}
 
-	@PostMapping("/setPersonalVacunacion")
-	public void setPersonalVacunacion() {
-
-	}
-
-	@PostMapping("/setHorarioVacunacion")
-	public void setHorarioVacunacion() {
-
-	}
-
-	@PostMapping("/setDosisDisponibles")
-	public void setDosisDisponibles() {
-
-	}
-
 }

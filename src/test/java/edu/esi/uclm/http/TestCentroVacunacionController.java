@@ -55,7 +55,7 @@ class TestCentroVacunacionController {
 	}
 
 	@Test
-	void testAddCentroCorrecto() {
+	void testCrearCentroCorrecto() {
 			
 		Map<String, Object> mapa = new HashMap<String, Object>();
 		mapa.put("nombre", "pruebaCentro");
@@ -83,21 +83,26 @@ class TestCentroVacunacionController {
 	@Test
 	void testCrearCentroError() {
 		Map<String, Object> mapa = new HashMap<String, Object>();
-		mapa.put("nombre", "El bombo");
-		mapa.put("municipio", "Tomelloso");
+		mapa.put("nombre", "Alarcos");
+		mapa.put("municipio", "Ciudad Real");
 		mapa.put("dosis", "3000");
+		
+		CentroVacunacion centro = new CentroVacunacion("Alarcos","Ciudad Real",3000);
+		
 		JSONObject json = new JSONObject(mapa);
 		String body = json.toString();
-		//CentroVacunacion centroRaro = doThrow(new Exception()).when(centroVacunacionDao.save(any(CentroVacunacion.class)));
-		
+
 		try {
+			when(centroVacunacionDao.findByNombre(any())).thenReturn(centro);
+			
 			mockMvc.perform(MockMvcRequestBuilders.post("/addCentro")
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(body))
-					.andExpect(MockMvcResultMatchers.status().isOk());
-		} catch (Exception e) {
-			//Si falla da error puesto que ya existe
+					.andExpect(MockMvcResultMatchers.status().isConflict());
 			assertTrue(true);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		
 		}
 		
 	}
@@ -106,13 +111,17 @@ class TestCentroVacunacionController {
 	void testModificarCentroCorrecto() {
 		
 		Map<String, Object> mapa = new HashMap<String, Object>();
-		mapa.put("nombre", "El bombo");
-		mapa.put("municipio", "Manzanares");
-		mapa.put("dosis", "6000");
+		mapa.put("nombre", "Alarcos");
+		mapa.put("municipio", "Ciudad real");
+		mapa.put("dosis", "3000");
+		
+		CentroVacunacion centro = new CentroVacunacion("Alarcos","Ciudad real",3000);
+		
 		JSONObject json = new JSONObject(mapa);
 		String body = json.toString();
 		
 		try {
+			when(centroVacunacionDao.findByNombre(any())).thenReturn(centro);
 			mockMvc.perform(MockMvcRequestBuilders.post("/modificarCentro")
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(body))
@@ -136,14 +145,15 @@ class TestCentroVacunacionController {
 		String body = json.toString();
 		
 		try {
+			when(centroVacunacionDao.findByNombre(any())).thenReturn(null);
 			mockMvc.perform(MockMvcRequestBuilders.post("/modificarCentro")
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(body))
-					.andExpect(MockMvcResultMatchers.status().isOk());
-
-		} catch (Exception e) {
-			//si salta una excepcion, significa que falla porque ya existe. No es correcto
+					.andExpect(MockMvcResultMatchers.status().isConflict());
 			assertTrue(true);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		
 		
 		}
 		

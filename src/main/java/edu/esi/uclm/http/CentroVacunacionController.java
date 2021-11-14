@@ -39,6 +39,9 @@ public class CentroVacunacionController {
 			int dosis = Integer.parseInt(json.getString("dosis"));
 			
 			CentroVacunacion centroVacunacion = new CentroVacunacion(nombre, municipio,dosis);
+			if(centroVacunacionDao.findByNombre(nombre) != null) 
+				throw new SiGeVaException(HttpStatus.CONFLICT,"No se puede crear el centro puesto que ya existe");
+			
 			centroVacunacionDao.save(centroVacunacion);
 		} catch(Exception e) {	
 			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
@@ -54,7 +57,7 @@ public class CentroVacunacionController {
 			String municipio = json.getString("municipio");
 			int dosis = Integer.parseInt(json.getString("dosis"));
 			
-			CentroVacunacion antiguoCentro = centroVacunacionDao.findById(nombre).get();
+			CentroVacunacion antiguoCentro = centroVacunacionDao.findByNombre(nombre);
 
 			if (antiguoCentro == null)
 				throw new SiGeVaException(HttpStatus.NOT_FOUND, "No existe un centro con este nombre");
