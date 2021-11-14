@@ -3,10 +3,9 @@ package edu.esi.uclm.model;
 import java.util.UUID;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Field;
 
 public class Cita {
-	@Id @Field("idCita")
+	@Id
 	private String idCita;
 	private String fecha;
 	private String hora;

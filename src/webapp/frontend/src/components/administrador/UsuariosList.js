@@ -68,7 +68,6 @@ class UsuariosList extends Component {
 
     ModificarHandler = e => {
         e.preventDefault()
-        console.log(this.centroVacunacion)
         axios.post('http://localhost:8080/modificarUsuario', this.state.form)
             .then(res => {
                 this.getUsuarios()
