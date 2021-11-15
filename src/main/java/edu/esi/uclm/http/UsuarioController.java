@@ -53,13 +53,13 @@ public class UsuarioController {
 			String apellido = json.getString("apellido");
 			String password = json.getString("password");
 			CentroVacunacion centroVacunacion = centroVacunacionDao.findByNombre(json.getString("centroSalud"));
-			String rol = json.getString("rol");
-			
-			
+			String rol = json.getString("rol");			
 			
 			Usuario nuevoUsuario = new Usuario(email,dni, nombre, apellido, password, rol, centroVacunacion);
 			nuevoUsuario.controlarContraseña();
+			nuevoUsuario.setPassword(password);
 			nuevoUsuario.comprobarDni();
+			nuevoUsuario.comprobarEmail();
 			usuarioDao.save(nuevoUsuario);
 		} catch (SiGeVaException e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
