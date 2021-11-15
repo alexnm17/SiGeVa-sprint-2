@@ -8,7 +8,11 @@ class centroSaludList extends Component {
     state = {
         centroSalud: [],
         modalModificar: false,
-        nombreCentro: ""
+        form: {
+            nombre: "",
+            municipio: "",
+            dosis: ""
+        }
     }
 
     componentDidMount() {
@@ -34,11 +38,31 @@ class centroSaludList extends Component {
 
     mostrarModalModificar = (centro) => {
         this.setState({ modalModificar: true })
-        this.setState({ nombreCentro: centro })
+        this.setState({ form: centro })
     }
 
     ocultarModalModificar = () => {
         this.setState({ modalModificar: false })
+    }
+
+    changeHandler = e => {
+        e.preventDefault()
+        this.setState({
+            form: {
+                ...this.state.form,
+                [e.target.name]: e.target.value,
+            }
+        });
+    }
+
+    ModificarHandler = e => {
+        e.preventDefault()
+        console.log(this.state.form);
+        axios.post('http://localhost:8080/modificarCentro', this.state.form)
+            .then(res => {
+                this.getCentrosSalud()
+                this.setState({ modalModificar: false })
+            })
     }
 
     render() {
@@ -60,7 +84,7 @@ class centroSaludList extends Component {
                                 <td>{centroSalud.municipio}</td>
                                 <td>{centroSalud.dosis}</td>
                                 <td>
-                                    <button className="btn btn-primary" id={centroSalud.nombre} style={{ marginRight: 10 }} onClick={() => this.mostrarModalModificar(centroSalud.nombre)}>Modificar centro</button>
+                                    <button className="btn btn-primary" id={centroSalud.nombre} style={{ marginRight: 10 }} onClick={() => this.mostrarModalModificar(centroSalud)}>Modificar centro</button>
                                 </td>
                             </tr>
                         )}
@@ -75,20 +99,20 @@ class centroSaludList extends Component {
                     <ModalBody>
                         <FormGroup>
                             <label style={{ marginRight: 15 }}>Nombre:</label>
-                            <label>{this.state.nombreCentro}</label>
+                            <label>{this.state.form.nombre}</label>
                         </FormGroup>
                         <FormGroup>
                             <label>Municipio:</label>
-                            <input className="form-control" type="text" name="centroVacunacion" onChange={this.handleChange}></input>
+                            <input className="form-control" type="text" name="municipio" onChange={this.changeHandler} value={this.state.form.municipio}></input>
                         </FormGroup>
                         <FormGroup>
                             <label>Dosis</label>
-                            <input className="form-control" type="text"></input>
+                            <input className="form-control" type="text"  name="dosis" onChange={this.changeHandler} value={this.state.form.dosis}></input>
                         </FormGroup>
                     </ModalBody>
 
                     <ModalFooter>
-                        <Button color="primary">Aceptar</Button>
+                        <Button color="primary" onClick={this.ModificarHandler}>Aceptar</Button>
                         <Button color="danger" onClick={() => this.ocultarModalModificar()}>Cancelar</Button>
                     </ModalFooter>
                 </Modal>

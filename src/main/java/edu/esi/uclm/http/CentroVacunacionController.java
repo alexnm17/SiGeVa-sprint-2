@@ -48,6 +48,7 @@ public class CentroVacunacionController {
 		}
 	}
 	
+	@CrossOrigin(origins = "http://localhost:3000")
 	@PostMapping("/modificarCentro")
 	public void modificarCentro(@RequestBody Map<String, Object> datosCentro) {
 		try {
