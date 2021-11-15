@@ -10,8 +10,8 @@ class TestDniSinLetra {
 
 	@Test
 	void test() {
-
-		Usuario user = new Usuario("987654321", "", "", null, null, null);
+		CentroVacunacion centro= new CentroVacunacion();
+		Usuario user = new Usuario("prueba@email.com","123456789", "Pepe", "Garcia", "Contraseña", "Paciente",centro);
 
 		Exception e = assertThrows(SiGeVaException.class, () -> user.comprobarDni());
 		assertEquals("No cumple con el formato de un DNI", e.getMessage());

@@ -10,7 +10,8 @@ class TestDniNoNumeros {
 
 	@Test
 	void test() {
-		Usuario user = new Usuario("abf23452B", "", "", null, null, null);
+		CentroVacunacion centro= new CentroVacunacion();
+		Usuario user = new Usuario("prueba@email.com","abc456789", "Pepe", "Garcia", "Contraseña", "Paciente",centro);
 
 		Exception e=assertThrows(SiGeVaException.class, () -> user.comprobarDni());
 		assertEquals("No cumple con el formato de un DNI",e.getMessage());

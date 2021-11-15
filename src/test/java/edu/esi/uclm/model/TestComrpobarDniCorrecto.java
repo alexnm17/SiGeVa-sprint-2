@@ -10,7 +10,8 @@ class TestComrpobarDniCorrecto {
 
 	@Test
 	void test() {
-		Usuario user = new Usuario("12345678B", "", "", null, null, null);
+		CentroVacunacion centro= new CentroVacunacion();
+		Usuario user = new Usuario("prueba@email.com","12345678A", "Pepe", "Garcia", "Contraseña", "Paciente",centro);
 		try {
 			user.comprobarDni();
 			throw new Exception("Se ha completado este proceso correctamente");

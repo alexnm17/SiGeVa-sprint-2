@@ -10,7 +10,8 @@ class TestContrasenaValida {
 
 	@Test
 	void test() {
-		Usuario user = new Usuario("87654321R", "probamos4", "testermodif", "bbbbBbbbbbb", "Paciente", "El bombo");
+		CentroVacunacion centro= new CentroVacunacion();
+		Usuario user = new Usuario("prueba@email.com","123456789", "Pepe", "Garcia", "Contraseña", "Paciente",centro);
 		try {
 			user.controlarContrasena();
 			throw new Exception("Se ha completado este proceso correctamente");

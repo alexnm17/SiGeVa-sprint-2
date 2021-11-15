@@ -10,7 +10,8 @@ class TestConstrasenaCorta {
 
 	@Test
 	void test() {
-		Usuario user = new Usuario("87654321R", "probamos4", "testermodif", "corta", "Paciente", "El bombo");
+		CentroVacunacion centro= new CentroVacunacion();
+		Usuario user = new Usuario("prueba@email.com","123456789", "Pepe", "Garcia", "corta", "Paciente",centro);
 
 		assertThrows(SiGeVaException.class, () -> user.controlarContrasena());
 

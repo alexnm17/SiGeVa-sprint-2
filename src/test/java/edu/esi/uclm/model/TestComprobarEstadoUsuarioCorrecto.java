@@ -9,7 +9,8 @@ class TestComprobarEstadoUsuarioCorrecto {
 	@Test
 	void test() {
 		try {
-			Usuario user = new Usuario("12345678A", "Pepe", "Garcia", "Contraseña", "Paciente", "Tomelloso");
+			CentroVacunacion centro= new CentroVacunacion();
+			Usuario user = new Usuario("prueba@gmail.com","12345678A", "Pepe", "Garcia", "Contraseña", "Paciente",centro);
 			user.comprobarEstado();
 			throw new Exception("Se ha completado este proceso correctamente");
 		} catch (Exception e) {

@@ -10,8 +10,9 @@ class TestEstadoNoAceptado {
 
 	@Test
 	void test() {
-		Usuario user = new Usuario("12345678A", "Pepe", "Garcia", "Contraseña", "Administrador", "Tomelloso");
-		user.setEstadoVacunacion("Primera Vacuna");
+		CentroVacunacion centro= new CentroVacunacion();
+		Usuario user = new Usuario("prueba@email.com","12345678A", "Pepe", "Garcia", "Contraseña", "Administrador",centro);
+		user.setEstadoVacunacion(EstadoVacunacion.VACUNADO_PRIMERA.name());
 		assertThrows(SiGeVaException.class, () -> user.comprobarEstado());
 	}
 }

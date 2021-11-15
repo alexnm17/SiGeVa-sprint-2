@@ -8,7 +8,8 @@ class TestContrasenaSinMinusculas {
 
 	@Test
 	void test() {
-		Usuario user = new Usuario("87654321R", "probamos4", "testermodif", "BBBBBBBBBBBB", "Paciente", "El bombo");
+		CentroVacunacion centro= new CentroVacunacion();
+		Usuario user = new Usuario("prueba@email.com","123456789", "Pepe", "Garcia", "CONTRASEÑA", "Paciente",centro);
 		try {
 			user.controlarContrasena();
 		} catch (Exception e) {

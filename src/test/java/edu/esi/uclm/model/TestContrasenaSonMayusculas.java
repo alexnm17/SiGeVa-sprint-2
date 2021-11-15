@@ -8,7 +8,8 @@ class TestContrasenaSonMayusculas {
 
 	@Test
 	void test() {
-		Usuario user = new Usuario("87654321R", "probamos4", "testermodif", "bbbbbbbbbbb", "Paciente", "El bombo");
+		CentroVacunacion centro= new CentroVacunacion();
+		Usuario user = new Usuario("prueba@email.com","123456789", "Pepe", "Garcia", "contraseña", "Paciente",centro);
 		try {
 			user.controlarContrasena();
 		} catch (Exception e) {
