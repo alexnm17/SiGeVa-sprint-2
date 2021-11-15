@@ -59,6 +59,7 @@ public class UsuarioController {
 			
 			Usuario nuevoUsuario = new Usuario(email,dni, nombre, apellido, password, rol, centroVacunacion);
 			nuevoUsuario.controlarContraseña();
+			nuevoUsuario.setPassword(password);
 			nuevoUsuario.comprobarDni();
 			usuarioDao.save(nuevoUsuario);
 		} catch (SiGeVaException e) {
@@ -102,9 +103,10 @@ public class UsuarioController {
 					antiguoUsuario.comprobarEstado();
 				
 				antiguoUsuario.setCentroVacunacion(user.getCentroVacunacion());
+				antiguoUsuario.controlarContraseña();
 				antiguoUsuario.setPassword(user.getPassword());
 
-				antiguoUsuario.controlarContraseña();
+				
 				usuarioDao.save(antiguoUsuario);
 
 			}
