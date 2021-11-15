@@ -9,8 +9,8 @@ import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 
+import edu.esi.uclm.exceptions.SigevaException;
 import edu.esi.uclm.http.UsuarioController;
-import edu.uclm.esi.exceptions.SiGeVaException;
 @DataMongoTest
 class TestEliminarNoExiste {
 	
@@ -19,7 +19,7 @@ class TestEliminarNoExiste {
 	void test() {
 		Map<String, Object> datos = new HashMap<String, Object>();
 		datos.put("dni","Eliminar");
-		Exception e = assertThrows(SiGeVaException.class, () -> usuarioController.eliminarUsuario(datos));
+		Exception e = assertThrows(SigevaException.class, () -> usuarioController.eliminarUsuario(datos));
 		Assert.assertEquals( "No existe un usuario con este identificador",e.getMessage());
 	}
 

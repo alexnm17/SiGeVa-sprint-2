@@ -28,21 +28,7 @@ class TestCitaDao {
 	void setUp() throws Exception {
 	}
 
-	@Test
-	void testfindAllByCentroVacunacion() {
-
-		CitaDao citadao = mock(CitaDao.class);
-		CentroVacunacion centro = new CentroVacunacion("Prueba", "MunicipioPrueba", 1000);
-		Usuario usuario = new Usuario("prueba@email.com", "DniPrueba", "pruebaNombre", "pruebaApellido",
-				"pruebaPasword", RolUsuario.PACIENTE.name(), centro);
-		Cita cita = new Cita(LocalDate.now().toString(), LocalTime.now().toString(), centro, usuario);
-		List<Cita> lista = new ArrayList<Cita>();
-		lista.add(cita);
-		when(citadao.findAllByCentroVacunacion(any())).thenReturn(lista);
-
-		List<Cita> resultado = citadao.findAllByCentroVacunacion(centro);
-		assertEquals(cita, resultado.get(0));
-	}
+	
 
 	@Test
 	void testfindByFechaAndHora() {
@@ -51,7 +37,7 @@ class TestCitaDao {
 		CentroVacunacion centro = new CentroVacunacion("Prueba", "MunicipioPrueba", 1000);
 		Usuario usuario = new Usuario("prueba@email.com", "DniPrueba", "pruebaNombre", "pruebaApellido",
 				"pruebaPasword", RolUsuario.PACIENTE.name(), centro);
-		Cita cita = new Cita(LocalDate.now().toString(), LocalTime.now().toString(), centro, usuario);
+		Cita cita = new Cita(LocalDate.now().toString(), LocalTime.now().toString(),  usuario);
 		when(citadao.findByFechaAndHora(anyString(), anyString())).thenReturn(cita);
 		LocalTime time = LocalTime.now();
 		LocalDate date = LocalDate.now();
@@ -65,9 +51,6 @@ class TestCitaDao {
 
 		CitaDao citadao = mock(CitaDao.class);
 		CentroVacunacion centro = new CentroVacunacion("Prueba", "MunicipioPrueba", 1000);
-		Usuario usuario = new Usuario("prueba@email.com", "DniPrueba", "pruebaNombre", "pruebaApellido",
-				"pruebaPasword", RolUsuario.PACIENTE.name(), centro);
-		Cita cita = new Cita(LocalDate.now().toString(), LocalTime.now().toString(), centro, usuario);
 		((CitaDao) doNothing().when(citadao)).deleteByFechaAndHora(anyString(), anyString());
 		LocalTime time = LocalTime.now();
 		LocalDate date = LocalDate.now();
@@ -81,7 +64,7 @@ class TestCitaDao {
 		CentroVacunacion centro = new CentroVacunacion("Prueba", "MunicipioPrueba", 1000);
 		Usuario usuario = new Usuario("prueba@email.com", "DniPrueba", "pruebaNombre", "pruebaApellido",
 				"pruebaPasword", RolUsuario.PACIENTE.name(), centro);
-		Cita cita = new Cita(LocalDate.now().toString(), LocalTime.now().toString(), centro, usuario);
+		Cita cita = new Cita(LocalDate.now().toString(), LocalTime.now().toString(),  usuario);
 		List<Cita> lista = new ArrayList<Cita>();
 		lista.add(cita);
 		when(citadao.findAllByFechaAndCentroVacunacion(anyString(), any())).thenReturn(lista);
@@ -97,7 +80,7 @@ class TestCitaDao {
 		CentroVacunacion centro = new CentroVacunacion("Prueba", "MunicipioPrueba", 1000);
 		Usuario usuario = new Usuario("prueba@email.com", "DniPrueba", "pruebaNombre", "pruebaApellido",
 				"pruebaPasword", RolUsuario.PACIENTE.name(), centro);
-		Cita cita = new Cita(LocalDate.now().toString(), LocalTime.now().toString(), centro, usuario);
+		Cita cita = new Cita(LocalDate.now().toString(), LocalTime.now().toString(),  usuario);
 		List<Cita> lista = new ArrayList<Cita>();
 		lista.add(cita);
 		when(citadao.findAllByUsuario(any())).thenReturn(lista);
@@ -112,7 +95,7 @@ class TestCitaDao {
 		CentroVacunacion centro = new CentroVacunacion("Prueba", "MunicipioPrueba", 1000);
 		Usuario usuario = new Usuario("prueba@email.com", "DniPrueba", "pruebaNombre", "pruebaApellido",
 				"pruebaPasword", RolUsuario.PACIENTE.name(), centro);
-		Cita cita = new Cita(LocalDate.now().toString(), LocalTime.now().toString(), centro, usuario);
+		Cita cita = new Cita(LocalDate.now().toString(), LocalTime.now().toString(),  usuario);
 		when(citadao.findByUsuario(any())).thenReturn(cita);
 		Cita resultado = citadao.findByUsuario(usuario);
 		assertEquals(cita, resultado);
@@ -125,7 +108,6 @@ class TestCitaDao {
 		CentroVacunacion centro = new CentroVacunacion("Prueba", "MunicipioPrueba", 1000);
 		Usuario usuario = new Usuario("prueba@email.com", "DniPrueba", "pruebaNombre", "pruebaApellido",
 				"pruebaPasword", RolUsuario.PACIENTE.name(), centro);
-		Cita cita = new Cita(LocalDate.now().toString(), LocalTime.now().toString(), centro, usuario);
 
 		((CitaDao) doNothing().when(citadao)).deleteAllByUsuario(usuario);
 
@@ -134,17 +116,17 @@ class TestCitaDao {
 	}
 
 	@Test
-	void testfindAllByUsuarioDni() {
+	void testfindAllByUsuarioEmail() {
 
 		CitaDao citadao = mock(CitaDao.class);
 		CentroVacunacion centro = new CentroVacunacion("Prueba", "MunicipioPrueba", 1000);
 		Usuario usuario = new Usuario("prueba@email.com", "DniPrueba", "pruebaNombre", "pruebaApellido",
 				"pruebaPasword", RolUsuario.PACIENTE.name(), centro);
-		Cita cita = new Cita(LocalDate.now().toString(), LocalTime.now().toString(), centro, usuario);
+		Cita cita = new Cita(LocalDate.now().toString(), LocalTime.now().toString(),  usuario);
 		List<Cita> lista = new ArrayList<Cita>();
 		lista.add(cita);
-		when(citadao.findAllByUsuarioDni(anyString())).thenReturn(lista);
-		List<Cita> resultado = citadao.findAllByUsuarioDni(usuario.getDni());
+		when(citadao.findAllByUsuarioEmail(anyString())).thenReturn(lista);
+		List<Cita> resultado = citadao.findAllByUsuarioEmail(usuario.getEmail());
 		assertEquals(cita, resultado.get(0));
 	}
 

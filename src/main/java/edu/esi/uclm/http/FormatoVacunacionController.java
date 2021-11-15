@@ -13,7 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import edu.esi.uclm.dao.FormatoVacunacionDao;
 import edu.esi.uclm.model.FormatoVacunacion;
-import edu.uclm.esi.exceptions.SiGeVaException;
+import edu.esi.uclm.exceptions.SigevaException;
 
 @RestController
 public class FormatoVacunacionController {
@@ -38,10 +38,10 @@ public class FormatoVacunacionController {
 				formatoVacunacionDao.insert(formatoVacunacion);
 			} else {
 				if (!formatoVacunacion.horasCorrectas())
-					throw new SiGeVaException(HttpStatus.CONFLICT, "Las horas del formato no son correctas");
+					throw new SigevaException(HttpStatus.CONFLICT, "Las horas del formato no son correctas");
 			}
 
-		} catch (SiGeVaException e) {
+		} catch (SigevaException e) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
 		}
 
@@ -62,4 +62,5 @@ public class FormatoVacunacionController {
 
 	}
 */
+
 }

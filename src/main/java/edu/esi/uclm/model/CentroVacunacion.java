@@ -1,9 +1,10 @@
 package edu.esi.uclm.model;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 public class CentroVacunacion {
-	@Id
+	@Id @Field("nombre")
 	private String nombre;
 	private String municipio;
 	private int dosis;

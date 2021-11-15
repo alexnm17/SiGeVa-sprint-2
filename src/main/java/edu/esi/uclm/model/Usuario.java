@@ -2,11 +2,12 @@ package edu.esi.uclm.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.http.HttpStatus;
-import edu.uclm.esi.exceptions.SiGeVaException;
+import edu.esi.uclm.exceptions.SigevaException;
 
 public class Usuario {
-	@Id
+	@Id @Field("email")
 	private String email;
 	private String dni;
 	private String nombre;
@@ -98,32 +99,28 @@ public class Usuario {
 		this.email = email;
 	}
 
-	public boolean comprobarDni() throws SiGeVaException {
+	public void comprobarDni() throws SigevaException {
 		char[] cadenaDni = dni.toCharArray();
-		if (cadenaDni.length != 9)
-			throw new SiGeVaException(HttpStatus.CONFLICT, "No cumple con el formato de un DNI");
-		for (int i = 0; i < 7; i++)
-			if (!Character.isDigit(cadenaDni[i]))
-				throw new SiGeVaException(HttpStatus.CONFLICT, "No cumple con el formato de un DNI");
-		if (!Character.isLetter(cadenaDni[8]))
-			throw new SiGeVaException(HttpStatus.CONFLICT, "No cumple con el formato de un DNI");
-		return true;
+
+		if(cadenaDni.length!=9) throw new SigevaException(HttpStatus.CONFLICT,"No cumple con el formato de un DNI");
+		for(int i=0; i<7;i++)
+			if (!Character.isDigit(cadenaDni[i])) throw new SigevaException(HttpStatus.CONFLICT,"No cumple con el formato de un DNI");
+		if (!Character.isLetter(cadenaDni[8])) throw new SigevaException(HttpStatus.CONFLICT,"No cumple con el formato de un DNI");
+	}
+	
+
+	public void comprobarEstado() throws SigevaException {
+			if (!estadoVacunacion.equals(EstadoVacunacion.NO_VACUNADO.name())) 
+				throw new SigevaException(HttpStatus.CONFLICT,"No se puede completar este proceso ya que el usuario ya esta vacunado");
 	}
 
-	public boolean controlarContrasena() throws SiGeVaException {
+	public boolean controlarContrasena() throws SigevaException {
 		if (password.length() < 8)
-			throw new SiGeVaException(HttpStatus.CONFLICT, "La contraseña no tiene la longitud adecuada");
+			throw new SigevaException(HttpStatus.CONFLICT, "La contraseña no tiene la longitud adecuada");
 		if (password.equals(password.toLowerCase()))
-			throw new SiGeVaException(HttpStatus.CONFLICT, "La contraseña no contiene una letra mayuscula");
+			throw new SigevaException(HttpStatus.CONFLICT, "La contraseña no contiene una letra mayuscula");
 		if (password.equals(password.toUpperCase()))
-			throw new SiGeVaException(HttpStatus.CONFLICT, "La contraseña no contiene una letra minuscula");
-		return true;
-	}
-
-	public boolean comprobarEstado() throws SiGeVaException {
-		if (!estadoVacunacion.equals(EstadoVacunacion.NO_VACUNADO.name()))
-			throw new SiGeVaException(HttpStatus.CONFLICT,
-					"No se puede completar este proceso ya que el usuario ya esta vacunado");
+			throw new SigevaException(HttpStatus.CONFLICT, "La contraseña no contiene una letra minuscula");
 		return true;
 	}
 

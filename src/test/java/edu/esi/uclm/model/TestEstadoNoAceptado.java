@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-import edu.uclm.esi.exceptions.SiGeVaException;
+import edu.esi.uclm.exceptions.SigevaException;
 
 class TestEstadoNoAceptado {
 
@@ -13,6 +13,6 @@ class TestEstadoNoAceptado {
 		CentroVacunacion centro= new CentroVacunacion();
 		Usuario user = new Usuario("prueba@email.com","12345678A", "Pepe", "Garcia", "Contraseña", "Administrador",centro);
 		user.setEstadoVacunacion(EstadoVacunacion.VACUNADO_PRIMERA.name());
-		assertThrows(SiGeVaException.class, () -> user.comprobarEstado());
+		assertThrows(SigevaException.class, () -> user.comprobarEstado());
 	}
 }

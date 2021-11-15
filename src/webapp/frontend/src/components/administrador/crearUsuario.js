@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import { Breadcrumb, Button, Col, Container, Dropdown, Form, Row } from "react-bootstrap"
+import { Breadcrumb, Button, Col, Container, Form, Row } from "react-bootstrap"
 import 'bootstrap/dist/css/bootstrap.min.css'
 import axios from "axios";
 import DropdownCentros from "./DropdownCentros";
 
-class GestionCentroSalud extends Component {
+class crearUsuario extends Component {
     constructor(props) {
         super(props)
 
@@ -40,7 +40,7 @@ class GestionCentroSalud extends Component {
 
 
     render() {
-        const { nombre, apellido, dni, password, centroSalud, rol } = this.state
+        const { nombre, apellido, dni, password, rol } = this.state
         return (
             <div style={{ marginLeft: 15 }}>
                 <Breadcrumb style={{ margin: 30 }}>
@@ -108,4 +108,4 @@ class GestionCentroSalud extends Component {
     }
 }
 
-export default GestionCentroSalud
+export default crearUsuario

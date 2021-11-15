@@ -6,9 +6,8 @@ import axios from "axios"
 class Login extends Component {
     state = {
         form: {
-            "dni": '',
-            "password": '',
-            "rol": ''
+            "email": '',
+            "password": ''
         },
         error: false,
         errorMsg: ''
@@ -27,13 +26,14 @@ class Login extends Component {
         e.preventDefault()
         axios.post("http://localhost:8080/login", this.state.form)
             .then(res => {
-                localStorage.setItem('dniUsuario', this.state.form.dni);
-                localStorage.setItem('rolUsuario', this.state.form.rol);
-                if (this.state.form.rol === 'Paciente') {
+                const rol = res.data;
+                localStorage.setItem('emailUsuario', this.state.form.email);
+                localStorage.setItem('rolUsuario', rol);
+                if (rol === 'Paciente') {
                 this.props.history.push("/paciente");
-                } else if (this.state.form.rol === 'Administrador') {
+                } else if (rol === 'Administrador') {
                     this.props.history.push("/administrador");
-                } else if (this.state.form.rol === 'Sanitario') {
+                } else if (rol === 'Sanitario') {
                     this.props.history.push("/sanitario");
                 } else {
                     alert('Hubo un problema durante la autenticación')
@@ -52,7 +52,7 @@ class Login extends Component {
                     <Row>
                         <Col></Col>
                         <Col>
-                            <input type="text" onChange={this.onChangeHandler} class="form-control" name="dni" placeholder="DNI" />
+                            <input type="text" onChange={this.onChangeHandler} class="form-control" name="email" placeholder="Correo Electrónico" />
                         </Col>
                         <Col></Col>
                     </Row>
@@ -61,17 +61,6 @@ class Login extends Component {
                         <Col>
                             <input type="password" onChange={this.onChangeHandler} class="form-control" name="password" placeholder="Password" style={{ marginTop: 15 }} />
                         </Col>
-                        <Col></Col>
-                    </Row>
-                    <Row>
-                        <Col></Col>
-                        <Col>
-                            <select class="form-control" onChange={this.onChangeHandler} style={{ marginTop: 15 }} name="rol">
-                                <option defaultValue>Selecciona un rol...</option>
-                                <option>Paciente</option>
-                                <option >Administrador</option>
-                                <option >Sanitario</option>
-                            </select></Col>
                         <Col></Col>
                     </Row>
                     <Row>

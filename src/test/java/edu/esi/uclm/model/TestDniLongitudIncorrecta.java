@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-import edu.uclm.esi.exceptions.SiGeVaException;
+import edu.esi.uclm.exceptions.SigevaException;
 
 class TestDniLongitudIncorrecta {
 
@@ -13,7 +13,7 @@ class TestDniLongitudIncorrecta {
 		CentroVacunacion centro= new CentroVacunacion();
 		Usuario user = new Usuario("prueba@email.com","Corta", "Pepe", "Garcia", "Contraseña", "Paciente",centro);
 
-		Exception e = assertThrows(SiGeVaException.class, () -> user.comprobarDni());
+		Exception e = assertThrows(SigevaException.class, () -> user.comprobarDni());
 		assertEquals("No cumple con el formato de un DNI", e.getMessage());
 
 	}

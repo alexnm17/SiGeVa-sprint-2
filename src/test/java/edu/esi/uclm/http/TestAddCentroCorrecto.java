@@ -1,9 +1,6 @@
 package edu.esi.uclm.http;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -16,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -26,13 +22,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.stubbing.OngoingStubbing;
 
 import edu.esi.uclm.dao.CentroVacunacionDao;
+import edu.esi.uclm.exceptions.SigevaException;
 import edu.esi.uclm.model.CentroVacunacion;
-import edu.uclm.esi.exceptions.SiGeVaException;
 
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
@@ -66,7 +60,7 @@ class TestAddCentroCorrecto {
 		JSONObject json = new JSONObject(mapa);
 		String body = json.toString();
 		
-		when(mockdao.save(centro)).thenThrow(new SiGeVaException(null,"Esta tarea se ha realizado correctamente"));
+		when(mockdao.save(centro)).thenThrow(new SigevaException(null,"Esta tarea se ha realizado correctamente"));
 		mockMvc.perform(MockMvcRequestBuilders.post("/addCentro")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(body))
