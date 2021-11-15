@@ -1,10 +1,15 @@
 package edu.esi.uclm.model;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.http.HttpStatus;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import edu.esi.uclm.exceptions.SigevaException;
+
 
 public class Usuario {
 	@Id @Field("email")
@@ -50,7 +55,8 @@ public class Usuario {
 	public String getApellido() {
 		return apellido;
 	}
-
+	
+	@JsonIgnore
 	public String getPassword() {
 		return password;
 	}
@@ -88,7 +94,7 @@ public class Usuario {
 	}
 
 	public void setPassword(String password) {
-		this.password = password;
+		this.password = DigestUtils.sha512Hex(password);	
 	}
 
 	public void setRol(String rol) {

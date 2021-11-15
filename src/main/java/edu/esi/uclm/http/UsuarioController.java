@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -60,6 +61,7 @@ public class UsuarioController {
 			
 			Usuario nuevoUsuario = new Usuario(email,dni, nombre, apellido, password, rol, centroVacunacion);
 			nuevoUsuario.controlarContrasena();
+			nuevoUsuario.setPassword(password);
 			nuevoUsuario.comprobarDni();
 			usuarioDao.save(nuevoUsuario);
 		} catch (SigevaException e) {
@@ -107,9 +109,9 @@ public class UsuarioController {
 					antiguoUsuario.comprobarEstado();
 				
 				antiguoUsuario.setCentroVacunacion(user.getCentroVacunacion());
+				antiguoUsuario.controlarContrasena();
 				antiguoUsuario.setPassword(user.getPassword());
 
-				antiguoUsuario.controlarContrasena();
 				usuarioDao.save(antiguoUsuario);
 			}
 
@@ -130,7 +132,7 @@ public class UsuarioController {
             String password= jso.optString("password");
             if (email.length()==0) throw new SigevaException(HttpStatus.FORBIDDEN, "Por favor, escribe tu Direccion de Correo");
             
-            Usuario usuario = usuarioDao.findByEmailAndPassword(email, password);
+            Usuario usuario = usuarioDao.findByEmailAndPassword(email, DigestUtils.sha512Hex(password));
             if (usuario==null) throw new SigevaException(HttpStatus.UNAUTHORIZED, "Credenciales inválidas");
             request.getSession().setAttribute("emailUsuario", email);
             
