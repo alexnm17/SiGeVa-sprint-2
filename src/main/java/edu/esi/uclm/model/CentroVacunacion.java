@@ -12,9 +12,10 @@ public class CentroVacunacion {
 
 	}
 
-	public CentroVacunacion(String nombre, String municipio) {
+	public CentroVacunacion(String nombre, String municipio, int dosis) {
 		this.nombre = nombre;
 		this.municipio = municipio;
+		this.dosis = dosis;
 	}
 
 	public String getNombre() {

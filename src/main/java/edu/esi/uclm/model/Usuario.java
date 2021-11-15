@@ -15,14 +15,14 @@ public class Usuario {
 	private String rol;
 	@DBRef
 	private CentroVacunacion centroVacunacion;
-	
+
 	private String estadoVacunacion;
 
 	public Usuario() {
 	}
 
-
-	public Usuario(String email, String dni, String nombre, String apellido, String password, String rol, CentroVacunacion centroVacunacion) {
+	public Usuario(String email, String dni, String nombre, String apellido, String password, String rol,
+			CentroVacunacion centroVacunacion) {
 		this.email = email;
 		this.dni = dni;
 		this.nombre = nombre;
@@ -58,10 +58,6 @@ public class Usuario {
 		return rol;
 	}
 
-	public CentroVacunacion getCentroVacunacion() {
-		return centroVacunacion;
-	}
-
 	public String getEstadoVacunacion() {
 		return estadoVacunacion;
 	}
@@ -70,8 +66,12 @@ public class Usuario {
 		this.estadoVacunacion = estadoVacunacion;
 	}
 
+	public CentroVacunacion getCentroVacunacion() {
+		return centroVacunacion;
+	}
+
 	public void setCentroVacunacion(CentroVacunacion centroVacunacion) {
-		this.centroVacunacion=centroVacunacion;
+		this.centroVacunacion = centroVacunacion;
 	}
 
 	public void setDni(String dni) {
@@ -93,13 +93,15 @@ public class Usuario {
 	public void setRol(String rol) {
 		this.rol = rol;
 	}
+
 	public void setEmail(String email) {
 		this.email = email;
 	}
 
 	public boolean comprobarDni() throws SiGeVaException {
 		char[] cadenaDni = dni.toCharArray();
-		if(cadenaDni.length != 9) throw new SiGeVaException(HttpStatus.CONFLICT, "No cumple con el formato de un DNI");
+		if (cadenaDni.length != 9)
+			throw new SiGeVaException(HttpStatus.CONFLICT, "No cumple con el formato de un DNI");
 		for (int i = 0; i < 7; i++)
 			if (!Character.isDigit(cadenaDni[i]))
 				throw new SiGeVaException(HttpStatus.CONFLICT, "No cumple con el formato de un DNI");

@@ -1,6 +1,6 @@
 package edu.esi.uclm.dao;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
@@ -12,7 +12,6 @@ import static org.mockito.Mockito.when;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -22,7 +21,6 @@ import edu.esi.uclm.model.CentroVacunacion;
 import edu.esi.uclm.model.Cita;
 import edu.esi.uclm.model.RolUsuario;
 import edu.esi.uclm.model.Usuario;
-import edu.uclm.esi.exceptions.SiGeVaException;
 
 class TestCitaDao {
 
