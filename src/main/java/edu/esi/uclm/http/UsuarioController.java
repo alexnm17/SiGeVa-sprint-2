@@ -102,9 +102,10 @@ public class UsuarioController {
 					antiguoUsuario.comprobarEstado();
 				
 				antiguoUsuario.setCentroVacunacion(user.getCentroVacunacion());
+				antiguoUsuario.controlarContraseña();
 				antiguoUsuario.setPassword(user.getPassword());
 
-				antiguoUsuario.controlarContraseña();
+				
 				usuarioDao.save(antiguoUsuario);
 
 			}
