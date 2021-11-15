@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -124,7 +125,7 @@ public class UsuarioController {
             String password= jso.optString("password");
             if (email.length()==0) throw new SigevaException(HttpStatus.FORBIDDEN, "Por favor, escribe tu Direccion de Correo");
             
-            Usuario usuario = usuarioDao.findByEmailAndPassword(email, password);
+            Usuario usuario = usuarioDao.findByEmailAndPassword(email, DigestUtils.sha512Hex(password));
             if (usuario==null) throw new SigevaException(HttpStatus.UNAUTHORIZED, "Credenciales inválidas");
             request.getSession().setAttribute("emailUsuario", email);
             
