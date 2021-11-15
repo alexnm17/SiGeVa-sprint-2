@@ -66,9 +66,21 @@ public class UsuarioController {
 
 	}
 
+	@CrossOrigin(origins = "http://localhost:3000")
 	@PostMapping("/modificarUsuario")
-	public void modificarUsuario(@RequestBody Usuario user) {
+	public void modificarUsuario(@RequestBody Map<String, Object> datosUsuario) {
 		try {
+			JSONObject json = new JSONObject(datosUsuario);
+			String email = json.getString(EMAIL);
+			String dni = json.getString("dni");
+			String nombre = json.getString("nombre");
+			String apellido = json.getString("apellido");
+			String password = json.getString("password");
+			CentroVacunacion centroVacunacion = centroVacunacionDao.findByNombre(json.getJSONObject("centroVacunacion").getString("nombre"));
+			String rol = json.getString("rol");
+			
+			Usuario user = new Usuario(email,dni, nombre, apellido, password, rol, centroVacunacion);
+			
 			if (user.getRol().equalsIgnoreCase(RolUsuario.ADMINISTRADOR.name()))
 				throw new SigevaException(HttpStatus.FORBIDDEN, "No puede modificar a otro administrador del sistema");
 			else {
@@ -80,6 +92,10 @@ public class UsuarioController {
 				
 				antiguoUsuario.setNombre(user.getNombre());
 				antiguoUsuario.setApellido(user.getApellido());
+				antiguoUsuario.setDni(user.getDni());
+				antiguoUsuario.setRol(user.getRol());
+				antiguoUsuario.setNombre(user.getNombre());
+
 				
 				if (!antiguoUsuario.getCentroVacunacion().equals(user.getCentroVacunacion()))
 					antiguoUsuario.comprobarEstado();
@@ -131,7 +147,7 @@ public class UsuarioController {
 			if (user.getRol().equalsIgnoreCase(RolUsuario.ADMINISTRADOR.name()))
 				throw new SigevaException(HttpStatus.FORBIDDEN, "No puede eliminar a otro administrador del sistema");
 
-			if(user.getRol().equals(RolUsuario.PACIENTE.name()) && !user.getEstadoVacunacion().equals(EstadoVacunacion.NO_VACUNADO.name()))
+			if(user.getRol().equalsIgnoreCase(RolUsuario.PACIENTE.name()) && !user.getEstadoVacunacion().equals(EstadoVacunacion.NO_VACUNADO.name()))
 				throw new SigevaException(HttpStatus.FORBIDDEN, "No puede eliminar a un paciente vacunado del sistema");
 			
 			borrarCitas(user);
@@ -149,7 +165,7 @@ public class UsuarioController {
 		citaDao.deleteAllByUsuario(usuario);
 	}
 
-
+	@CrossOrigin(origins = "http://localhost:3000")
 	@PostMapping("/marcarVacunado")
 	public void marcarVacunado(HttpSession session, @RequestBody Map<String, Object> datosPaciente) {
 		JSONObject jsonPaciente = new JSONObject(datosPaciente);

@@ -9,7 +9,7 @@ import org.springframework.data.annotation.Id;
 import edu.uclm.esi.exceptions.SiGeVaException;
 
 public class FormatoVacunacion {
-	@Id
+	@Id 
 	private String id;
 	private String horaInicioVacunacion;
 	private String horaFinVacunacion;

@@ -49,7 +49,7 @@ class GestionCentroSalud extends Component {
 
     render() {
         const {nombre, municipio, dosis} = this.state.form
-        if(localStorage.getItem('rolUsuario')=="Administrador"){
+        if(localStorage.getItem('rolUsuario')==="Administrador"){
             return (
                 <div>
                     <Breadcrumb style={{ margin: 30 }}>

@@ -44,12 +44,12 @@ class centroSaludList extends Component {
     render() {
         return (
             <div>
-                <table className="table" style={{ marginTop: 15, marginLeft: 15}}>
+                <table className="table" style={{ marginTop: 15, marginLeft: 15 }}>
                     <thead>
                         <tr>
                             <th>Nombre</th>
                             <th>Municipio</th>
-                            <th></th>
+                            <th>Dosis</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -58,9 +58,9 @@ class centroSaludList extends Component {
                             <tr key={centroSalud.nombre}>
                                 <td>{centroSalud.nombre}</td>
                                 <td>{centroSalud.municipio}</td>
+                                <td>{centroSalud.dosis}</td>
                                 <td>
                                     <button className="btn btn-primary" id={centroSalud.nombre} style={{ marginRight: 10 }} onClick={() => this.mostrarModalModificar(centroSalud.nombre)}>Modificar centro</button>
-                                    <button className="btn btn-danger" id={centroSalud.nombre}>Eliminar centro</button>
                                 </td>
                             </tr>
                         )}
@@ -98,7 +98,3 @@ class centroSaludList extends Component {
 }
 
 export default centroSaludList
-
-
-
-

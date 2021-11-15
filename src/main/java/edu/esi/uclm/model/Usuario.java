@@ -2,11 +2,12 @@ package edu.esi.uclm.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.http.HttpStatus;
 import edu.uclm.esi.exceptions.SiGeVaException;
 
 public class Usuario {
-	@Id
+	@Id @Field("email")
 	private String email;
 	private String dni;
 	private String nombre;
@@ -97,6 +98,7 @@ public class Usuario {
 	}
 	public void comprobarDni() throws SiGeVaException{
 		char[] cadenaDni = dni.toCharArray();
+		if(cadenaDni.length!=9) throw new SiGeVaException(HttpStatus.CONFLICT,"No cumple con el formato de un DNI");
 		for(int i=0; i<7;i++)
 			if (!Character.isDigit(cadenaDni[i])) throw new SiGeVaException(HttpStatus.CONFLICT,"No cumple con el formato de un DNI");
 		if (!Character.isLetter(cadenaDni[8])) throw new SiGeVaException(HttpStatus.CONFLICT,"No cumple con el formato de un DNI");
