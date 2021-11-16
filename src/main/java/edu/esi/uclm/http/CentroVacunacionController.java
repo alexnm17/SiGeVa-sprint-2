@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import edu.esi.uclm.dao.CentroVacunacionDao;
+import edu.esi.uclm.exceptions.SigevaException;
 import edu.esi.uclm.model.CentroVacunacion;
-import edu.uclm.esi.exceptions.SiGeVaException;
 
 
 @RestController
@@ -40,7 +40,7 @@ public class CentroVacunacionController {
 			
 			CentroVacunacion centroVacunacion = new CentroVacunacion(nombre, municipio,dosis);
 			if(centroVacunacionDao.findByNombre(nombre) != null) 
-				throw new SiGeVaException(HttpStatus.CONFLICT,"No se puede crear el centro puesto que ya existe");
+				throw new SigevaException(HttpStatus.CONFLICT,"No se puede crear el centro puesto que ya existe");
 			
 			centroVacunacionDao.save(centroVacunacion);
 		} catch(Exception e) {	
@@ -61,16 +61,15 @@ public class CentroVacunacionController {
 			CentroVacunacion antiguoCentro = centroVacunacionDao.findByNombre(nombre);
 
 			if (antiguoCentro == null)
-				throw new SiGeVaException(HttpStatus.NOT_FOUND, "No existe un centro con este nombre");
+				throw new SigevaException(HttpStatus.NOT_FOUND, "No existe un centro con este nombre");
 			
 			antiguoCentro.setMunicipio(municipio);
 			antiguoCentro.setDosis(dosis);
 			
 			centroVacunacionDao.save(antiguoCentro);
-		} catch (SiGeVaException e) {
+		} catch (SigevaException e) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
 		}
-
 	}
 
 	
