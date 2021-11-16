@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import edu.esi.uclm.dao.FormatoVacunacionDao;
-import edu.esi.uclm.model.FormatoVacunacion;
 import edu.esi.uclm.exceptions.SigevaException;
+import edu.esi.uclm.model.FormatoVacunacion;
 
 @RestController
 public class FormatoVacunacionController {

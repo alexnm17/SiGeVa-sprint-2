@@ -26,7 +26,6 @@ import edu.esi.uclm.model.CentroVacunacion;
 import edu.esi.uclm.model.EstadoVacunacion;
 import edu.esi.uclm.model.RolUsuario;
 import edu.esi.uclm.model.Usuario;
-import edu.esi.uclm.exceptions.SigevaException;
 
 @RestController
 public class UsuarioController {
@@ -53,13 +52,13 @@ public class UsuarioController {
 			String apellido = json.getString("apellido");
 			String password = json.getString("password");
 			CentroVacunacion centroVacunacion = centroVacunacionDao.findByNombre(json.getString("centroSalud"));
-			String rol = json.getString("rol");
-			
-			
+			String rol = json.getString("rol");			
 			
 			Usuario nuevoUsuario = new Usuario(email,dni, nombre, apellido, password, rol, centroVacunacion);
 			nuevoUsuario.controlarContraseña();
+			nuevoUsuario.setPassword(password);
 			nuevoUsuario.comprobarDni();
+			nuevoUsuario.comprobarEmail();
 			usuarioDao.save(nuevoUsuario);
 		} catch (SigevaException e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
@@ -102,9 +101,10 @@ public class UsuarioController {
 					antiguoUsuario.comprobarEstado();
 				
 				antiguoUsuario.setCentroVacunacion(user.getCentroVacunacion());
+				antiguoUsuario.controlarContraseña();
 				antiguoUsuario.setPassword(user.getPassword());
 
-				antiguoUsuario.controlarContraseña();
+				
 				usuarioDao.save(antiguoUsuario);
 
 			}
