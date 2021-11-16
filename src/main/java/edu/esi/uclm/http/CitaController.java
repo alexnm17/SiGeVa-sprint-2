@@ -157,8 +157,11 @@ public class CitaController {
 			cupoDao.save(cupoElegido);
 
 		} catch (SigevaException e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-		}
+			if(e.getStatus() == HttpStatus.FORBIDDEN) {
+				throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+			}else if(e.getStatus() == HttpStatus.NOT_FOUND) {
+				throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+			}		}
 	}
 
 	@CrossOrigin(origins = "http://localhost:3000")
@@ -188,7 +191,7 @@ public class CitaController {
 			return citas;
 
 		} catch (SigevaException e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+				throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
 		}
 	}
 

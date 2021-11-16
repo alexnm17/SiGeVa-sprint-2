@@ -27,6 +27,7 @@ import edu.esi.uclm.model.EstadoVacunacion;
 import edu.esi.uclm.model.RolUsuario;
 import edu.esi.uclm.model.Usuario;
 
+
 @RestController
 public class UsuarioController {
 
@@ -109,9 +110,12 @@ public class UsuarioController {
 
 			}
 
-		} catch (Exception e) {
-
-			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
+		} catch (SigevaException e) {
+			if(e.getStatus() == HttpStatus.FORBIDDEN) {
+				throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+			}else if(e.getStatus() == HttpStatus.NOT_FOUND) {
+				throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+			}
 		}
 
 	}
@@ -119,7 +123,8 @@ public class UsuarioController {
 	@CrossOrigin(origins = "http://localhost:3000")
 	@PostMapping("/login")
     public String login(HttpServletRequest request, @RequestBody Map<String, Object> datosUsuario) {
-        try {
+        String rol="";
+		try {
             JSONObject jso = new JSONObject(datosUsuario);
             String email = jso.optString("email");
             String password= jso.optString("password");
@@ -129,10 +134,15 @@ public class UsuarioController {
             if (usuario==null) throw new SigevaException(HttpStatus.UNAUTHORIZED, "Credenciales inválidas");
             request.getSession().setAttribute("emailUsuario", email);
             
-            return usuario.getRol();
+            rol = usuario.getRol();
         } catch (SigevaException e) {
-        	throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
+        	if(e.getStatus() == HttpStatus.FORBIDDEN) {
+				throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+			}else if(e.getStatus() == HttpStatus.UNAUTHORIZED) {
+				throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+			}
         }
+        return rol;
     }
 
 	@CrossOrigin(origins = "http://localhost:3000")
@@ -149,17 +159,20 @@ public class UsuarioController {
 				throw new SigevaException(HttpStatus.FORBIDDEN, "No puede eliminar a otro administrador del sistema");
 
 			if(user.getRol().equalsIgnoreCase(RolUsuario.PACIENTE.name()) && !user.getEstadoVacunacion().equals(EstadoVacunacion.NO_VACUNADO.name()))
-				throw new SigevaException(HttpStatus.FORBIDDEN, "No puede eliminar a un paciente vacunado del sistema");
+				throw new SigevaException(HttpStatus.LOCKED, "No puede eliminar a un paciente vacunado del sistema");
 			
 			borrarCitas(user);
 			usuarioDao.delete(user);
 
 
 
-		} catch (Exception e) {
+		} catch (SigevaException e) {
 
-			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
-		}
+			if(e.getStatus() == HttpStatus.FORBIDDEN) {
+				throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+			}else if(e.getStatus() == HttpStatus.LOCKED) {
+				throw new ResponseStatusException(HttpStatus.LOCKED, e.getMessage());
+			}		}
 	}
 
 	private void borrarCitas(Usuario usuario) {
