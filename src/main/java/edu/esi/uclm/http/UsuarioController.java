@@ -54,15 +54,14 @@ public class UsuarioController {
 			String password = json.getString("password");
 
 			CentroVacunacion centroVacunacion = centroVacunacionDao.findByNombre(json.getString("centroSalud"));
-			String rol = json.getString("rol");
+			String rol = json.getString("rol");			
 
-			
-			
 			
 			Usuario nuevoUsuario = new Usuario(email,dni, nombre, apellido, password, rol, centroVacunacion);
 			nuevoUsuario.controlarContrasena();
 			nuevoUsuario.setPassword(password);
 			nuevoUsuario.comprobarDni();
+			nuevoUsuario.comprobarEmail();
 			usuarioDao.save(nuevoUsuario);
 		} catch (SigevaException e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());

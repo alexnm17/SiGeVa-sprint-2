@@ -1,5 +1,8 @@
 package edu.esi.uclm.model;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -12,7 +15,8 @@ import edu.esi.uclm.exceptions.SigevaException;
 
 
 public class Usuario {
-	@Id @Field("email")
+	@Id
+	@Field("email")
 	private String email;
 	private String dni;
 	private String nombre;
@@ -23,6 +27,10 @@ public class Usuario {
 	private CentroVacunacion centroVacunacion;
 
 	private String estadoVacunacion;
+
+	// Esto valdrá para validar el email
+	public static final Pattern VALID_EMAIL_ADDRESS_REGEX = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$",
+			Pattern.CASE_INSENSITIVE);
 
 	public Usuario() {
 	}
@@ -55,7 +63,7 @@ public class Usuario {
 	public String getApellido() {
 		return apellido;
 	}
-	
+
 	@JsonIgnore
 	public String getPassword() {
 		return password;
@@ -94,7 +102,7 @@ public class Usuario {
 	}
 
 	public void setPassword(String password) {
-		this.password = DigestUtils.sha512Hex(password);	
+		this.password = DigestUtils.sha512Hex(password);
 	}
 
 	public void setRol(String rol) {
@@ -105,19 +113,42 @@ public class Usuario {
 		this.email = email;
 	}
 
+
+	public void controlarContraseña() throws SigevaException {
+		if (password.length() < 8)
+			throw new SigevaException(HttpStatus.CONFLICT, "La contraseña no tiene la longitud adecuada");
+		if (password.equals(password.toLowerCase()))
+			throw new SigevaException(HttpStatus.CONFLICT, "La contraseña no contiene una letra mayuscula");
+		if (password.equals(password.toUpperCase()))
+			throw new SigevaException(HttpStatus.CONFLICT, "La contraseña no contiene una letra minuscula");
+		// if (!(password.contains(".") || password.contains(",")||
+		// password.contains("-")|| password.contains("_"))) throw new
+		// SiGeVaException(HttpStatus.CONFLICT,"La contraseña no tiene ningun signo de
+		// los indicados");
+
+	}
+
 	public void comprobarDni() throws SigevaException {
 		char[] cadenaDni = dni.toCharArray();
-
-		if(cadenaDni.length!=9) throw new SigevaException(HttpStatus.CONFLICT,"No cumple con el formato de un DNI");
-		for(int i=0; i<7;i++)
-			if (!Character.isDigit(cadenaDni[i])) throw new SigevaException(HttpStatus.CONFLICT,"No cumple con el formato de un DNI");
-		if (!Character.isLetter(cadenaDni[8])) throw new SigevaException(HttpStatus.CONFLICT,"No cumple con el formato de un DNI");
+		if (cadenaDni.length != 9)
+			throw new SigevaException(HttpStatus.CONFLICT, "No cumple con el formato de un DNI");
+		for (int i = 0; i < 7; i++)
+			if (!Character.isDigit(cadenaDni[i]))
+				throw new SigevaException(HttpStatus.CONFLICT, "No cumple con el formato de un DNI");
+		if (!Character.isLetter(cadenaDni[8]))
+			throw new SigevaException(HttpStatus.CONFLICT, "No cumple con el formato de un DNI");
 	}
-	
 
 	public void comprobarEstado() throws SigevaException {
-			if (!estadoVacunacion.equals(EstadoVacunacion.NO_VACUNADO.name())) 
-				throw new SigevaException(HttpStatus.CONFLICT,"No se puede completar este proceso ya que el usuario ya esta vacunado");
+		if (!estadoVacunacion.equals(EstadoVacunacion.NO_VACUNADO.name()))
+			throw new SigevaException(HttpStatus.CONFLICT,
+					"No se puede completar este proceso ya que el usuario ya esta vacunado");
+	}
+
+	public void comprobarEmail() throws SigevaException {
+		Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(email);
+		if (!matcher.find())
+			throw new SigevaException(HttpStatus.CONFLICT, "No cumple con el formato de un DNI");
 	}
 
 	public boolean controlarContrasena() throws SigevaException {
