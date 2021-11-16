@@ -11,7 +11,8 @@ class Paciente extends Component {
         email: "",
         modalSolicitar: false,
         modalModificar: false,
-        citaSeleccionada: ""
+        citaSeleccionada: "",
+        fechaModificar: ""
     }
 
     componentDidMount() {
@@ -32,7 +33,13 @@ class Paciente extends Component {
                 window.location.reload(true);
             }).catch(error => {
                 this.ocultarModalSolicitar()
-                alert("No se ha podido crear la cita");
+                if (error.response.status === 403) {
+                    alert("Ya tienes tus citas asignada. Si hay algún error, por favor contacta con el administrador.");
+                } else if(error.response.status === 404) {
+                    alert("Usuario no encontrado. Si hay algún error, por favor contacta con el administrador.");
+                }else if(error.response.status === 409) {
+                    alert("Usuario ya vacunado, no puedes pedir cita si ya tienes las dos dosis puestas. Si hay algún error, por favor contacta con el administrador.");
+                }
             })
     }
 
@@ -44,8 +51,8 @@ class Paciente extends Component {
             })
     }
 
-    getCentrosSalud() {
-        axios.get('http://localhost:8080/getAllCuposConHueco', { params: { email: localStorage.getItem("emailUsuario") } })
+    getCuposLibres(fecha) {
+        axios.get('http://localhost:8080/getAllCuposConHuecoPorFecha', { params: { email: localStorage.getItem("emailUsuario"), fecha: fecha } })
             .then(res => {
                 this.setState({ cuposList: res.data })
             })
@@ -76,11 +83,15 @@ class Paciente extends Component {
         e.preventDefault()
         this.setState({ modalModificar: true })
         this.setState({ citaSeleccionada: e.target.id })
-        this.getCentrosSalud()
     }
 
     ocultarModalModificar = () => {
         this.setState({ modalModificar: false })
+    }
+
+    changeDateHandler = e => {
+        this.setState({ fechaModificar: e.target.value })
+        this.getCuposLibres(e.target.value)
     }
 
 
@@ -149,8 +160,8 @@ class Paciente extends Component {
                         </ModalHeader>
                         <ModalBody>
                             <FormGroup>
-                                <label style={{ marginRight: 15 }}>Selecciona el cupo al que quieres cambiar la cita</label>
-                                {/* <ListCupos /> */}
+                                <label style={{ marginRight: 15 }}>Selecciona la fecha a la que quieres cambiar la cita</label>
+                                <input className="form-control" type="date" name="fechaModificar" onChange={this.changeDateHandler} value={this.state.fechaModificar}></input>
                                 <table className="table" style={{ marginTop: 15, marginLeft: 15 }}>
                                     <thead>
                                         <tr>

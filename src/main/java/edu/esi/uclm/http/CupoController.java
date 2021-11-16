@@ -28,14 +28,14 @@ public class CupoController {
 	private UsuarioDao usuarioDao;
 	
 	@CrossOrigin(origins = "http://localhost:3000")
-	@GetMapping("/getAllCuposConHueco")
-	public List<Cupo> getAllCuposConHueco(@RequestParam String email){
+	@GetMapping("/getAllCuposConHuecoPorFecha")
+	public List<Cupo> getAllCuposConHuecoPorFecha(@RequestParam String email, @RequestParam String fecha){
 		Optional<Usuario> optUsuario = usuarioDao.findById(email);
 		CentroVacunacion centroVacunacion = new CentroVacunacion();
 		if (optUsuario.isPresent())
 			centroVacunacion = optUsuario.get().getCentroVacunacion();
 		
-		List<Cupo> listaCupos = cupoDao.findAllByCentroVacunacion(centroVacunacion);
+		List<Cupo> listaCupos = cupoDao.findAllByCentroVacunacionAndFecha(centroVacunacion, fecha);
 		List<Cupo> listaCuposLibres = new ArrayList<>();
 		
 		listaCupos.sort(Comparator.comparing(Cupo::getFecha));
