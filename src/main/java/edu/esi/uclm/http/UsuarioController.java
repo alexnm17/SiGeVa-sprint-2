@@ -26,7 +26,7 @@ import edu.esi.uclm.model.CentroVacunacion;
 import edu.esi.uclm.model.EstadoVacunacion;
 import edu.esi.uclm.model.RolUsuario;
 import edu.esi.uclm.model.Usuario;
-import edu.uclm.esi.exceptions.SiGeVaException;
+import edu.esi.uclm.exceptions.SigevaException;
 
 @RestController
 public class UsuarioController {
@@ -61,7 +61,7 @@ public class UsuarioController {
 			nuevoUsuario.controlarContraseña();
 			nuevoUsuario.comprobarDni();
 			usuarioDao.save(nuevoUsuario);
-		} catch (SiGeVaException e) {
+		} catch (SigevaException e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 		}
 
@@ -89,7 +89,7 @@ public class UsuarioController {
 				Usuario antiguoUsuario = usuarioDao.findByEmail(user.getEmail());
 
 				if (antiguoUsuario == null)
-					throw new SiGeVaException(HttpStatus.NOT_FOUND, "No existe un usuario con este identificador");
+					throw new SigevaException(HttpStatus.NOT_FOUND, "No existe un usuario con este identificador");
 				
 				antiguoUsuario.setNombre(user.getNombre());
 				antiguoUsuario.setApellido(user.getApellido());
