@@ -254,6 +254,7 @@ class TestCitaController {
 	
 	@Test
 	void testConsultarCita() {
+		//Falta Por hacer
 		
 	}
 

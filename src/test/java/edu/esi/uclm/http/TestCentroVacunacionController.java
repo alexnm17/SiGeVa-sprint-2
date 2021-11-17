@@ -121,7 +121,7 @@ class TestCentroVacunacionController {
 		String body = json.toString();
 		
 		try {
-			when(centroVacunacionDao.findByNombre(any())).thenReturn(centro);
+			when(centroVacunacionDao.findByIdCentroVacunacion(any())).thenReturn(centro);
 			mockMvc.perform(MockMvcRequestBuilders.post("/modificarCentro")
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(body))
@@ -145,7 +145,7 @@ class TestCentroVacunacionController {
 		String body = json.toString();
 		
 		try {
-			when(centroVacunacionDao.findByNombre(any())).thenReturn(null);
+			when(centroVacunacionDao.findByIdCentroVacunacion(any())).thenReturn(null);
 			mockMvc.perform(MockMvcRequestBuilders.post("/modificarCentro")
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(body))

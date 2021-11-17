@@ -310,7 +310,6 @@ class TestUsuarioController {
 		CentroVacunacion centroUsuario = new CentroVacunacion("Alarcos","CiudadReal",2000);
 		Usuario usuarioPrueba = new Usuario("prueba@gmail.com","0000000Q","pepe","prueba","Prueba123","Administrador",centroUsuario);
 
-
 		JSONObject json = new JSONObject(mapa);
 		String body = json.toString();
 
