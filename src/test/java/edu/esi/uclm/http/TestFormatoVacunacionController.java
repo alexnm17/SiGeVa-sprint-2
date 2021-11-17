@@ -72,8 +72,6 @@ class TestFormatoVacunacionController{
 		String body = json.toString();
 		
 		
-
-		
 		try {
 			mockMvc.perform(MockMvcRequestBuilders.post("/definirFormatoVacunacion")
 					.contentType(MediaType.APPLICATION_JSON)
