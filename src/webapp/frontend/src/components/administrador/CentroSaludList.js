@@ -102,6 +102,10 @@ class centroSaludList extends Component {
                             <label>{this.state.form.nombre}</label>
                         </FormGroup>
                         <FormGroup>
+                            <label>Nombre::</label>
+                            <input className="form-control" type="text" name="nombre" onChange={this.changeHandler} value={this.state.form.nombre}></input>
+                        </FormGroup>
+                        <FormGroup>
                             <label>Municipio:</label>
                             <input className="form-control" type="text" name="municipio" onChange={this.changeHandler} value={this.state.form.municipio}></input>
                         </FormGroup>
