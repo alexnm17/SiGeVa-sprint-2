@@ -48,6 +48,39 @@ class GestionUsuarios extends Component {
         })
     }
 
+    changeOnlyStringHandler = e => {
+        if(e.target.value.match("^[a-zA-Z ]*$") != null){
+            this.setState({
+                form: {
+                    ...this.state.form,
+                    [e.target.name]: e.target.value,
+                }
+            });
+        }
+    }
+
+    changeDNIHandler = e => {
+        if(e.target.value.match("^[0-9]{0,8}[A-Za-z]{0,1}$") != null){
+            this.setState({
+                form: {
+                    ...this.state.form,
+                    [e.target.name]: e.target.value,
+                }
+            });
+        }
+    }
+
+    changeEmailHandler = e => {
+        if(e.target.value.match("^[a-zA-Z0-9_.-]*[@]{0,1}[a-zA-z0-9]*[.]{0,1}[a-zA-Z]{0,4}$") != null){
+            this.setState({
+                form: {
+                    ...this.state.form,
+                    [e.target.name]: e.target.value,
+                }
+            });
+        }
+    }
+
     submitHandler = e => {
         e.preventDefault()
         axios.post("http://localhost:8080/crearUsuario", this.state.form)
@@ -84,7 +117,7 @@ class GestionUsuarios extends Component {
                         <ModalBody>
                             <FormGroup>
                                 <label>Email:</label>
-                                <input className="form-control" type="text" name="email" onChange={this.changeHandler} value={email}></input>
+                                <input className="form-control" type="text" name="email" onChange={this.changeEmailHandler} value={email}></input>
                             </FormGroup>
                             <FormGroup>
                                 <label>Contraseña:</label>
@@ -92,15 +125,15 @@ class GestionUsuarios extends Component {
                             </FormGroup>
                             <FormGroup>
                                 <label>Dni:</label>
-                                <input className="form-control" type="text" name="dni" onChange={this.changeHandler} value={dni}></input>
+                                <input className="form-control" type="text" name="dni" onChange={this.changeDNIHandler} value={dni}></input>
                             </FormGroup>
                             <FormGroup>
                                 <label>Nombre:</label>
-                                <input className="form-control" type="text" name="nombre" onChange={this.changeHandler} value={nombre}></input>
+                                <input className="form-control" type="text" name="nombre" onChange={this.changeOnlyStringHandler} value={nombre}></input>
                             </FormGroup>
                             <FormGroup>
                                 <label>Apellidos</label>
-                                <input className="form-control" type="text" name="apellido" onChange={this.changeHandler} value={apellido}></input>
+                                <input className="form-control" type="text" name="apellido" onChange={this.changeOnlyStringHandler} value={apellido}></input>
                             </FormGroup>
                             <FormGroup>
                                 <label style={{ marginRight: 10 }}>Centro de Vacunacion:</label>

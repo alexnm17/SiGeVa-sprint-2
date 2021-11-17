@@ -26,16 +26,6 @@ class centroSaludList extends Component {
             })
     }
 
-    EliminarClickHandler = e => {
-        e.preventDefault()
-        console.log(e.target.id)
-        /*axios.get('http://localhost:8080/',e.target.id)
-            .then(res => {
-                this.setState({ usuarios: res.data })
-            })*/
-        this.getCentrosSalud()
-    }
-
     mostrarModalModificar = (centro) => {
         this.setState({ modalModificar: true })
         this.setState({ form: centro })
@@ -53,6 +43,28 @@ class centroSaludList extends Component {
                 [e.target.name]: e.target.value,
             }
         });
+    }
+
+    changeOnlyStringHandler = e => {
+        if(e.target.value.match("^[a-zA-Z ]*$") != null){
+            this.setState({
+                form: {
+                    ...this.state.form,
+                    [e.target.name]: e.target.value,
+                }
+            });
+        }
+    }
+
+    changeOnlyNumberHandler = e => {
+        if(e.target.value.match("^[0-9]*$") != null){
+            this.setState({
+                form: {
+                    ...this.state.form,
+                    [e.target.name]: e.target.value,
+                }
+            });
+        }
     }
 
     ModificarHandler = e => {
@@ -103,11 +115,11 @@ class centroSaludList extends Component {
                         </FormGroup>
                         <FormGroup>
                             <label>Municipio:</label>
-                            <input className="form-control" type="text" name="municipio" onChange={this.changeHandler} value={this.state.form.municipio}></input>
+                            <input className="form-control" type="text" name="municipio" onChange={this.changeOnlyStringHandler} value={this.state.form.municipio}></input>
                         </FormGroup>
                         <FormGroup>
                             <label>Dosis</label>
-                            <input className="form-control" type="text"  name="dosis" onChange={this.changeHandler} value={this.state.form.dosis}></input>
+                            <input className="form-control" type="text"  name="dosis" onChange={this.changeOnlyNumberHandler} value={this.state.form.dosis}></input>
                         </FormGroup>
                     </ModalBody>
 

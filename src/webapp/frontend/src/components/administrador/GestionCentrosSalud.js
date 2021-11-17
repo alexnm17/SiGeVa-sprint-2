@@ -2,7 +2,7 @@ import React, { Component } from "react"
 import { Breadcrumb } from "react-bootstrap"
 import CentroSaludList from "./CentroSaludList";
 import 'bootstrap/dist/css/bootstrap.min.css'
-import {Button, Modal, ModalBody, FormGroup, ModalFooter, ModalHeader } from 'reactstrap'
+import { Button, Modal, ModalBody, FormGroup, ModalFooter, ModalHeader } from 'reactstrap'
 import axios from 'axios'
 
 class GestionCentroSalud extends Component {
@@ -33,6 +33,39 @@ class GestionCentroSalud extends Component {
         console.log(this.state.form)
     }
 
+    changeOnlyStringHandler = e => {
+        if (e.target.value.match("^[a-zA-Z ]*$") != null) {
+            this.setState({
+                form: {
+                    ...this.state.form,
+                    [e.target.name]: e.target.value,
+                }
+            });
+        }
+    }
+    
+    changeOnlyNumberHandler = e => {
+        if (e.target.value.match("^[0-9]*$") != null) {
+            this.setState({
+                form: {
+                    ...this.state.form,
+                    [e.target.name]: e.target.value,
+                }
+            });
+        }
+    }
+
+    changeOnlyStringAndNumberHandler = e => {
+        if (e.target.value.match("^[A-Za-z0-9 ]*$") != null) {
+            this.setState({
+                form: {
+                    ...this.state.form,
+                    [e.target.name]: e.target.value,
+                }
+            });
+        }
+    }
+
     submitHandler = e => {
         e.preventDefault()
         axios.post("http://localhost:8080/addCentro", this.state.form)
@@ -48,8 +81,8 @@ class GestionCentroSalud extends Component {
     }
 
     render() {
-        const {nombre, municipio, dosis} = this.state.form
-        if(localStorage.getItem('rolUsuario')==="Administrador"){
+        const { nombre, municipio, dosis } = this.state.form
+        if (localStorage.getItem('rolUsuario') === "Administrador") {
             return (
                 <div>
                     <Breadcrumb style={{ margin: 30 }}>
@@ -62,7 +95,7 @@ class GestionCentroSalud extends Component {
                     </div>
                     <div>
                         <p>Selecciona la acción que quieres realizar: </p>
-                            <button className="btn btn-success" style={{ marginRight: 15 }} onClick={() => this.mostrarModalCrear()}>Crear centro de salud</button>
+                        <button className="btn btn-success" style={{ marginRight: 15 }} onClick={() => this.mostrarModalCrear()}>Crear centro de salud</button>
                         <CentroSaludList />
                     </div>
 
@@ -73,15 +106,15 @@ class GestionCentroSalud extends Component {
                         <ModalBody>
                             <FormGroup>
                                 <label>Nombre:</label>
-                                <input className="form-control" type="text" name="nombre"  onChange={this.changeHandler} value={nombre}></input>
+                                <input className="form-control" type="text" name="nombre" onChange={this.changeOnlyStringAndNumberHandler} value={nombre}></input>
                             </FormGroup>
                             <FormGroup>
                                 <label>Municipio:</label>
-                                <input className="form-control" type="text" name="municipio" onChange={this.changeHandler} value={municipio}></input>
+                                <input className="form-control" type="text" name="municipio" onChange={this.changeOnlyStringHandler} value={municipio}></input>
                             </FormGroup>
                             <FormGroup>
                                 <label>Dosis:</label>
-                                <input className="form-control" type="text" name="dosis" onChange={this.changeHandler} value={dosis}></input>
+                                <input className="form-control" type="text" name="dosis" onChange={this.changeOnlyNumberHandler} value={dosis}></input>
                             </FormGroup>
                         </ModalBody>
 
@@ -92,12 +125,12 @@ class GestionCentroSalud extends Component {
                     </Modal>
                 </div>
             );
-        }else{
-            return(
+        } else {
+            return (
                 <div>
-                    <Breadcrumb style={{margin:30}}>
-                            <Breadcrumb.Item href="/">SiGeVa</Breadcrumb.Item>
-                            <Breadcrumb.Item href="/Administrador">Administrador</Breadcrumb.Item>
+                    <Breadcrumb style={{ margin: 30 }}>
+                        <Breadcrumb.Item href="/">SiGeVa</Breadcrumb.Item>
+                        <Breadcrumb.Item href="/Administrador">Administrador</Breadcrumb.Item>
                     </Breadcrumb>
                     <p>A esta sección solo pueden acceder los Administradores.</p>
                     <p>Inicie sesión como administrador para continuar.</p>
