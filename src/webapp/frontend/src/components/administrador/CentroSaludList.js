@@ -46,7 +46,7 @@ class centroSaludList extends Component {
     }
 
     changeOnlyStringHandler = e => {
-        if(e.target.value.match("^[a-zA-Z ]*$") != null){
+        if (e.target.value.match("^[a-zA-Z ]*$") != null) {
             this.setState({
                 form: {
                     ...this.state.form,
@@ -57,7 +57,7 @@ class centroSaludList extends Component {
     }
 
     changeOnlyNumberHandler = e => {
-        if(e.target.value.match("^[0-9]*$") != null){
+        if (e.target.value.match("^[0-9]*$") != null) {
             this.setState({
                 form: {
                     ...this.state.form,
@@ -74,6 +74,12 @@ class centroSaludList extends Component {
             .then(res => {
                 this.getCentrosSalud()
                 this.setState({ modalModificar: false })
+            }).catch(error => {
+                if (error.response.status === 404) {
+                    alert("No existe un centro con este nombre");
+                } else {
+                    alert("Error desconocido, por favor contacta con el administrador.")
+                }
             })
     }
 
@@ -119,7 +125,7 @@ class centroSaludList extends Component {
                         </FormGroup>
                         <FormGroup>
                             <label>Dosis</label>
-                            <input className="form-control" type="text"  name="dosis" onChange={this.changeOnlyNumberHandler} value={this.state.form.dosis}></input>
+                            <input className="form-control" type="text" name="dosis" onChange={this.changeOnlyNumberHandler} value={this.state.form.dosis}></input>
                         </FormGroup>
                     </ModalBody>
 

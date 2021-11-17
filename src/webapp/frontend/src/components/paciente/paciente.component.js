@@ -68,6 +68,14 @@ class Paciente extends Component {
             .then(res => {
                 this.ocultarModalSolicitar()
                 window.location.reload(true);
+            }).catch(error => {
+                if (error.response.status === 403) {
+                    alert("No hay hueco para cita en ese momento");
+                } else if (error.response.status === 404) {
+                    alert("No se puede modificar citas puesto que no dispone de ninguna cita asignada");
+                } else {
+                    alert("Error desconocido, por favor contacta con el administrador.")
+                }
             })
     }
 
@@ -101,7 +109,7 @@ class Paciente extends Component {
 
     ocultarModalConfirmarAnulacion = () => {
         this.setState({ modalConfirmarAnulacion: false })
-        this.setState({ idCitaModalModificar:""})        
+        this.setState({ idCitaModalModificar: "" })
     }
 
     changeDateHandler = e => {

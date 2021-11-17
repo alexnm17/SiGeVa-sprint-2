@@ -29,8 +29,12 @@ class GestionCentroSalud extends Component {
                 document.getElementById("txtDurFranja").disabled=true;
                 document.getElementById("txtNumPersonas").disabled=true;
 
-            }).catch(error =>{
-                alert("No se pudo definir el formato de vacunacion, ¿Seguro que no está definido ya?")
+            }).catch(error => {
+                if (error.response.status === 409) {
+                    alert("Las horas del formato no son correctas");
+                } else {
+                    alert("Error desconocido, por favor contacta con el administrador.")
+                }
             })
     }
 

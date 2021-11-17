@@ -76,7 +76,11 @@ class GestionCentroSalud extends Component {
                     window.location.reload(true);
                 }
             }).catch(error => {
-                alert("No se ha podido crear el usuario");
+                if (error.response.status === 409) {
+                    alert("No se puede crear el centro puesto que ya existe");
+                } else {
+                    alert("Error desconocido, por favor contacta con el administrador.")
+                }
             })
     }
 

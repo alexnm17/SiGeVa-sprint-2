@@ -91,7 +91,11 @@ class GestionUsuarios extends Component {
                     window.location.reload(true);
                 }
             }).catch(error => {
-                alert("No se ha podido crear el usuario");
+                if (error.response.status === 400) {
+                    alert("Alguno de los campos introducidos es erroneo. Compruebalos y prueba otra vez");
+                } else {
+                    alert("Error desconocido, por favor contacta con el administrador.")
+                }
             })
     }
 

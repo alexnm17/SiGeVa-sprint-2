@@ -17,7 +17,9 @@ class UsuariosList extends Component {
             rol: ""
         },
         modalModificar: false,
-        butttonDni: ""
+        modalEliminar: false,
+        butttonDni: "",
+        usuarioAEliminar: ""
     }
 
     componentDidMount() {
@@ -58,11 +60,32 @@ class UsuariosList extends Component {
         this.setState({ modalModificar: false })
     }
 
+    mostrarModalEliminar = e => {
+        e.preventDefault()
+        this.setState({ usuarioAEliminar: e.target.id })
+        this.setState({ modalEliminar: true })
+    }
+
+    ocultarModalEliminar = e => {
+        e.preventDefault()
+        this.setState({ modalEliminar: false })
+    }
+
     EliminarClickHandler = e => {
         e.preventDefault()
-        axios.delete('http://localhost:8080/eliminarUsuario', { data: { email: e.target.id } })
+        axios.delete('http://localhost:8080/eliminarUsuario', { data: { email: this.state.usuarioAEliminar } })
             .then(res => {
                 this.getUsuarios()
+                this.setState({ modalEliminar: false })
+            }).catch(error => {
+                if (error.response.status === 403) {
+                    alert("No puede eliminar a otro administrador del sistema");
+                } else if (error.response.status === 423) {
+                    alert("Alguno de los campos introducidos es erroneo. Compruebalos y prueba otra vez");
+                } else {
+                    alert("Error desconocido, por favor contacta con el administrador.")
+                }
+                this.setState({ modalEliminar: false })
             })
     }
 
@@ -72,11 +95,19 @@ class UsuariosList extends Component {
             .then(res => {
                 this.getUsuarios()
                 this.setState({ modalModificar: false })
+            }).catch(error => {
+                if (error.response.status === 403) {
+                    alert("No puede modificar a otro administrador del sistema");
+                } else if (error.response.status === 404) {
+                    alert("No existe un usuario con este identificador");
+                } else {
+                    alert("Error desconocido, por favor contacta con el administrador.")
+                }
             })
     }
 
     changeOnlyStringHandler = e => {
-        if(e.target.value.match("^[a-zA-Z ]*$") != null){
+        if (e.target.value.match("^[a-zA-Z ]*$") != null) {
             this.setState({
                 form: {
                     ...this.state.form,
@@ -87,7 +118,7 @@ class UsuariosList extends Component {
     }
 
     changeDNIHandler = e => {
-        if(e.target.value.match("^[0-9]{0,8}[A-Za-z]{0,1}$") != null){
+        if (e.target.value.match("^[0-9]{0,8}[A-Za-z]{0,1}$") != null) {
             this.setState({
                 form: {
                     ...this.state.form,
@@ -123,7 +154,7 @@ class UsuariosList extends Component {
                                 <td>{usuario.rol}</td>
                                 <td>
                                     <Button color="primary" onClick={() => this.mostrarModalModificar(usuario)} style={{ marginRight: 10 }}>Modificar usuario</Button>
-                                    <Button color="danger" id={usuario.email} onClick={this.EliminarClickHandler}>Eliminar usuario</Button>
+                                    <Button color="danger" id={usuario.email} onClick={this.mostrarModalEliminar}>Eliminar usuario</Button>
                                 </td>
                             </tr>
                         )}
@@ -148,7 +179,7 @@ class UsuariosList extends Component {
                         </FormGroup>
                         <FormGroup>
                             <label>Nombre:</label>
-                            <input className="form-control" type="text" name="nombre" onChange={this.changeOnlyStringHandler} value={this.state.form.nombre}></input>                        
+                            <input className="form-control" type="text" name="nombre" onChange={this.changeOnlyStringHandler} value={this.state.form.nombre}></input>
                         </FormGroup>
                         <FormGroup>
                             <label>Apellidos</label>
@@ -172,27 +203,26 @@ class UsuariosList extends Component {
                             </select>
                         </FormGroup>
                     </ModalBody>
-
                     <ModalFooter>
                         <Button color="primary" onClick={this.ModificarHandler}>Aceptar</Button>
                         <Button color="danger" onClick={this.ocultarModalModificar}>Cancelar</Button>
                     </ModalFooter>
                 </Modal>
                 {/* To do lo que hay aqui abajo */}
-                  <Modal isOpen={this.state.modalConfirmarAnulacion}>
-                        <ModalHeader>
-                            <div><h3>Confirmar anulación</h3></div>
-                        </ModalHeader>
-                        <ModalBody>
-                            <FormGroup>
-                                <label style={{ marginRight: 15 }}>¿Seguro que quieres anular la cita?</label>
-                            </FormGroup>
-                        </ModalBody>
-                        <ModalFooter>
-                            <Button color="danger" onClick={this.anularHandler}>Sí, anular</Button>
-                            <Button color="primary" onClick={this.ocultarModalConfirmarAnulacion}>No, no anular</Button>
-                        </ModalFooter>
-                    </Modal>
+                <Modal isOpen={this.state.modalEliminar}>
+                    <ModalHeader>
+                        <div><h3>Confirmar eliminación</h3></div>
+                    </ModalHeader>
+                    <ModalBody>
+                        <FormGroup>
+                            <label style={{ marginRight: 15 }}>¿Seguro que quieres eliminar este usuario?</label>
+                        </FormGroup>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color="danger" onClick={this.EliminarClickHandler}>Sí, eliminar</Button>
+                        <Button color="primary" onClick={this.ocultarModalEliminar}>No, no eliminar</Button>
+                    </ModalFooter>
+                </Modal>
 
             </div>
         );
