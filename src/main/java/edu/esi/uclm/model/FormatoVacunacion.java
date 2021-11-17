@@ -6,7 +6,7 @@ import java.util.Date;
 
 import org.springframework.data.annotation.Id;
 
-import edu.uclm.esi.exceptions.SiGeVaException;
+import edu.esi.uclm.exceptions.SigevaException;
 
 public class FormatoVacunacion {
 	@Id 
@@ -61,13 +61,13 @@ public class FormatoVacunacion {
 		this.personasPorFranja = personasPorFranja;
 	}
 
-	public boolean horasCorrectas() throws SiGeVaException {
+	public boolean horasCorrectas() throws SigevaException {
 		try {
 			Date horaInicio = new SimpleDateFormat("HH:mm").parse(horaInicioVacunacion);
 			Date horaFin = new SimpleDateFormat("HH:mm").parse(horaFinVacunacion);
 			return horaInicio.before(horaFin);
 		} catch (ParseException e) {
-			throw new SiGeVaException(null, "El formato introducido no es válido ");
+			throw new SigevaException(null, "El formato introducido no es válido ");
 		}
 	}
 

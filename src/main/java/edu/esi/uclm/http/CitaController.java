@@ -27,13 +27,13 @@ import edu.esi.uclm.dao.CitaDao;
 import edu.esi.uclm.dao.CupoDao;
 import edu.esi.uclm.dao.FormatoVacunacionDao;
 import edu.esi.uclm.dao.UsuarioDao;
+import edu.esi.uclm.exceptions.SigevaException;
 import edu.esi.uclm.model.CentroVacunacion;
 import edu.esi.uclm.model.Cita;
 import edu.esi.uclm.model.Cupo;
 import edu.esi.uclm.model.EstadoVacunacion;
 import edu.esi.uclm.model.FormatoVacunacion;
 import edu.esi.uclm.model.Usuario;
-import edu.uclm.esi.exceptions.SiGeVaException;
 
 @RestController
 public class CitaController {
@@ -59,10 +59,10 @@ public class CitaController {
 			Usuario usuario = usuarioDao.findByEmail(email);
 
 			if (usuario == null)
-				throw new SiGeVaException(HttpStatus.NOT_FOUND, "No se ha encontrado ningun usuario con este dni");
 
+				throw new SigevaException(HttpStatus.NOT_FOUND, "No se ha encontrado ningun usuario con este email");
 			if (usuario.getEstadoVacunacion().equals(EstadoVacunacion.VACUNADO_SEGUNDA.name()))
-				throw new SiGeVaException(HttpStatus.NOT_FOUND, "El usuario con DNI: " + usuario.getDni()
+				throw new SigevaException(HttpStatus.CONFLICT, "El usuario con DNI: " + usuario.getDni()
 						+ " ya ha sido vacunado de las dos dosis." + " No puede volver a solicitar cita");
 
 			int citasAsignadas = citaDao.findAllByUsuario(usuario).size();
@@ -76,7 +76,7 @@ public class CitaController {
 				break;
 
 			case 2:
-				throw new SiGeVaException(HttpStatus.FORBIDDEN, "El paciente: " + usuario.getDni()
+				throw new SigevaException(HttpStatus.FORBIDDEN, "El paciente: " + usuario.getDni()
 						+ " ya dispone de dos citas asignadas. Si desea modificar su cita, utilice Modificar Cita");
 
 			case 1:
@@ -93,8 +93,14 @@ public class CitaController {
 
 			}
 
-		} catch (SiGeVaException e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+		} catch (SigevaException e) {
+			if(e.getStatus() == HttpStatus.FORBIDDEN) {
+				throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+			}else if(e.getStatus() == HttpStatus.NOT_FOUND) {
+				throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+			}else if(e.getStatus() == HttpStatus.CONFLICT) {
+				throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
+			}
 		}
 	}
 
@@ -127,20 +133,20 @@ public class CitaController {
 
 			Usuario usuario = usuarioDao.findByEmail(emailUsuario);
 			Cita citaModificar = citaDao.findByIdCita(idCita);
-			Optional<Cupo> optCupoElegido = cupoDao.findById(idCupo); 
+			Optional<Cupo> optCupoElegido = cupoDao.findById(idCupo);
 			Cupo cupoElegido = new Cupo();
-			
-			if(optCupoElegido.isPresent())
+
+			if (optCupoElegido.isPresent())
 				cupoElegido = optCupoElegido.get();
 
 			int citasAsignadas = citaDao.findAllByUsuarioEmail(usuario.getEmail()).size();
 
 			if (citasAsignadas < 1)
-				throw new SiGeVaException(HttpStatus.NOT_FOUND,
+				throw new SigevaException(HttpStatus.NOT_FOUND,
 						"No se puede modificar citas puesto que no dispone de ninguna cita asignada");
 
 			if (cupoElegido.getPersonasRestantes() < 1)
-				throw new SiGeVaException(HttpStatus.FORBIDDEN,
+				throw new SigevaException(HttpStatus.FORBIDDEN,
 						"No hay hueco para cita el dia " + cupoElegido.getFecha() + " a las " + cupoElegido.getHora());
 
 			citaModificar.setFecha(cupoElegido.getFecha());
@@ -150,17 +156,27 @@ public class CitaController {
 			cupoElegido.setPersonasRestantes(cupoElegido.getPersonasRestantes() - 1);
 			cupoDao.save(cupoElegido);
 
-		} catch (SiGeVaException e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-		}
+		} catch (SigevaException e) {
+			if(e.getStatus() == HttpStatus.FORBIDDEN) {
+				throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+			}else if(e.getStatus() == HttpStatus.NOT_FOUND) {
+				throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+			}		}
 	}
 
 	@CrossOrigin(origins = "http://localhost:3000")
 	@DeleteMapping("/anularCita")
 	public void anularCita(HttpServletRequest request, @RequestBody Map<String, Object> info) {
+
 		JSONObject json = new JSONObject(info);
 		String idCita = json.getString("idCita");
+		Cita cita = citaDao.findByIdCita(idCita);
+
+		Cupo cupo = cupoDao.findAllByCentroVacunacionAndFechaAndHora(cita.getCentroVacunacion(), cita.getFecha(), cita.getHora());
+		cupo.setPersonasRestantes(cupo.getPersonasRestantes() + 1);
+
 		citaDao.deleteByIdCita(idCita);
+		cupoDao.save(cupo);
 	}
 
 	@GetMapping("/consultarCita")
@@ -169,13 +185,13 @@ public class CitaController {
 			Usuario usuario = usuarioDao.findByEmail((String) session.getAttribute("emailUsuario"));
 			List<Cita> citas = citaDao.findAllByUsuario(usuario);
 			if (citas.isEmpty())
-				throw new SiGeVaException(HttpStatus.NOT_FOUND,
+				throw new SigevaException(HttpStatus.NOT_FOUND,
 						"No se ha podido encontrar ninguna cita para el usuario. Contacte con el administrador.");
 
 			return citas;
 
-		} catch (SiGeVaException e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+		} catch (SigevaException e) {
+				throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
 		}
 	}
 
@@ -233,10 +249,10 @@ public class CitaController {
 		return formatoVacunacion;
 	}
 
-	public void asignarDosis(Usuario usuario, LocalDate fechaActual) throws SiGeVaException {
+	public void asignarDosis(Usuario usuario, LocalDate fechaActual) throws SigevaException {
 		Cupo cupoAsignado = buscarCupoLibre(fechaActual, usuario.getCentroVacunacion());
 		if (cupoAsignado == null)
-			throw new SiGeVaException(HttpStatus.NOT_FOUND,
+			throw new SigevaException(HttpStatus.NOT_FOUND,
 					"No se ha podido encontrar un cupo disponible en estos momentos");
 		cupoDao.deleteByFechaAndHoraAndCentroVacunacion(cupoAsignado.getFecha(), cupoAsignado.getHora(),
 				cupoAsignado.getCentroVacunacion());

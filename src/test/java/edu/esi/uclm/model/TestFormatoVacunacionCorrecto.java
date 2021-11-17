@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-import edu.uclm.esi.exceptions.SiGeVaException;
+import edu.esi.uclm.exceptions.SigevaException;
 
 class TestFormatoVacunacionCorrecto {
 
@@ -14,7 +14,7 @@ class TestFormatoVacunacionCorrecto {
 		try {
 			boolean resultado = formato.horasCorrectas();
 			assertTrue(resultado);
-		} catch (SiGeVaException e) {
+		} catch (SigevaException e) {
 			
 			e.printStackTrace();
 		}

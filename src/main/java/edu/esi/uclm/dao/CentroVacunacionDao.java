@@ -10,4 +10,6 @@ public interface CentroVacunacionDao extends MongoRepository<CentroVacunacion, S
 
 	CentroVacunacion findByNombre(String centroSalud);
 
+	CentroVacunacion findByIdCentroVacunacion(String nombre);
+
 }
