@@ -56,21 +56,21 @@ class TestCentroVacunacionController {
 
 	@Test
 	void testCrearCentroCorrecto() {
-
+			
 		Map<String, Object> mapa = new HashMap<String, Object>();
 		mapa.put("nombre", "pruebaCentro");
 		mapa.put("municipio", "pruebamunicipio");
 		mapa.put("dosis", "1000");
 		JSONObject json = new JSONObject(mapa);
 		String body = json.toString();
-		// CentroVacunacion centroRaro = doThrow(new
-		// Exception()).when(centroVacunacionDao.save(any(CentroVacunacion.class)));
-
+		//CentroVacunacion centroRaro = doThrow(new Exception()).when(centroVacunacionDao.save(any(CentroVacunacion.class)));
+		
 		try {
-			mockMvc.perform(
-					MockMvcRequestBuilders.post("/addCentro").contentType(MediaType.APPLICATION_JSON).content(body))
+			mockMvc.perform(MockMvcRequestBuilders.post("/addCentro")
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(body))
 					.andExpect(MockMvcResultMatchers.status().isOk());
-
+			
 			System.out.println("Centro Creado");
 		} catch (Exception e) {
 
@@ -93,9 +93,10 @@ class TestCentroVacunacionController {
 
 		try {
 			when(centroVacunacionDao.findByNombre(any())).thenReturn(centro);
-
-			mockMvc.perform(
-					MockMvcRequestBuilders.post("/addCentro").contentType(MediaType.APPLICATION_JSON).content(body))
+			
+			mockMvc.perform(MockMvcRequestBuilders.post("/addCentro")
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(body))
 					.andExpect(MockMvcResultMatchers.status().isConflict());
 			assertTrue(true);
 		} catch (Exception e) {
@@ -141,21 +142,28 @@ class TestCentroVacunacionController {
 
 		try {
 			when(centroVacunacionDao.findByNombre(any())).thenReturn(null);
-			mockMvc.perform(MockMvcRequestBuilders.post("/modificarCentro").contentType(MediaType.APPLICATION_JSON)
-					.content(body)).andExpect(MockMvcResultMatchers.status().isConflict());
+			mockMvc.perform(MockMvcRequestBuilders.post("/modificarCentro")
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(body))
+					.andExpect(MockMvcResultMatchers.status().isConflict());
 			assertTrue(true);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
+		
+		
 		}
-
+		
 	}
-
+	
+	
 	@Test
-	void testGetAllCentros() {
+	void testGetAllCentros(){
 		try {
 			mockMvc.perform(MockMvcRequestBuilders.get("/getAllCentros"))
-					.andExpect(MockMvcResultMatchers.status().isOk());
+			.andExpect(MockMvcResultMatchers.status().isOk());
+
 		} catch (Exception e) {
+
 			System.out.println(e.getMessage());
 		}
 	}

@@ -85,32 +85,5 @@ class TestCupoControlller{
 		}
 	}
 	
-	
-	@Test
-	void testDefinirFormatoVacunacionInCorrecto() {
-		Map<String, Object> mapa = new HashMap<String, Object>();
-		mapa.put("horaInicio", "40:09");
-		mapa.put("horaFin", "12:00");
-		mapa.put("duracionFranja", 30);
-		mapa.put("personasAVacunar", 10);
-
-		JSONObject json = new JSONObject(mapa);
-		String body = json.toString();
-		
-		
-
-		
-		try {
-			mockMvc.perform(MockMvcRequestBuilders.post("/definirFormatoVacunacion")
-					.contentType(MediaType.APPLICATION_JSON)
-					.content(body))
-					.andExpect(MockMvcResultMatchers.status().isConflict());
-			//si no hay excepciones va bien
-			assertTrue(true);
-
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-		}
-	}
 
 }

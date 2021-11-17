@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 
 import edu.esi.uclm.exceptions.SigevaException;
 
-
 class TestFormatoVacunacionCorrecto {
 
 	@Test

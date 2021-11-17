@@ -54,21 +54,23 @@ public class CentroVacunacionController {
 		try {
 
 			JSONObject json = new JSONObject(datosCentro);
+			String idCentroVacunacion = json.getString("idCentroVacunacion");
 			String nombre = json.getString("nombre");
 			String municipio = json.getString("municipio");
 			int dosis = Integer.parseInt(json.getString("dosis"));
 			
-			CentroVacunacion antiguoCentro = centroVacunacionDao.findByNombre(nombre);
+			CentroVacunacion antiguoCentro = centroVacunacionDao.findByIdCentroVacunacion(idCentroVacunacion);
 
 			if (antiguoCentro == null)
 				throw new SigevaException(HttpStatus.NOT_FOUND, "No existe un centro con este nombre");
 			
+			antiguoCentro.setNombre(nombre);
 			antiguoCentro.setMunicipio(municipio);
 			antiguoCentro.setDosis(dosis);
 			
 			centroVacunacionDao.save(antiguoCentro);
 		} catch (SigevaException e) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
 		}
 	}
 
