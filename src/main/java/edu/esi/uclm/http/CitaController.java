@@ -27,13 +27,13 @@ import edu.esi.uclm.dao.CitaDao;
 import edu.esi.uclm.dao.CupoDao;
 import edu.esi.uclm.dao.FormatoVacunacionDao;
 import edu.esi.uclm.dao.UsuarioDao;
+import edu.esi.uclm.exceptions.SigevaException;
 import edu.esi.uclm.model.CentroVacunacion;
 import edu.esi.uclm.model.Cita;
 import edu.esi.uclm.model.Cupo;
 import edu.esi.uclm.model.EstadoVacunacion;
 import edu.esi.uclm.model.FormatoVacunacion;
 import edu.esi.uclm.model.Usuario;
-import edu.esi.uclm.exceptions.SigevaException;
 
 @RestController
 public class CitaController {

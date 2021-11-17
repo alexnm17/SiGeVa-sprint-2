@@ -123,7 +123,7 @@ public class Usuario {
 			throw new SigevaException(HttpStatus.CONFLICT, "La contraseña no contiene una letra minuscula");
 		// if (!(password.contains(".") || password.contains(",")||
 		// password.contains("-")|| password.contains("_"))) throw new
-		// SiGeVaException(HttpStatus.CONFLICT,"La contraseña no tiene ningun signo de
+		// SigevaException(HttpStatus.CONFLICT,"La contraseña no tiene ningun signo de
 		// los indicados");
 
 	}

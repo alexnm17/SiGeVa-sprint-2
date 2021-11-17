@@ -26,7 +26,7 @@ import edu.esi.uclm.model.CentroVacunacion;
 import edu.esi.uclm.model.EstadoVacunacion;
 import edu.esi.uclm.model.RolUsuario;
 import edu.esi.uclm.model.Usuario;
-import edu.esi.uclm.exceptions.SigevaException;
+
 
 @RestController
 public class UsuarioController {
@@ -94,7 +94,7 @@ public class UsuarioController {
 				if (antiguoUsuario == null)
 
 					throw new SigevaException(HttpStatus.NOT_FOUND, "No existe un usuario con este identificador");
-
+				
 				antiguoUsuario.setNombre(user.getNombre());
 				antiguoUsuario.setApellido(user.getApellido());
 

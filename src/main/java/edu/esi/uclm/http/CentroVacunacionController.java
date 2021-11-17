@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import edu.esi.uclm.dao.CentroVacunacionDao;
-import edu.esi.uclm.model.CentroVacunacion;
 import edu.esi.uclm.exceptions.SigevaException;
+import edu.esi.uclm.model.CentroVacunacion;
 
 
 @RestController
@@ -70,7 +70,6 @@ public class CentroVacunacionController {
 		} catch (SigevaException e) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
 		}
-
 	}
 
 	
