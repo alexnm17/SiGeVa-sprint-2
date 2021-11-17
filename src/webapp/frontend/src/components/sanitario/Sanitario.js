@@ -43,7 +43,6 @@ class Sanitario extends Component {
                     </Breadcrumb>
                     <div>
                         <h6>Selecciona una fecha para ver la lista de vacunacion</h6>
-                        {/* <input type="date" onChange={this.changeHandler} name="fechaSeleccionada" value={fechaSeleccionada}></input> */}
                         <Button onClick={() => this.mostrarModalConsultarFecha()}>Ver lista de otro día</Button>
                     </div>
                     <ListUsuariosAVacunarHoy />
