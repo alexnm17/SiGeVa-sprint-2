@@ -8,7 +8,6 @@ import org.springframework.data.annotation.Id;
 
 import edu.esi.uclm.exceptions.SigevaException;
 
-
 public class FormatoVacunacion {
 	@Id 
 	private String id;

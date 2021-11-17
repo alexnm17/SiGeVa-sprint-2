@@ -70,7 +70,7 @@ public class CentroVacunacionController {
 			
 			centroVacunacionDao.save(antiguoCentro);
 		} catch (SigevaException e) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
 		}
 	}
 
