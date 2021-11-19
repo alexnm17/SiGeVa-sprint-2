@@ -9,6 +9,7 @@ class centroSaludList extends Component {
         centroSalud: [],
         modalModificar: false,
         form: {
+            idCentroVacunacion:"",
             nombre: "",
             municipio: "",
             dosis: ""
@@ -24,16 +25,6 @@ class centroSaludList extends Component {
             .then(res => {
                 this.setState({ centroSalud: res.data })
             })
-    }
-
-    EliminarClickHandler = e => {
-        e.preventDefault()
-        console.log(e.target.id)
-        /*axios.get('http://localhost:8080/',e.target.id)
-            .then(res => {
-                this.setState({ usuarios: res.data })
-            })*/
-        this.getCentrosSalud()
     }
 
     mostrarModalModificar = (centro) => {
@@ -55,6 +46,39 @@ class centroSaludList extends Component {
         });
     }
 
+    changeOnlyNumberHandler = e => {
+        if(e.target.value.match("^[0-9]*$") != null){
+            this.setState({
+                form: {
+                    ...this.state.form,
+                    [e.target.name]: e.target.value,
+                }
+            });
+        }   
+    }
+
+    changeOnlyNumberAndStringHandler = e => {
+        if(e.target.value.match("^[A-Za-z0-9 ]*$") != null){
+            this.setState({
+                form: {
+                    ...this.state.form,
+                    [e.target.name]: e.target.value,
+                }
+            });
+        }   
+    }
+
+    changeOnlyStringHandler = e => {
+        if(e.target.value.match("^[A-Za-z ]*$") != null){
+            this.setState({
+                form: {
+                    ...this.state.form,
+                    [e.target.name]: e.target.value,
+                }
+            });
+        }   
+    }
+
     ModificarHandler = e => {
         e.preventDefault()
         console.log(this.state.form);
@@ -62,6 +86,12 @@ class centroSaludList extends Component {
             .then(res => {
                 this.getCentrosSalud()
                 this.setState({ modalModificar: false })
+            }).catch(error => {
+                if (error.response.status === 404) {
+                    alert("No existe un centro con este nombre");
+                } else {
+                    alert("Error desconocido, por favor contacta con el administrador.")
+                }
             })
     }
 
@@ -84,7 +114,7 @@ class centroSaludList extends Component {
                                 <td>{centroSalud.municipio}</td>
                                 <td>{centroSalud.dosis}</td>
                                 <td>
-                                    <button className="btn btn-primary" id={centroSalud.nombre} style={{ marginRight: 10 }} onClick={() => this.mostrarModalModificar(centroSalud)}>Modificar centro</button>
+                                    <button className="btn btn-primary" id={centroSalud.idCentroVacunacion} style={{ marginRight: 10 }} onClick={() => this.mostrarModalModificar(centroSalud)}>Modificar centro</button>
                                 </td>
                             </tr>
                         )}
@@ -98,16 +128,16 @@ class centroSaludList extends Component {
 
                     <ModalBody>
                         <FormGroup>
-                            <label style={{ marginRight: 15 }}>Nombre:</label>
-                            <label>{this.state.form.nombre}</label>
+                            <label>Nombre:</label>
+                            <input className="form-control" type="text" name="nombre" onChange={this.changeOnlyNumberAndStringHandler} value={this.state.form.nombre}></input>
                         </FormGroup>
                         <FormGroup>
                             <label>Municipio:</label>
-                            <input className="form-control" type="text" name="municipio" onChange={this.changeHandler} value={this.state.form.municipio}></input>
+                            <input className="form-control" type="text" name="municipio" onChange={this.changeOnlyStringHandler} value={this.state.form.municipio}></input>
                         </FormGroup>
                         <FormGroup>
                             <label>Dosis</label>
-                            <input className="form-control" type="text"  name="dosis" onChange={this.changeHandler} value={this.state.form.dosis}></input>
+                            <input className="form-control" type="text"  name="dosis" onChange={this.changeOnlyNumberHandler} value={this.state.form.dosis}></input>
                         </FormGroup>
                     </ModalBody>
 

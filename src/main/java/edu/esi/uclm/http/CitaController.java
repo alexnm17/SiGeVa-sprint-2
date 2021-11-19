@@ -59,8 +59,8 @@ public class CitaController {
 			Usuario usuario = usuarioDao.findByEmail(email);
 
 			if (usuario == null)
-				throw new SigevaException(HttpStatus.NOT_FOUND, "No se ha encontrado ningun usuario con este email");
 
+				throw new SigevaException(HttpStatus.NOT_FOUND, "No se ha encontrado ningun usuario con este email");
 			if (usuario.getEstadoVacunacion().equals(EstadoVacunacion.VACUNADO_SEGUNDA.name()))
 				throw new SigevaException(HttpStatus.CONFLICT, "El usuario con DNI: " + usuario.getDni()
 						+ " ya ha sido vacunado de las dos dosis." + " No puede volver a solicitar cita");
@@ -157,8 +157,11 @@ public class CitaController {
 			cupoDao.save(cupoElegido);
 
 		} catch (SigevaException e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-		}
+			if(e.getStatus() == HttpStatus.FORBIDDEN) {
+				throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+			}else if(e.getStatus() == HttpStatus.NOT_FOUND) {
+				throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+			}		}
 	}
 
 	@CrossOrigin(origins = "http://localhost:3000")
@@ -188,7 +191,7 @@ public class CitaController {
 			return citas;
 
 		} catch (SigevaException e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+				throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
 		}
 	}
 

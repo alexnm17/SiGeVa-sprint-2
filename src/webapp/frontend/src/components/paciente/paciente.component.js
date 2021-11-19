@@ -11,8 +11,10 @@ class Paciente extends Component {
         email: "",
         modalSolicitar: false,
         modalModificar: false,
+        modalConfirmarAnulacion: false,
         citaSeleccionada: "",
-        fechaModificar: ""
+        fechaModificar: "",
+        idCitaModalModificar: ""
     }
 
     componentDidMount() {
@@ -35,17 +37,19 @@ class Paciente extends Component {
                 this.ocultarModalSolicitar()
                 if (error.response.status === 403) {
                     alert("Ya tienes tus citas asignada. Si hay algún error, por favor contacta con el administrador.");
-                } else if(error.response.status === 404) {
+                } else if (error.response.status === 404) {
                     alert("Usuario no encontrado. Si hay algún error, por favor contacta con el administrador.");
-                }else if(error.response.status === 409) {
+                } else if (error.response.status === 409) {
                     alert("Usuario ya vacunado, no puedes pedir cita si ya tienes las dos dosis puestas. Si hay algún error, por favor contacta con el administrador.");
+                } else {
+                    alert("Error desconocido, por favor contacta con el administrador.")
                 }
             })
     }
 
     anularHandler = e => {
         e.preventDefault()
-        axios.delete('http://localhost:8080/anularCita', { data: { idCita: e.target.id } })
+        axios.delete('http://localhost:8080/anularCita', { data: { idCita: this.state.idCitaModalModificar } })
             .then(res => {
                 window.location.reload(true);
             })
@@ -64,6 +68,14 @@ class Paciente extends Component {
             .then(res => {
                 this.ocultarModalSolicitar()
                 window.location.reload(true);
+            }).catch(error => {
+                if (error.response.status === 403) {
+                    alert("No hay hueco para cita en ese momento");
+                } else if (error.response.status === 404) {
+                    alert("No se puede modificar citas puesto que no dispone de ninguna cita asignada");
+                } else {
+                    alert("Error desconocido, por favor contacta con el administrador.")
+                }
             })
     }
 
@@ -87,6 +99,17 @@ class Paciente extends Component {
 
     ocultarModalModificar = () => {
         this.setState({ modalModificar: false })
+    }
+
+    mostrarModalConfirmarAnulacion = e => {
+        e.preventDefault()
+        this.setState({ modalConfirmarAnulacion: true })
+        this.setState({ idCitaModalModificar: e.target.id })
+    }
+
+    ocultarModalConfirmarAnulacion = () => {
+        this.setState({ modalConfirmarAnulacion: false })
+        this.setState({ idCitaModalModificar: "" })
     }
 
     changeDateHandler = e => {
@@ -128,7 +151,7 @@ class Paciente extends Component {
                                         <td>{cita.centroVacunacion.municipio} </td>
                                         <td>
                                             <Button color="primary" id={cita.idCita} style={{ marginRight: 15 }} onClick={this.mostrarModalModificar}>Modificar</Button>
-                                            <Button color="danger" id={cita.idCita} onClick={this.anularHandler}>Anular</Button>
+                                            <Button color="danger" id={cita.idCita} onClick={this.mostrarModalConfirmarAnulacion}>Anular</Button>
                                         </td>
                                     </tr>
                                 )
@@ -187,6 +210,23 @@ class Paciente extends Component {
                             <Button color="danger" onClick={this.ocultarModalModificar}>Salir</Button>
                         </ModalFooter>
                     </Modal>
+
+                    {/* Modal para confirmar la anulación de una cita */}
+                    <Modal isOpen={this.state.modalConfirmarAnulacion}>
+                        <ModalHeader>
+                            <div><h3>Confirmar anulación</h3></div>
+                        </ModalHeader>
+                        <ModalBody>
+                            <FormGroup>
+                                <label style={{ marginRight: 15 }}>¿Seguro que quieres anular la cita?</label>
+                            </FormGroup>
+                        </ModalBody>
+                        <ModalFooter>
+                            <Button color="danger" onClick={this.anularHandler}>Sí, anular</Button>
+                            <Button color="primary" onClick={this.ocultarModalConfirmarAnulacion}>No, no anular</Button>
+                        </ModalFooter>
+                    </Modal>
+
                 </div>
             );
         } else {

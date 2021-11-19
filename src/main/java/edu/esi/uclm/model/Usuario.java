@@ -126,6 +126,7 @@ public class Usuario {
 		// SigevaException(HttpStatus.CONFLICT,"La contraseña no tiene ningun signo de
 		// los indicados");
 
+
 	}
 
 	public void comprobarDni() throws SigevaException {
