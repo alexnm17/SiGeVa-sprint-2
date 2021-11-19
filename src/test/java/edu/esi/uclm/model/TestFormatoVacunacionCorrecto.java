@@ -5,10 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 import edu.esi.uclm.exceptions.SigevaException;
-<<<<<<< HEAD
-=======
 
->>>>>>> branch 'master' of https://SiGeVa@dev.azure.com/SiGeVa/SiGeVa/_git/SiGeVa
 
 class TestFormatoVacunacionCorrecto {
 
@@ -19,12 +16,9 @@ class TestFormatoVacunacionCorrecto {
 			boolean resultado = formato.horasCorrectas();
 			assertTrue(resultado);
 		} catch (SigevaException e) {
-<<<<<<< HEAD
-
-=======
 			
 			e.printStackTrace();
->>>>>>> branch 'master' of https://SiGeVa@dev.azure.com/SiGeVa/SiGeVa/_git/SiGeVa
+
 		}
 	}
 
