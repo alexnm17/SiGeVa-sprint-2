@@ -27,16 +27,6 @@ class centroSaludList extends Component {
             })
     }
 
-    EliminarClickHandler = e => {
-        e.preventDefault()
-        console.log(e.target.id)
-        /*axios.get('http://localhost:8080/',e.target.id)
-            .then(res => {
-                this.setState({ usuarios: res.data })
-            })*/
-        this.getCentrosSalud()
-    }
-
     mostrarModalModificar = (centro) => {
         this.setState({ modalModificar: true })
         this.setState({ form: centro })
@@ -96,6 +86,12 @@ class centroSaludList extends Component {
             .then(res => {
                 this.getCentrosSalud()
                 this.setState({ modalModificar: false })
+            }).catch(error => {
+                if (error.response.status === 404) {
+                    alert("No existe un centro con este nombre");
+                } else {
+                    alert("Error desconocido, por favor contacta con el administrador.")
+                }
             })
     }
 
