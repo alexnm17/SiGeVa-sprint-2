@@ -9,6 +9,7 @@ class centroSaludList extends Component {
         centroSalud: [],
         modalModificar: false,
         form: {
+            idCentroVacunacion:"",
             nombre: "",
             municipio: "",
             dosis: ""
@@ -45,26 +46,37 @@ class centroSaludList extends Component {
         });
     }
 
-    changeOnlyStringHandler = e => {
-        if (e.target.value.match("^[a-zA-Z ]*$") != null) {
+    changeOnlyNumberHandler = e => {
+        if(e.target.value.match("^[0-9]*$") != null){
             this.setState({
                 form: {
                     ...this.state.form,
                     [e.target.name]: e.target.value,
                 }
             });
-        }
+        }   
     }
 
-    changeOnlyNumberHandler = e => {
-        if (e.target.value.match("^[0-9]*$") != null) {
+    changeOnlyNumberAndStringHandler = e => {
+        if(e.target.value.match("^[A-Za-z0-9 ]*$") != null){
             this.setState({
                 form: {
                     ...this.state.form,
                     [e.target.name]: e.target.value,
                 }
             });
-        }
+        }   
+    }
+
+    changeOnlyStringHandler = e => {
+        if(e.target.value.match("^[A-Za-z ]*$") != null){
+            this.setState({
+                form: {
+                    ...this.state.form,
+                    [e.target.name]: e.target.value,
+                }
+            });
+        }   
     }
 
     ModificarHandler = e => {
@@ -102,7 +114,7 @@ class centroSaludList extends Component {
                                 <td>{centroSalud.municipio}</td>
                                 <td>{centroSalud.dosis}</td>
                                 <td>
-                                    <button className="btn btn-primary" id={centroSalud.nombre} style={{ marginRight: 10 }} onClick={() => this.mostrarModalModificar(centroSalud)}>Modificar centro</button>
+                                    <button className="btn btn-primary" id={centroSalud.idCentroVacunacion} style={{ marginRight: 10 }} onClick={() => this.mostrarModalModificar(centroSalud)}>Modificar centro</button>
                                 </td>
                             </tr>
                         )}
@@ -116,8 +128,8 @@ class centroSaludList extends Component {
 
                     <ModalBody>
                         <FormGroup>
-                            <label style={{ marginRight: 15 }}>Nombre:</label>
-                            <label>{this.state.form.nombre}</label>
+                            <label>Nombre:</label>
+                            <input className="form-control" type="text" name="nombre" onChange={this.changeOnlyNumberAndStringHandler} value={this.state.form.nombre}></input>
                         </FormGroup>
                         <FormGroup>
                             <label>Municipio:</label>
@@ -125,7 +137,7 @@ class centroSaludList extends Component {
                         </FormGroup>
                         <FormGroup>
                             <label>Dosis</label>
-                            <input className="form-control" type="text" name="dosis" onChange={this.changeOnlyNumberHandler} value={this.state.form.dosis}></input>
+                            <input className="form-control" type="text"  name="dosis" onChange={this.changeOnlyNumberHandler} value={this.state.form.dosis}></input>
                         </FormGroup>
                     </ModalBody>
 

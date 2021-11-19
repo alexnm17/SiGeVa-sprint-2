@@ -52,7 +52,6 @@ public class CentroVacunacionController {
 	@PostMapping("/modificarCentro")
 	public void modificarCentro(@RequestBody Map<String, Object> datosCentro) {
 		try {
-
 			JSONObject json = new JSONObject(datosCentro);
 			String idCentroVacunacion = json.getString("idCentroVacunacion");
 			String nombre = json.getString("nombre");
