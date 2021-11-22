@@ -52,17 +52,18 @@ public class CentroVacunacionController {
 	@PostMapping("/modificarCentro")
 	public void modificarCentro(@RequestBody Map<String, Object> datosCentro) {
 		try {
-
 			JSONObject json = new JSONObject(datosCentro);
+			String idCentroVacunacion = json.getString("idCentroVacunacion");
 			String nombre = json.getString("nombre");
 			String municipio = json.getString("municipio");
 			int dosis = Integer.parseInt(json.getString("dosis"));
 			
-			CentroVacunacion antiguoCentro = centroVacunacionDao.findByNombre(nombre);
+			CentroVacunacion antiguoCentro = centroVacunacionDao.findByIdCentroVacunacion(idCentroVacunacion);
 
 			if (antiguoCentro == null)
 				throw new SigevaException(HttpStatus.NOT_FOUND, "No existe un centro con este nombre");
 			
+			antiguoCentro.setNombre(nombre);
 			antiguoCentro.setMunicipio(municipio);
 			antiguoCentro.setDosis(dosis);
 			

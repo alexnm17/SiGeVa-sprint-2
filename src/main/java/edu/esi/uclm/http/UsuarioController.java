@@ -1,5 +1,6 @@
 package edu.esi.uclm.http;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -23,23 +24,23 @@ import edu.esi.uclm.dao.CitaDao;
 import edu.esi.uclm.dao.UsuarioDao;
 import edu.esi.uclm.exceptions.SigevaException;
 import edu.esi.uclm.model.CentroVacunacion;
+import edu.esi.uclm.model.Cita;
 import edu.esi.uclm.model.EstadoVacunacion;
 import edu.esi.uclm.model.RolUsuario;
 import edu.esi.uclm.model.Usuario;
-
 
 @RestController
 public class UsuarioController {
 
 	@Autowired
-	private UsuarioDao usuarioDao;
-	@Autowired
 	private CitaDao citaDao;
 	@Autowired
+	private UsuarioDao usuarioDao;
+	@Autowired
 	private CentroVacunacionDao centroVacunacionDao;
-	
+
 	private static String EMAIL = "email";
-	
+
 	@CrossOrigin(origins = "http://localhost:3000")
 	@PostMapping("/crearUsuario")
 	public void crearUsuario(@RequestBody Map<String, Object> datosUsuario) {
@@ -52,10 +53,12 @@ public class UsuarioController {
 			String nombre = json.getString("nombre");
 			String apellido = json.getString("apellido");
 			String password = json.getString("password");
+
 			CentroVacunacion centroVacunacion = centroVacunacionDao.findByNombre(json.getString("centroSalud"));
-			String rol = json.getString("rol");			
-			
-			Usuario nuevoUsuario = new Usuario(email,dni, nombre, apellido, password, rol, centroVacunacion);
+
+			String rol = json.getString("rol");
+
+			Usuario nuevoUsuario = new Usuario(email, dni, nombre, apellido, password, rol, centroVacunacion);
 			nuevoUsuario.controlarContraseña();
 			nuevoUsuario.setPassword(password);
 			nuevoUsuario.comprobarDni();
@@ -77,11 +80,12 @@ public class UsuarioController {
 			String nombre = json.getString("nombre");
 			String apellido = json.getString("apellido");
 			String password = json.getString("password");
-			CentroVacunacion centroVacunacion = centroVacunacionDao.findByNombre(json.getJSONObject("centroVacunacion").getString("nombre"));
+			CentroVacunacion centroVacunacion = centroVacunacionDao
+					.findByNombre(json.getJSONObject("centroVacunacion").getString("nombre"));
 			String rol = json.getString("rol");
-			
-			Usuario user = new Usuario(email,dni, nombre, apellido, password, rol, centroVacunacion);
-			
+
+			Usuario user = new Usuario(email, dni, nombre, apellido, password, rol, centroVacunacion);
+
 			if (user.getRol().equalsIgnoreCase(RolUsuario.ADMINISTRADOR.name()))
 				throw new SigevaException(HttpStatus.FORBIDDEN, "No puede modificar a otro administrador del sistema");
 			else {
@@ -89,31 +93,30 @@ public class UsuarioController {
 				Usuario antiguoUsuario = usuarioDao.findByEmail(user.getEmail());
 
 				if (antiguoUsuario == null)
+
 					throw new SigevaException(HttpStatus.NOT_FOUND, "No existe un usuario con este identificador");
-				
+
 				antiguoUsuario.setNombre(user.getNombre());
 				antiguoUsuario.setApellido(user.getApellido());
+
 				antiguoUsuario.setDni(user.getDni());
 				antiguoUsuario.setRol(user.getRol());
 				antiguoUsuario.setNombre(user.getNombre());
 
-				
 				if (!antiguoUsuario.getCentroVacunacion().equals(user.getCentroVacunacion()))
 					antiguoUsuario.comprobarEstado();
-				
+
 				antiguoUsuario.setCentroVacunacion(user.getCentroVacunacion());
-				antiguoUsuario.controlarContraseña();
+				antiguoUsuario.controlarContrasena();
 				antiguoUsuario.setPassword(user.getPassword());
 
-				
 				usuarioDao.save(antiguoUsuario);
-
 			}
 
 		} catch (SigevaException e) {
-			if(e.getStatus() == HttpStatus.FORBIDDEN) {
+			if (e.getStatus() == HttpStatus.FORBIDDEN) {
 				throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
-			}else if(e.getStatus() == HttpStatus.NOT_FOUND) {
+			} else if (e.getStatus() == HttpStatus.NOT_FOUND) {
 				throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
 			}
 		}
@@ -122,28 +125,30 @@ public class UsuarioController {
 
 	@CrossOrigin(origins = "http://localhost:3000")
 	@PostMapping("/login")
-    public String login(HttpServletRequest request, @RequestBody Map<String, Object> datosUsuario) {
-        String rol="";
+	public String login(HttpServletRequest request, @RequestBody Map<String, Object> datosUsuario) {
+		String rol = "";
 		try {
-            JSONObject jso = new JSONObject(datosUsuario);
-            String email = jso.optString("email");
-            String password= jso.optString("password");
-            if (email.length()==0) throw new SigevaException(HttpStatus.FORBIDDEN, "Por favor, escribe tu Direccion de Correo");
-            
-            Usuario usuario = usuarioDao.findByEmailAndPassword(email, DigestUtils.sha512Hex(password));
-            if (usuario==null) throw new SigevaException(HttpStatus.UNAUTHORIZED, "Credenciales inválidas");
-            request.getSession().setAttribute("emailUsuario", email);
-            
-            rol = usuario.getRol();
-        } catch (SigevaException e) {
-        	if(e.getStatus() == HttpStatus.FORBIDDEN) {
+			JSONObject jso = new JSONObject(datosUsuario);
+			String email = jso.optString("email");
+			String password = jso.optString("password");
+			if (email.length() == 0)
+				throw new SigevaException(HttpStatus.FORBIDDEN, "Por favor, escribe tu Direccion de Correo");
+
+			Usuario usuario = usuarioDao.findByEmailAndPassword(email, DigestUtils.sha512Hex(password));
+			if (usuario == null)
+				throw new SigevaException(HttpStatus.UNAUTHORIZED, "Credenciales inválidas");
+			request.getSession().setAttribute("emailUsuario", email);
+
+			rol = usuario.getRol();
+		} catch (SigevaException e) {
+			if (e.getStatus() == HttpStatus.FORBIDDEN) {
 				throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
-			}else if(e.getStatus() == HttpStatus.UNAUTHORIZED) {
+			} else if (e.getStatus() == HttpStatus.UNAUTHORIZED) {
 				throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
 			}
-        }
-        return rol;
-    }
+		}
+		return rol;
+	}
 
 	@CrossOrigin(origins = "http://localhost:3000")
 	@DeleteMapping("/eliminarUsuario")
@@ -158,21 +163,20 @@ public class UsuarioController {
 			if (user.getRol().equalsIgnoreCase(RolUsuario.ADMINISTRADOR.name()))
 				throw new SigevaException(HttpStatus.FORBIDDEN, "No puede eliminar a otro administrador del sistema");
 
-			if(user.getRol().equalsIgnoreCase(RolUsuario.PACIENTE.name()) && !user.getEstadoVacunacion().equals(EstadoVacunacion.NO_VACUNADO.name()))
+			if (user.getRol().equalsIgnoreCase(RolUsuario.PACIENTE.name())
+					&& !user.getEstadoVacunacion().equals(EstadoVacunacion.NO_VACUNADO.name()))
 				throw new SigevaException(HttpStatus.LOCKED, "No puede eliminar a un paciente vacunado del sistema");
-			
+
 			borrarCitas(user);
 			usuarioDao.delete(user);
 
-
-
 		} catch (SigevaException e) {
-
-			if(e.getStatus() == HttpStatus.FORBIDDEN) {
+			if (e.getStatus() == HttpStatus.FORBIDDEN) {
 				throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
-			}else if(e.getStatus() == HttpStatus.LOCKED) {
+			} else if (e.getStatus() == HttpStatus.LOCKED) {
 				throw new ResponseStatusException(HttpStatus.LOCKED, e.getMessage());
-			}		}
+			}
+		}
 	}
 
 	private void borrarCitas(Usuario usuario) {
@@ -181,24 +185,35 @@ public class UsuarioController {
   
 	@CrossOrigin(origins = "http://localhost:3000")
 	@PostMapping("/marcarVacunado")
-	public void marcarVacunado(HttpSession session, @RequestBody Map<String, Object> datosPaciente) {
-		JSONObject jsonPaciente = new JSONObject(datosPaciente);
+	public void marcarVacunado(HttpSession session, @RequestBody Map<String, Object> datosPaciente)
+			throws SigevaException {
 
-		String email = jsonPaciente.optString(EMAIL);
+		try {
+			JSONObject jsonPaciente = new JSONObject(datosPaciente);
+			String email = jsonPaciente.getString(EMAIL);
+			Usuario usuarioVacunado = usuarioDao.findByEmail(email);
+			CentroVacunacion centroVacunacion = usuarioVacunado.getCentroVacunacion();
 
-		Usuario usuarioVacunado = usuarioDao.findByEmail(email);
-		CentroVacunacion centroVacunacion = usuarioVacunado.getCentroVacunacion();
-		
-		centroVacunacion.setDosis(centroVacunacion.getDosis()-1);
-		centroVacunacionDao.save(centroVacunacion);
+			String fechaHoy = LocalDate.now().toString();
+			Cita citaDeEseDia = citaDao.findByUsuarioAndFecha(usuarioVacunado, fechaHoy);
 
-		if (usuarioVacunado.getEstadoVacunacion().equals(EstadoVacunacion.NO_VACUNADO.name())) {
-			usuarioVacunado.setEstadoVacunacion(EstadoVacunacion.VACUNADO_PRIMERA.name());
-			usuarioDao.save(usuarioVacunado);
-			
-		} else if (usuarioVacunado.getEstadoVacunacion().equals(EstadoVacunacion.VACUNADO_PRIMERA.name())) {
-			usuarioVacunado.setEstadoVacunacion(EstadoVacunacion.VACUNADO_SEGUNDA.name());
-			usuarioDao.save(usuarioVacunado);
+			if (citaDeEseDia.getIsUsada())
+				throw new SigevaException(HttpStatus.CONFLICT,
+						"No se puede vacunar un paciente que ha sido vacunado hoy mismo");
+
+			centroVacunacion.setDosis(centroVacunacion.getDosis() - 1);
+			centroVacunacionDao.save(centroVacunacion);
+
+			if (usuarioVacunado.getEstadoVacunacion().equals(EstadoVacunacion.NO_VACUNADO.name())) {
+				usuarioVacunado.setEstadoVacunacion(EstadoVacunacion.VACUNADO_PRIMERA.name());
+				usuarioDao.save(usuarioVacunado);
+
+			} else if (usuarioVacunado.getEstadoVacunacion().equals(EstadoVacunacion.VACUNADO_PRIMERA.name())) {
+				usuarioVacunado.setEstadoVacunacion(EstadoVacunacion.VACUNADO_SEGUNDA.name());
+				usuarioDao.save(usuarioVacunado);
+			}
+		} catch (SigevaException e) {
+			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
 		}
 
 	}
@@ -208,5 +223,5 @@ public class UsuarioController {
 	public List<Usuario> getUsuarios(HttpSession session) {
 		return usuarioDao.findAll();
 	}
-	
+
 }

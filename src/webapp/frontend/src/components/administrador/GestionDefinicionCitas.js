@@ -59,6 +59,24 @@ class GestionDefinicionDeCitas extends Component {
         this.setState({ [e.target.name]: e.target.value })
     }
 
+    changeHoraHandler = e => {
+        if (e.target.value.match("^[0-5]{0,1}[0-9]{0,1}[:]{0,1}[0-5]{0,1}[0-9]{0,1}$") != null) {
+            this.setState({[e.target.name]: e.target.value});
+        }
+    }
+    
+    changeOnlyNumberHandler = e => {
+        if (e.target.value.match("^[0-9]*$") != null) {
+            this.setState({[e.target.name]: e.target.value});
+        }
+    }
+
+    changeOnlyMinutesHandler = e => {
+        if (e.target.value.match("^[0-5]{0,1}[0-9]{0,1}$") != null) {
+            this.setState({[e.target.name]: e.target.value});
+        }
+    }
+
     render() {
         const { formatoVacunacion } = this.state
         if (localStorage.getItem('rolUsuario') === "Administrador") {
@@ -102,19 +120,19 @@ class GestionDefinicionDeCitas extends Component {
                         <ModalBody>
                             <FormGroup>
                                 <label style={{ marginRight: 15 }}>Hora Inicio de Vacunación: </label>
-                                <input className="form-control" placeholder="08:00" type="text" name="horaInicio" onChange={this.changeHandler} value={this.state.horaInicio}></input>
+                                <input className="form-control" placeholder="08:00" type="text" name="horaInicio" onChange={this.changeHoraHandler} value={this.state.horaInicio}></input>
                             </FormGroup>
                             <FormGroup>
                                 <label style={{ marginRight: 15 }}>Hora Fin de Vacunación: </label>
-                                <input className="form-control" placeholder="09:00" type="text" name="horaFin" onChange={this.changeHandler} value={this.state.horaFin}></input>
+                                <input className="form-control" placeholder="09:00" type="text" name="horaFin" onChange={this.changeHoraHandler} value={this.state.horaFin}></input>
                             </FormGroup>
                             <FormGroup>
                                 <label>Duración de cada franja:</label>
-                                <input className="form-control" placeholder="30" type="text" name="duracionFranja" onChange={this.changeHandler} value={this.state.duracionFranja}></input>
+                                <input className="form-control" placeholder="30" type="text" name="duracionFranja" onChange={this.changeOnlyMinutesHandler} value={this.state.duracionFranja}></input>
                             </FormGroup>
                             <FormGroup>
                                 <label>Número de personas por franja:</label>
-                                <input className="form-control" placeholder="5" type="text" name="personasAVacunar" onChange={this.changeHandler} value={this.state.personasAVacunar}></input>
+                                <input className="form-control" placeholder="5" type="text" name="personasAVacunar" onChange={this.changeOnlyNumberHandler} value={this.state.personasAVacunar}></input>
                             </FormGroup>
                         </ModalBody>
                         <ModalFooter>

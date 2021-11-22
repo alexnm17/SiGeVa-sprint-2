@@ -73,6 +73,14 @@ public class Usuario {
 		return rol;
 	}
 
+	public String getEstadoVacunacion() {
+		return estadoVacunacion;
+	}
+
+	public void setEstadoVacunacion(String estadoVacunacion) {
+		this.estadoVacunacion = estadoVacunacion;
+	}
+
 	public CentroVacunacion getCentroVacunacion() {
 		return centroVacunacion;
 	}
@@ -104,6 +112,7 @@ public class Usuario {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+
 
 	public void controlarContraseña() throws SigevaException {
 		if (password.length() < 8)
@@ -143,11 +152,14 @@ public class Usuario {
 			throw new SigevaException(HttpStatus.CONFLICT, "No cumple con el formato de un DNI");
 	}
 
-	public String getEstadoVacunacion() {
-		return estadoVacunacion;
+	public boolean controlarContrasena() throws SigevaException {
+		if (password.length() < 8)
+			throw new SigevaException(HttpStatus.CONFLICT, "La contraseña no tiene la longitud adecuada");
+		if (password.equals(password.toLowerCase()))
+			throw new SigevaException(HttpStatus.CONFLICT, "La contraseña no contiene una letra mayuscula");
+		if (password.equals(password.toUpperCase()))
+			throw new SigevaException(HttpStatus.CONFLICT, "La contraseña no contiene una letra minuscula");
+		return true;
 	}
 
-	public void setEstadoVacunacion(String estadoVacunacion) {
-		this.estadoVacunacion = estadoVacunacion;
-	}
 }

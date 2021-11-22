@@ -13,7 +13,7 @@ public class Cita {
 	private Usuario usuario;
 	@DBRef
 	private CentroVacunacion centroVacunacion;
-
+	private boolean isUsada;
 
 	public Cita() {
 		this.idCita = UUID.randomUUID().toString();
@@ -65,4 +65,14 @@ public class Cita {
 	public void setIdCita(String idCita) {
 		this.idCita = idCita;
 	}
+
+	public boolean getIsUsada() { 
+		return isUsada;
+	}
+
+	public void setIsUsada(boolean isUsada) {
+		this.isUsada = isUsada;
+	}
+	
+	
 }

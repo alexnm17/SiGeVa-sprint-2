@@ -35,6 +35,7 @@ import edu.esi.uclm.dao.UsuarioDao;
 import edu.esi.uclm.model.CentroVacunacion;
 import edu.esi.uclm.model.Cita;
 import edu.esi.uclm.model.Cupo;
+import edu.esi.uclm.model.EstadoVacunacion;
 import edu.esi.uclm.model.FormatoVacunacion;
 import edu.esi.uclm.model.Usuario;
 
@@ -105,6 +106,75 @@ class TestCitaController {
 
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
+		}
+	}
+	
+	@Test
+	void testSolicitarCitaUsuarioNoExiste() {
+		Map<String, Object> mapa = new HashMap<String, Object>();
+		mapa.put("email", "prueba@gmail.com");
+
+		JSONObject json = new JSONObject(mapa);
+		String body = json.toString();
+		
+		
+		CentroVacunacion centroUsuario = new CentroVacunacion("Alarcos","CiudadReal",2000);
+		Usuario usuarioPrueba = new Usuario("prueba@gmail.com","0000000Q","Prueba","Probando","Contraseña","Paciente",centroUsuario);
+		Cita citaPrueba = new Cita("2021-12-01","09:00",usuarioPrueba);
+		Cupo cupoPrueba = new Cupo("2021-12-01","09:00",centroUsuario,10);
+		Cupo cupoPrueba2 = new Cupo("2021-12-22","09:00",centroUsuario,10);
+		List<Cupo> listaCuposUsuario = new ArrayList<Cupo>();
+		listaCuposUsuario.add(cupoPrueba);
+		listaCuposUsuario.add(cupoPrueba2);
+		List<Cita> listaCitasUsuario = new ArrayList<Cita>();
+		
+		try {
+			when(usuarioDao.findByEmail(any())).thenReturn(null);
+			lenient().when(citaDao.findByUsuario(usuarioPrueba)).thenReturn(citaPrueba);
+			
+			mockMvc.perform(MockMvcRequestBuilders.post("/solicitarCita")
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(body));
+			//si no hay excepciones va bien
+			
+
+		} catch (Exception e) {
+			assertEquals("No se ha encontrado ningun usuario con este email",e.getMessage());
+		}
+	}
+
+	@Test
+	void testSolicitarCitaUsuarioVacunado() {
+		Map<String, Object> mapa = new HashMap<String, Object>();
+		mapa.put("email", "prueba@gmail.com");
+
+		JSONObject json = new JSONObject(mapa);
+		String body = json.toString();
+		
+		
+		CentroVacunacion centroUsuario = new CentroVacunacion("Alarcos","CiudadReal",2000);
+		Usuario usuarioPrueba = new Usuario("prueba@gmail.com","0000000Q","Prueba","Probando","Contraseña","Paciente",centroUsuario);
+		usuarioPrueba.setEstadoVacunacion(EstadoVacunacion.VACUNADO_SEGUNDA.name());
+		Cita citaPrueba = new Cita("2021-12-01","09:00",usuarioPrueba);
+		Cupo cupoPrueba = new Cupo("2021-12-01","09:00",centroUsuario,10);
+		Cupo cupoPrueba2 = new Cupo("2021-12-22","09:00",centroUsuario,10);
+		List<Cupo> listaCuposUsuario = new ArrayList<Cupo>();
+		listaCuposUsuario.add(cupoPrueba);
+		listaCuposUsuario.add(cupoPrueba2);
+
+		
+		try {
+			when(usuarioDao.findByEmail(any())).thenReturn(usuarioPrueba);
+			lenient().when(citaDao.findByUsuario(usuarioPrueba)).thenReturn(citaPrueba);
+			
+			mockMvc.perform(MockMvcRequestBuilders.post("/solicitarCita")
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(body));
+			//si no hay excepciones va bien
+
+		} catch (Exception e) {
+			assertEquals("El usuario con DNI: " + usuarioPrueba.getDni()
+			+ " ya ha sido vacunado de las dos dosis." + " No puede volver a solicitar cita",e.getMessage());
 		}
 	}
 	
@@ -254,6 +324,7 @@ class TestCitaController {
 	
 	@Test
 	void testConsultarCita() {
+		//Falta Por hacer
 		
 	}
 

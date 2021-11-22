@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -66,6 +67,7 @@ class TestCupoControlller{
 	@Test
 	void testGetAllCuposConHuecoCorrecto() {
 		String email = "prueba@gmail.com";
+		String fecha = LocalDate.now().toString();
 		CentroVacunacion centroUsuario = new CentroVacunacion("Alarcos","CiudadReal",2000);
 		Optional<Usuario> usuarioPrueba = Optional.ofNullable(new Usuario("prueba@gmail.com","0000000Q","pepe","prueba","Prueba123","Paciente",centroUsuario));
 		List<Cupo> listacupos = new ArrayList<Cupo>();
@@ -73,9 +75,10 @@ class TestCupoControlller{
 		try {
 			when(usuarioDao.findById(any())).thenReturn(usuarioPrueba);
 			when(cupoDao.findAllByCentroVacunacion(centroUsuario)).thenReturn(listacupos);
-			mockMvc.perform(MockMvcRequestBuilders.post("/getAllCuposConHueco")
+			mockMvc.perform(MockMvcRequestBuilders.post("/getAllCuposConHuecoPorFecha")
 					.contentType(MediaType.ALL_VALUE)
-					.content(email))
+					.param("email",email)
+					.param("fecha",fecha))
 					.andExpect(MockMvcResultMatchers.status().isOk());
 			//si no hay excepciones va bien
 			assertTrue(true);
@@ -85,32 +88,5 @@ class TestCupoControlller{
 		}
 	}
 	
-	
-	@Test
-	void testDefinirFormatoVacunacionInCorrecto() {
-		Map<String, Object> mapa = new HashMap<String, Object>();
-		mapa.put("horaInicio", "40:09");
-		mapa.put("horaFin", "12:00");
-		mapa.put("duracionFranja", 30);
-		mapa.put("personasAVacunar", 10);
-
-		JSONObject json = new JSONObject(mapa);
-		String body = json.toString();
-		
-		
-
-		
-		try {
-			mockMvc.perform(MockMvcRequestBuilders.post("/definirFormatoVacunacion")
-					.contentType(MediaType.APPLICATION_JSON)
-					.content(body))
-					.andExpect(MockMvcResultMatchers.status().isConflict());
-			//si no hay excepciones va bien
-			assertTrue(true);
-
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-		}
-	}
 
 }

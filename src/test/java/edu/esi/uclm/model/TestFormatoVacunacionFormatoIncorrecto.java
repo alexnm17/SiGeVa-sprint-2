@@ -1,6 +1,5 @@
 package edu.esi.uclm.model;
 
-import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
@@ -15,7 +14,6 @@ class TestFormatoVacunacionFormatoIncorrecto {
 
 		Exception exception = assertThrows(SigevaException.class, () -> formato.horasCorrectas());
 		//fail("Acepta el nuevo texto como un formato de horas");
-
 		String expectedMessage = "El formato introducido no es válido ";
 		String actualMessage = exception.getMessage();
 

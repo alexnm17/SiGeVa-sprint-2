@@ -45,7 +45,7 @@ class TestCentroVacunacionController {
 
 	@InjectMocks
 	private CentroVacunacionController centroVacunacionController;
-	
+
 	@Mock
 	CentroVacunacionDao centroVacunacionDao;
 
@@ -78,17 +78,16 @@ class TestCentroVacunacionController {
 		}
 
 	}
-	
-	
+
 	@Test
 	void testCrearCentroError() {
 		Map<String, Object> mapa = new HashMap<String, Object>();
 		mapa.put("nombre", "Alarcos");
 		mapa.put("municipio", "Ciudad Real");
 		mapa.put("dosis", "3000");
-		
-		CentroVacunacion centro = new CentroVacunacion("Alarcos","Ciudad Real",3000);
-		
+
+		CentroVacunacion centro = new CentroVacunacion("Alarcos", "Ciudad Real", 3000);
+
 		JSONObject json = new JSONObject(mapa);
 		String body = json.toString();
 
@@ -102,54 +101,53 @@ class TestCentroVacunacionController {
 			assertTrue(true);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
-		
+
 		}
-		
+
 	}
-	
+
 	@Test
 	void testModificarCentroCorrecto() {
-		
+
 		Map<String, Object> mapa = new HashMap<String, Object>();
+		mapa.put("idCentroVacunacion","probamos");
 		mapa.put("nombre", "Alarcos");
 		mapa.put("municipio", "Ciudad real");
 		mapa.put("dosis", "3000");
-		
-		CentroVacunacion centro = new CentroVacunacion("Alarcos","Ciudad real",3000);
-		
+
+		CentroVacunacion centro = new CentroVacunacion("Alarcos", "Ciudad real", 3000);
+
 		JSONObject json = new JSONObject(mapa);
 		String body = json.toString();
-		
+
 		try {
-			when(centroVacunacionDao.findByNombre(any())).thenReturn(centro);
-			mockMvc.perform(MockMvcRequestBuilders.post("/modificarCentro")
-					.contentType(MediaType.APPLICATION_JSON)
-					.content(body))
-					.andExpect(MockMvcResultMatchers.status().isOk());
-			//si no hay excepciones va bien
+			when(centroVacunacionDao.findByIdCentroVacunacion(any())).thenReturn(centro);
+			mockMvc.perform(MockMvcRequestBuilders.post("/modificarCentro").contentType(MediaType.APPLICATION_JSON)
+					.content(body)).andExpect(MockMvcResultMatchers.status().isOk());
+			// si no hay excepciones va bien
 			assertTrue(true);
 
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
 	}
-	
-	
+
 	@Test
-	void testModificarCentroError(){
+	void testModificarCentroError() {
 		Map<String, Object> mapa = new HashMap<String, Object>();
+		mapa.put("idCentroVacunacion","probamos");
 		mapa.put("nombre", "El bombo");
 		mapa.put("municipio", "Tomelloso");
 		mapa.put("dosis", "3000");
 		JSONObject json = new JSONObject(mapa);
 		String body = json.toString();
-		
+
 		try {
-			when(centroVacunacionDao.findByNombre(any())).thenReturn(null);
+			when(centroVacunacionDao.findByIdCentroVacunacion(any())).thenReturn(null);
 			mockMvc.perform(MockMvcRequestBuilders.post("/modificarCentro")
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(body))
-					.andExpect(MockMvcResultMatchers.status().isConflict());
+					.andExpect(MockMvcResultMatchers.status().isNotFound());
 			assertTrue(true);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
@@ -171,7 +169,5 @@ class TestCentroVacunacionController {
 			System.out.println(e.getMessage());
 		}
 	}
-	
-	
 
 }
