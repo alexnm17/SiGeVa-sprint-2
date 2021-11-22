@@ -66,13 +66,12 @@ public class Cita {
 		this.idCita = idCita;
 	}
 
-	public boolean getIsUsada() { 
+	public boolean getIsUsada() {
 		return isUsada;
 	}
 
 	public void setIsUsada(boolean isUsada) {
 		this.isUsada = isUsada;
 	}
-	
-	
+
 }

@@ -1,6 +1,5 @@
 package edu.esi.uclm.http;
 
-
 import java.util.List;
 import java.util.Map;
 
@@ -20,34 +19,33 @@ import edu.esi.uclm.dao.CentroVacunacionDao;
 import edu.esi.uclm.exceptions.SigevaException;
 import edu.esi.uclm.model.CentroVacunacion;
 
-
 @RestController
 public class CentroVacunacionController {
-	
+
 	@Autowired
 	private CentroVacunacionDao centroVacunacionDao;
-	
-	//Metodo para añadir centros de vacunacion a la BD
+
+	// Metodo para añadir centros de vacunacion a la BD
 	@CrossOrigin(origins = "http://localhost:3000")
 	@PostMapping("/addCentro")
-	public void darAltaCentroVacunacion(HttpServletRequest request,@RequestBody Map<String, Object> datosCentro) {
+	public void darAltaCentroVacunacion(HttpServletRequest request, @RequestBody Map<String, Object> datosCentro) {
 		try {
 
 			JSONObject json = new JSONObject(datosCentro);
 			String nombre = json.getString("nombre");
 			String municipio = json.getString("municipio");
 			int dosis = Integer.parseInt(json.getString("dosis"));
-			
-			CentroVacunacion centroVacunacion = new CentroVacunacion(nombre, municipio,dosis);
-			if(centroVacunacionDao.findByNombre(nombre) != null) 
-				throw new SigevaException(HttpStatus.CONFLICT,"No se puede crear el centro puesto que ya existe");
-			
+
+			CentroVacunacion centroVacunacion = new CentroVacunacion(nombre, municipio, dosis);
+			if (centroVacunacionDao.findByNombre(nombre) != null)
+				throw new SigevaException(HttpStatus.CONFLICT, "No se puede crear el centro puesto que ya existe");
+
 			centroVacunacionDao.save(centroVacunacion);
-		} catch(Exception e) {	
+		} catch (Exception e) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
 		}
 	}
-	
+
 	@CrossOrigin(origins = "http://localhost:3000")
 	@PostMapping("/modificarCentro")
 	public void modificarCentro(@RequestBody Map<String, Object> datosCentro) {
@@ -57,26 +55,25 @@ public class CentroVacunacionController {
 			String nombre = json.getString("nombre");
 			String municipio = json.getString("municipio");
 			int dosis = Integer.parseInt(json.getString("dosis"));
-			
+
 			CentroVacunacion antiguoCentro = centroVacunacionDao.findByIdCentroVacunacion(idCentroVacunacion);
 
 			if (antiguoCentro == null)
 				throw new SigevaException(HttpStatus.NOT_FOUND, "No existe un centro con este nombre");
-			
+
 			antiguoCentro.setNombre(nombre);
 			antiguoCentro.setMunicipio(municipio);
 			antiguoCentro.setDosis(dosis);
-			
+
 			centroVacunacionDao.save(antiguoCentro);
 		} catch (SigevaException e) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
 		}
 	}
 
-	
 	@CrossOrigin(origins = "http://localhost:3000")
 	@GetMapping("/getAllCentros")
-	public List<CentroVacunacion> getAllCentros(HttpServletRequest request){
+	public List<CentroVacunacion> getAllCentros(HttpServletRequest request) {
 		return centroVacunacionDao.findAll();
 	}
 

@@ -50,6 +50,8 @@ public class CitaController {
 	@Autowired
 	private CupoDao cupoDao;
 
+	private static final String EMAIL_USUARIO = "emailUsuario";
+
 	@CrossOrigin(origins = "http://localhost:3000")
 	@PostMapping("/solicitarCita")
 	public void solicitarCita(HttpSession session, @RequestBody Map<String, Object> info) {
@@ -129,7 +131,7 @@ public class CitaController {
 			JSONObject json = new JSONObject(datosCita);
 			String idCita = json.getString("idCita");
 			String idCupo = json.getString("idCupo");
-			String emailUsuario = json.getString("emailUsuario");
+			String emailUsuario = json.getString(EMAIL_USUARIO);
 
 			Usuario usuario = usuarioDao.findByEmail(emailUsuario);
 			Cita citaModificar = citaDao.findByIdCita(idCita);
@@ -177,10 +179,9 @@ public class CitaController {
 			String idCita = json.getString("idCita");
 			Cita cita = citaDao.findByIdCita(idCita);
 
-			if(cita.getIsUsada())
-				throw new SigevaException(HttpStatus.CONFLICT,
-						"La cita que intenta anular ya ha sido utilizada.");
-			
+			if (cita.getIsUsada())
+				throw new SigevaException(HttpStatus.CONFLICT, "La cita que intenta anular ya ha sido utilizada.");
+
 			Cupo cupo = cupoDao.findAllByCentroVacunacionAndFechaAndHora(cita.getCentroVacunacion(), cita.getFecha(),
 					cita.getHora());
 			cupo.setPersonasRestantes(cupo.getPersonasRestantes() + 1);
@@ -195,7 +196,7 @@ public class CitaController {
 	@GetMapping("/consultarCita")
 	public List<Cita> consultar(HttpSession session) {
 		try {
-			Usuario usuario = usuarioDao.findByEmail((String) session.getAttribute("emailUsuario"));
+			Usuario usuario = usuarioDao.findByEmail((String) session.getAttribute(EMAIL_USUARIO));
 			List<Cita> citas = citaDao.findAllByUsuario(usuario);
 			if (citas.isEmpty())
 				throw new SigevaException(HttpStatus.NOT_FOUND,
@@ -281,7 +282,7 @@ public class CitaController {
 	@PostMapping("/getCitasHoy")
 	public List<Cita> getCitasHoy(@RequestBody Map<String, Object> info) {
 		JSONObject json = new JSONObject(info);
-		String email = json.getString("emailUsuario");
+		String email = json.getString(EMAIL_USUARIO);
 		String fecha = LocalDate.now().toString();
 		return getCitasPorDia(fecha, email);
 	}
@@ -292,21 +293,19 @@ public class CitaController {
 
 		JSONObject json = new JSONObject(info);
 		String fecha = json.getString("fecha");
-		String email = json.getString("emailUsuario");
+		String email = json.getString(EMAIL_USUARIO);
 
 		return getCitasPorDia(fecha, email);
 	}
 
 	public List<Cita> getCitasPorDia(String fecha, String email) {
-		CentroVacunacion centroVacunacion = usuarioDao.findByEmail(email).getCentroVacunacion();
-		return citaDao.findAllByFechaAndCentroVacunacion(fecha, centroVacunacion);
+		return citaDao.findAllByFechaAndCentroVacunacion(fecha, usuarioDao.findByEmail(email).getCentroVacunacion());
 	}
 
 	@CrossOrigin(origins = "http://localhost:3000")
 	@GetMapping("/getCitaByEmail")
 	public List<Cita> getCitaByEmail(HttpServletRequest request, @RequestParam String email) {
-		List<Cita> citas = citaDao.findAllByUsuarioEmail(email);
-		return citas;
+		return citaDao.findAllByUsuarioEmail(email);
 	}
 
 }
