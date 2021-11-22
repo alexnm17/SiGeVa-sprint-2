@@ -149,7 +149,7 @@ public class CitaController {
 				throw new SigevaException(HttpStatus.FORBIDDEN,
 						"No hay hueco para cita el dia " + cupoElegido.getFecha() + " a las " + cupoElegido.getHora());
 
-			if (citaModificar.isUsada == true)
+			if (citaModificar.getIsUsada())
 				throw new SigevaException(HttpStatus.NOT_FOUND,
 						"No se puede modificar su cita puesto que ya está vacunado");
 			

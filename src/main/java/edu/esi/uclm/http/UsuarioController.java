@@ -182,37 +182,40 @@ public class UsuarioController {
 
 	@CrossOrigin(origins = "http://localhost:3000")
 	@PostMapping("/marcarVacunado")
-	public void marcarVacunado(HttpSession session, @RequestBody Map<String, Object> datosPaciente) throws SigevaException {
-				
-		JSONObject jsonPaciente = new JSONObject(datosPaciente);
+	public void marcarVacunado(HttpSession session, @RequestBody Map<String, Object> datosPaciente)
+			throws SigevaException {
 
-		String email = jsonPaciente.optString(EMAIL);
+		try {
+			JSONObject jsonPaciente = new JSONObject(datosPaciente);
 
-		Usuario usuarioVacunado = usuarioDao.findByEmail(email);
-		CentroVacunacion centroVacunacion = usuarioVacunado.getCentroVacunacion();
-		
-		String fechaHoy = LocalDate.now().toString();
-		//String fechaHoy = ""+LocalDate.now();
-		Cita citaDeEseDia = citaDao.findByUsuarioAndFecha(usuarioVacunado, fechaHoy);
-		
-		if (citaDeEseDia.isUsada == true )
-			throw new SigevaException(HttpStatus.NOT_FOUND,
-					"No se puede vacunar un paciente que ha sido vacunado hoy mismo");
-			usuarioDao.save(usuarioVacunado);
-		
-		centroVacunacion.setDosis(centroVacunacion.getDosis() - 1);
-		centroVacunacionDao.save(centroVacunacion);
+			String email = jsonPaciente.optString(EMAIL);
 
-		if (usuarioVacunado.getEstadoVacunacion().equals(EstadoVacunacion.NO_VACUNADO.name())) {
-			usuarioVacunado.setEstadoVacunacion(EstadoVacunacion.VACUNADO_PRIMERA.name());
-			usuarioDao.save(usuarioVacunado);
+			Usuario usuarioVacunado = usuarioDao.findByEmail(email);
+			CentroVacunacion centroVacunacion = usuarioVacunado.getCentroVacunacion();
 
-		} else if (usuarioVacunado.getEstadoVacunacion().equals(EstadoVacunacion.VACUNADO_PRIMERA.name())) {
-			usuarioVacunado.setEstadoVacunacion(EstadoVacunacion.VACUNADO_SEGUNDA.name());
-			usuarioDao.save(usuarioVacunado);
+			String fechaHoy = LocalDate.now().toString();
+			// String fechaHoy = ""+LocalDate.now();
+			Cita citaDeEseDia = citaDao.findByUsuarioAndFecha(usuarioVacunado, fechaHoy);
+
+			if (citaDeEseDia.getIsUsada())
+				throw new SigevaException(HttpStatus.CONFLICT,
+						"No se puede vacunar un paciente que ha sido vacunado hoy mismo");
+
+			centroVacunacion.setDosis(centroVacunacion.getDosis() - 1);
+			centroVacunacionDao.save(centroVacunacion);
+
+			if (usuarioVacunado.getEstadoVacunacion().equals(EstadoVacunacion.NO_VACUNADO.name())) {
+				usuarioVacunado.setEstadoVacunacion(EstadoVacunacion.VACUNADO_PRIMERA.name());
+				usuarioDao.save(usuarioVacunado);
+
+			} else if (usuarioVacunado.getEstadoVacunacion().equals(EstadoVacunacion.VACUNADO_PRIMERA.name())) {
+				usuarioVacunado.setEstadoVacunacion(EstadoVacunacion.VACUNADO_SEGUNDA.name());
+				usuarioDao.save(usuarioVacunado);
+			}
+		} catch (SigevaException e) {
+			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
 		}
 
-		
 	}
 
 	@CrossOrigin(origins = "http://localhost:3000")
