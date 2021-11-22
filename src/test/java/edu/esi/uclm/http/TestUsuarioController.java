@@ -228,7 +228,7 @@ class TestUsuarioController {
 			mockMvc.perform(MockMvcRequestBuilders.post("/modificarUsuario")
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(body))
-			.andExpect(MockMvcResultMatchers.status().isConflict());
+			.andExpect(MockMvcResultMatchers.status().isNotFound());
 			//si no hay excepciones va bien
 			assertTrue(true);
 
@@ -267,7 +267,7 @@ class TestUsuarioController {
 			mockMvc.perform(MockMvcRequestBuilders.post("/modificarUsuario")
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(body))
-			.andExpect(MockMvcResultMatchers.status().isConflict());
+			.andExpect(MockMvcResultMatchers.status().isForbidden());
 			//si no hay excepciones va bien
 			assertTrue(true);
 
@@ -318,7 +318,7 @@ class TestUsuarioController {
 			mockMvc.perform(MockMvcRequestBuilders.delete("/eliminarUsuario")
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(body))
-			.andExpect(MockMvcResultMatchers.status().isConflict());
+			.andExpect(MockMvcResultMatchers.status().isForbidden());
 			//si no hay excepciones va bien
 			assertTrue(true);
 
@@ -345,7 +345,7 @@ class TestUsuarioController {
 			mockMvc.perform(MockMvcRequestBuilders.delete("/eliminarUsuario")
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(body))
-			.andExpect(MockMvcResultMatchers.status().isConflict());
+			.andExpect(MockMvcResultMatchers.status().isLocked());
 			//si no hay excepciones va bien
 			assertTrue(true);
 
