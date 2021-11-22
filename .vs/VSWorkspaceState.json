@@ -1,0 +1,14 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\src",
+    "\\src\\webapp",
+    "\\src\\webapp\\frontend",
+    "\\src\\webapp\\frontend\\src",
+    "\\src\\webapp\\frontend\\src\\components",
+    "\\src\\webapp\\frontend\\src\\components\\administrador",
+    "\\src\\webapp\\frontend\\src\\components\\paciente"
+  ],
+  "SelectedNode": "\\src\\webapp\\frontend\\src\\components\\paciente\\paciente.component.js",
+  "PreviewInSolutionExplorer": false
+}

@@ -33,9 +33,9 @@ import edu.esi.uclm.model.Usuario;
 public class UsuarioController {
 
 	@Autowired
-	private UsuarioDao usuarioDao;
-	@Autowired
 	private CitaDao citaDao;
+	@Autowired
+	private UsuarioDao usuarioDao;
 	@Autowired
 	private CentroVacunacionDao centroVacunacionDao;
 
@@ -53,7 +53,9 @@ public class UsuarioController {
 			String nombre = json.getString("nombre");
 			String apellido = json.getString("apellido");
 			String password = json.getString("password");
+
 			CentroVacunacion centroVacunacion = centroVacunacionDao.findByNombre(json.getString("centroSalud"));
+
 			String rol = json.getString("rol");
 
 			Usuario nuevoUsuario = new Usuario(email, dni, nombre, apellido, password, rol, centroVacunacion);
@@ -91,10 +93,12 @@ public class UsuarioController {
 				Usuario antiguoUsuario = usuarioDao.findByEmail(user.getEmail());
 
 				if (antiguoUsuario == null)
+
 					throw new SigevaException(HttpStatus.NOT_FOUND, "No existe un usuario con este identificador");
 
 				antiguoUsuario.setNombre(user.getNombre());
 				antiguoUsuario.setApellido(user.getApellido());
+
 				antiguoUsuario.setDni(user.getDni());
 				antiguoUsuario.setRol(user.getRol());
 				antiguoUsuario.setNombre(user.getNombre());
@@ -103,11 +107,10 @@ public class UsuarioController {
 					antiguoUsuario.comprobarEstado();
 
 				antiguoUsuario.setCentroVacunacion(user.getCentroVacunacion());
-				antiguoUsuario.controlarContraseña();
+				antiguoUsuario.controlarContrasena();
 				antiguoUsuario.setPassword(user.getPassword());
 
 				usuarioDao.save(antiguoUsuario);
-
 			}
 
 		} catch (SigevaException e) {
@@ -187,14 +190,11 @@ public class UsuarioController {
 
 		try {
 			JSONObject jsonPaciente = new JSONObject(datosPaciente);
-
-			String email = jsonPaciente.optString(EMAIL);
-
+			String email = jsonPaciente.getString(EMAIL);
 			Usuario usuarioVacunado = usuarioDao.findByEmail(email);
 			CentroVacunacion centroVacunacion = usuarioVacunado.getCentroVacunacion();
 
 			String fechaHoy = LocalDate.now().toString();
-			// String fechaHoy = ""+LocalDate.now();
 			Cita citaDeEseDia = citaDao.findByUsuarioAndFecha(usuarioVacunado, fechaHoy);
 
 			if (citaDeEseDia.getIsUsada())

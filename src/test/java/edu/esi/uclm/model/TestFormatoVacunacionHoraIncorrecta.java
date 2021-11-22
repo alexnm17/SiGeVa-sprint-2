@@ -10,7 +10,6 @@ class TestFormatoVacunacionHoraIncorrecta {
 	public void test() {
 		try {
 			FormatoVacunacion formato = new FormatoVacunacion("17:00", "16:30", 30, 10);
-
 			assertFalse(formato.horasCorrectas());
 		} catch (Exception e) {
 

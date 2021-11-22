@@ -110,6 +110,7 @@ class TestCentroVacunacionController {
 	void testModificarCentroCorrecto() {
 
 		Map<String, Object> mapa = new HashMap<String, Object>();
+		mapa.put("idCentroVacunacion","probamos");
 		mapa.put("nombre", "Alarcos");
 		mapa.put("municipio", "Ciudad real");
 		mapa.put("dosis", "3000");
@@ -120,7 +121,7 @@ class TestCentroVacunacionController {
 		String body = json.toString();
 
 		try {
-			when(centroVacunacionDao.findByNombre(any())).thenReturn(centro);
+			when(centroVacunacionDao.findByIdCentroVacunacion(any())).thenReturn(centro);
 			mockMvc.perform(MockMvcRequestBuilders.post("/modificarCentro").contentType(MediaType.APPLICATION_JSON)
 					.content(body)).andExpect(MockMvcResultMatchers.status().isOk());
 			// si no hay excepciones va bien
@@ -134,6 +135,7 @@ class TestCentroVacunacionController {
 	@Test
 	void testModificarCentroError() {
 		Map<String, Object> mapa = new HashMap<String, Object>();
+		mapa.put("idCentroVacunacion","probamos");
 		mapa.put("nombre", "El bombo");
 		mapa.put("municipio", "Tomelloso");
 		mapa.put("dosis", "3000");
@@ -141,11 +143,11 @@ class TestCentroVacunacionController {
 		String body = json.toString();
 
 		try {
-			when(centroVacunacionDao.findByNombre(any())).thenReturn(null);
+			when(centroVacunacionDao.findByIdCentroVacunacion(any())).thenReturn(null);
 			mockMvc.perform(MockMvcRequestBuilders.post("/modificarCentro")
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(body))
-					.andExpect(MockMvcResultMatchers.status().isConflict());
+					.andExpect(MockMvcResultMatchers.status().isNotFound());
 			assertTrue(true);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());

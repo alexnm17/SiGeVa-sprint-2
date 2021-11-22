@@ -17,6 +17,7 @@ class TestFormatoVacunacionCorrecto {
 		} catch (SigevaException e) {
 			
 			e.printStackTrace();
+
 		}
 	}
 
