@@ -94,11 +94,11 @@ public class CitaController {
 			}
 
 		} catch (SigevaException e) {
-			if(e.getStatus() == HttpStatus.FORBIDDEN) {
+			if (e.getStatus() == HttpStatus.FORBIDDEN) {
 				throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
-			}else if(e.getStatus() == HttpStatus.NOT_FOUND) {
+			} else if (e.getStatus() == HttpStatus.NOT_FOUND) {
 				throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-			}else if(e.getStatus() == HttpStatus.CONFLICT) {
+			} else if (e.getStatus() == HttpStatus.CONFLICT) {
 				throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
 			}
 		}
@@ -152,7 +152,7 @@ public class CitaController {
 			if (citaModificar.getIsUsada())
 				throw new SigevaException(HttpStatus.NOT_FOUND,
 						"No se puede modificar su cita puesto que ya está vacunado");
-			
+
 			citaModificar.setFecha(cupoElegido.getFecha());
 			citaModificar.setHora(cupoElegido.getHora());
 			citaDao.save(citaModificar);
@@ -161,26 +161,35 @@ public class CitaController {
 			cupoDao.save(cupoElegido);
 
 		} catch (SigevaException e) {
-			if(e.getStatus() == HttpStatus.FORBIDDEN) {
+			if (e.getStatus() == HttpStatus.FORBIDDEN) {
 				throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
-			}else if(e.getStatus() == HttpStatus.NOT_FOUND) {
+			} else if (e.getStatus() == HttpStatus.NOT_FOUND) {
 				throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-			}		}
+			}
+		}
 	}
 
 	@CrossOrigin(origins = "http://localhost:3000")
 	@DeleteMapping("/anularCita")
 	public void anularCita(HttpServletRequest request, @RequestBody Map<String, Object> info) {
+		try {
+			JSONObject json = new JSONObject(info);
+			String idCita = json.getString("idCita");
+			Cita cita = citaDao.findByIdCita(idCita);
 
-		JSONObject json = new JSONObject(info);
-		String idCita = json.getString("idCita");
-		Cita cita = citaDao.findByIdCita(idCita);
+			if(cita.getIsUsada())
+				throw new SigevaException(HttpStatus.CONFLICT,
+						"La cita que intenta anular ya ha sido utilizada.");
+			
+			Cupo cupo = cupoDao.findAllByCentroVacunacionAndFechaAndHora(cita.getCentroVacunacion(), cita.getFecha(),
+					cita.getHora());
+			cupo.setPersonasRestantes(cupo.getPersonasRestantes() + 1);
 
-		Cupo cupo = cupoDao.findAllByCentroVacunacionAndFechaAndHora(cita.getCentroVacunacion(), cita.getFecha(), cita.getHora());
-		cupo.setPersonasRestantes(cupo.getPersonasRestantes() + 1);
-
-		citaDao.deleteByIdCita(idCita);
-		cupoDao.save(cupo);
+			citaDao.deleteByIdCita(idCita);
+			cupoDao.save(cupo);
+		} catch (SigevaException e) {
+			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
+		}
 	}
 
 	@GetMapping("/consultarCita")
@@ -195,7 +204,7 @@ public class CitaController {
 			return citas;
 
 		} catch (SigevaException e) {
-				throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
 		}
 	}
 
