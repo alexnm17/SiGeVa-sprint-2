@@ -13,6 +13,7 @@ public class Cita {
 	private Usuario usuario;
 	@DBRef
 	private CentroVacunacion centroVacunacion;
+	public boolean isUsada;
 
 
 	public Cita() {

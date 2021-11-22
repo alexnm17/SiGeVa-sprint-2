@@ -1,5 +1,6 @@
 package edu.esi.uclm.http;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +24,7 @@ import edu.esi.uclm.dao.CitaDao;
 import edu.esi.uclm.dao.UsuarioDao;
 import edu.esi.uclm.exceptions.SigevaException;
 import edu.esi.uclm.model.CentroVacunacion;
+import edu.esi.uclm.model.Cita;
 import edu.esi.uclm.model.EstadoVacunacion;
 import edu.esi.uclm.model.RolUsuario;
 import edu.esi.uclm.model.Usuario;
@@ -180,14 +182,24 @@ public class UsuarioController {
 
 	@CrossOrigin(origins = "http://localhost:3000")
 	@PostMapping("/marcarVacunado")
-	public void marcarVacunado(HttpSession session, @RequestBody Map<String, Object> datosPaciente) {
+	public void marcarVacunado(HttpSession session, @RequestBody Map<String, Object> datosPaciente) throws SigevaException {
+				
 		JSONObject jsonPaciente = new JSONObject(datosPaciente);
 
 		String email = jsonPaciente.optString(EMAIL);
 
 		Usuario usuarioVacunado = usuarioDao.findByEmail(email);
 		CentroVacunacion centroVacunacion = usuarioVacunado.getCentroVacunacion();
-
+		
+		String fechaHoy = LocalDate.now().toString();
+		//String fechaHoy = ""+LocalDate.now();
+		Cita citaDeEseDia = citaDao.findByUsuarioAndFecha(usuarioVacunado, fechaHoy);
+		
+		if (citaDeEseDia.isUsada == true )
+			throw new SigevaException(HttpStatus.NOT_FOUND,
+					"No se puede vacunar un paciente que ha sido vacunado hoy mismo");
+			usuarioDao.save(usuarioVacunado);
+		
 		centroVacunacion.setDosis(centroVacunacion.getDosis() - 1);
 		centroVacunacionDao.save(centroVacunacion);
 
@@ -200,6 +212,7 @@ public class UsuarioController {
 			usuarioDao.save(usuarioVacunado);
 		}
 
+		
 	}
 
 	@CrossOrigin(origins = "http://localhost:3000")
