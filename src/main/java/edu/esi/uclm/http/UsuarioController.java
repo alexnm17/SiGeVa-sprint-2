@@ -178,7 +178,7 @@ public class UsuarioController {
 	private void borrarCitas(Usuario usuario) {
 		citaDao.deleteAllByUsuario(usuario);
 	}
-
+  
 	@CrossOrigin(origins = "http://localhost:3000")
 	@PostMapping("/marcarVacunado")
 	public void marcarVacunado(HttpSession session, @RequestBody Map<String, Object> datosPaciente) {
