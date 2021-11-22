@@ -39,9 +39,6 @@ public class FormatoVacunacionController {
 			} else {
 				if (!formatoVacunacion.horasCorrectas())
 					throw new SigevaException(HttpStatus.CONFLICT, "Las horas del formato no son correctas");
-			/*	else
-					throw new SigevaException(HttpStatus.CONFLICT, "Las condiciones no estan bien");*/
-
 			}
 
 		} catch (SigevaException e) {
@@ -49,21 +46,5 @@ public class FormatoVacunacionController {
 		}
 
 	}
-/*
-	@PostMapping("/setPersonalVacunacion")
-	public void setPersonalVacunacion() {
-
-	}
-
-	@PostMapping("/setHorarioVacunacion")
-	public void setHorarioVacunacion() {
-
-	}
-
-	@PostMapping("/setDosisDisponibles")
-	public void setDosisDisponibles() {
-
-	}
-*/
 
 }

@@ -22,7 +22,7 @@ public class Cupo {
 		this.fecha = fecha;
 		this.hora = hora;
 		this.centroVacunacion = centro;
-		this.personasRestantes=personasRestantes;
+		this.personasRestantes = personasRestantes;
 	}
 
 	public String getFecha() {
@@ -56,7 +56,7 @@ public class Cupo {
 	public void setPersonasRestantes(int personasRestantes) {
 		this.personasRestantes = personasRestantes;
 	}
-	
+
 	public void restarPersona(int numero) {
 		this.personasRestantes -= numero;
 	}
@@ -70,6 +70,3 @@ public class Cupo {
 	}
 
 }
-
-
-

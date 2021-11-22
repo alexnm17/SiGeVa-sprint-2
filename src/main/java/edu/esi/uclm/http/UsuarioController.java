@@ -39,7 +39,9 @@ public class UsuarioController {
 	@Autowired
 	private CentroVacunacionDao centroVacunacionDao;
 
-	private static String EMAIL = "email";
+	private static final String EMAIL = "email";
+	private static final String NOMBRE = "nombre";
+	private static final String PASSWORD = "password";
 
 	@CrossOrigin(origins = "http://localhost:3000")
 	@PostMapping("/crearUsuario")
@@ -50,16 +52,16 @@ public class UsuarioController {
 			JSONObject json = new JSONObject(datosUsuario);
 			String email = json.getString(EMAIL);
 			String dni = json.getString("dni");
-			String nombre = json.getString("nombre");
+			String nombre = json.getString(NOMBRE);
 			String apellido = json.getString("apellido");
-			String password = json.getString("password");
+			String password = json.getString(PASSWORD);
 
 			CentroVacunacion centroVacunacion = centroVacunacionDao.findByNombre(json.getString("centroSalud"));
 
 			String rol = json.getString("rol");
 
 			Usuario nuevoUsuario = new Usuario(email, dni, nombre, apellido, password, rol, centroVacunacion);
-			nuevoUsuario.controlarContraseña();
+			nuevoUsuario.controlarContrasena();
 			nuevoUsuario.setPassword(password);
 			nuevoUsuario.comprobarDni();
 			nuevoUsuario.comprobarEmail();
@@ -77,11 +79,11 @@ public class UsuarioController {
 			JSONObject json = new JSONObject(datosUsuario);
 			String email = json.getString(EMAIL);
 			String dni = json.getString("dni");
-			String nombre = json.getString("nombre");
+			String nombre = json.getString(NOMBRE);
 			String apellido = json.getString("apellido");
-			String password = json.getString("password");
+			String password = json.getString(PASSWORD);
 			CentroVacunacion centroVacunacion = centroVacunacionDao
-					.findByNombre(json.getJSONObject("centroVacunacion").getString("nombre"));
+					.findByNombre(json.getJSONObject("centroVacunacion").getString(NOMBRE));
 			String rol = json.getString("rol");
 
 			Usuario user = new Usuario(email, dni, nombre, apellido, password, rol, centroVacunacion);
@@ -129,8 +131,8 @@ public class UsuarioController {
 		String rol = "";
 		try {
 			JSONObject jso = new JSONObject(datosUsuario);
-			String email = jso.optString("email");
-			String password = jso.optString("password");
+			String email = jso.optString(EMAIL);
+			String password = jso.optString(PASSWORD);
 			if (email.length() == 0)
 				throw new SigevaException(HttpStatus.FORBIDDEN, "Por favor, escribe tu Direccion de Correo");
 
@@ -182,7 +184,7 @@ public class UsuarioController {
 	private void borrarCitas(Usuario usuario) {
 		citaDao.deleteAllByUsuario(usuario);
 	}
-  
+
 	@CrossOrigin(origins = "http://localhost:3000")
 	@PostMapping("/marcarVacunado")
 	public void marcarVacunado(HttpSession session, @RequestBody Map<String, Object> datosPaciente)
