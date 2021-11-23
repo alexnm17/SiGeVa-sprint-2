@@ -43,7 +43,7 @@ class GestionCentroSalud extends Component {
             });
         }
     }
-    
+
     changeOnlyNumberHandler = e => {
         if (e.target.value.match("^[0-9]*$") != null) {
             this.setState({
@@ -78,7 +78,9 @@ class GestionCentroSalud extends Component {
             }).catch(error => {
                 if (error.response.status === 409) {
                     alert("No se puede crear el centro puesto que ya existe");
-                } else {
+                } else if (error.response.status === 501) {
+                    alert("Algún campo está vacío. Compruebelos y vuelva a intentarlo");
+                }else {
                     alert("Error desconocido, por favor contacta con el administrador.")
                 }
             })
@@ -110,15 +112,15 @@ class GestionCentroSalud extends Component {
                         <ModalBody>
                             <FormGroup>
                                 <label>Nombre:</label>
-                                <input className="form-control" type="text" name="nombre" onChange={this.changeOnlyStringAndNumberHandler} value={nombre}></input>
+                                <input className="form-control" placeholder="Nombre" type="text" name="nombre" onChange={this.changeOnlyStringAndNumberHandler} value={nombre}></input>
                             </FormGroup>
                             <FormGroup>
                                 <label>Municipio:</label>
-                                <input className="form-control" type="text" name="municipio" onChange={this.changeOnlyStringHandler} value={municipio}></input>
+                                <input className="form-control" placeholder="Municipio" type="text" name="municipio" onChange={this.changeOnlyStringHandler} value={municipio}></input>
                             </FormGroup>
                             <FormGroup>
                                 <label>Dosis:</label>
-                                <input className="form-control" type="text" name="dosis" onChange={this.changeOnlyNumberHandler} value={dosis}></input>
+                                <input className="form-control" placeholder="10" type="text" name="dosis" onChange={this.changeOnlyNumberHandler} value={dosis}></input>
                             </FormGroup>
                         </ModalBody>
 
