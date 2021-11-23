@@ -9,7 +9,7 @@ class centroSaludList extends Component {
         centroSalud: [],
         modalModificar: false,
         form: {
-            idCentroVacunacion:"",
+            idCentroVacunacion: "",
             nombre: "",
             municipio: "",
             dosis: ""
@@ -47,36 +47,36 @@ class centroSaludList extends Component {
     }
 
     changeOnlyNumberHandler = e => {
-        if(e.target.value.match("^[0-9]*$") != null){
+        if (e.target.value.match("^[0-9]*$") != null) {
             this.setState({
                 form: {
                     ...this.state.form,
                     [e.target.name]: e.target.value,
                 }
             });
-        }   
+        }
     }
 
     changeOnlyNumberAndStringHandler = e => {
-        if(e.target.value.match("^[A-Za-z0-9 ]*$") != null){
+        if (e.target.value.match("^[A-Za-z0-9 ]*$") != null) {
             this.setState({
                 form: {
                     ...this.state.form,
                     [e.target.name]: e.target.value,
                 }
             });
-        }   
+        }
     }
 
     changeOnlyStringHandler = e => {
-        if(e.target.value.match("^[A-Za-z ]*$") != null){
+        if (e.target.value.match("^[A-Za-z ]*$") != null) {
             this.setState({
                 form: {
                     ...this.state.form,
                     [e.target.name]: e.target.value,
                 }
             });
-        }   
+        }
     }
 
     ModificarHandler = e => {
@@ -89,6 +89,8 @@ class centroSaludList extends Component {
             }).catch(error => {
                 if (error.response.status === 404) {
                     alert("No existe un centro con este nombre");
+                } else if (error.response.status === 501) {
+                    alert("Algún campo está vacío. Compruebelos y vuelva a intentarlo");
                 } else {
                     alert("Error desconocido, por favor contacta con el administrador.")
                 }
@@ -137,7 +139,7 @@ class centroSaludList extends Component {
                         </FormGroup>
                         <FormGroup>
                             <label>Dosis</label>
-                            <input className="form-control" type="text"  name="dosis" onChange={this.changeOnlyNumberHandler} value={this.state.form.dosis}></input>
+                            <input className="form-control" type="text" name="dosis" onChange={this.changeOnlyNumberHandler} value={this.state.form.dosis}></input>
                         </FormGroup>
                     </ModalBody>
 

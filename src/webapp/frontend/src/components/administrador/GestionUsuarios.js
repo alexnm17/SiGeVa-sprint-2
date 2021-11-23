@@ -49,7 +49,7 @@ class GestionUsuarios extends Component {
     }
 
     changeOnlyStringHandler = e => {
-        if(e.target.value.match("^[a-zA-Z ]*$") != null){
+        if (e.target.value.match("^[a-zA-Z ]*$") != null) {
             this.setState({
                 form: {
                     ...this.state.form,
@@ -60,7 +60,7 @@ class GestionUsuarios extends Component {
     }
 
     changeDNIHandler = e => {
-        if(e.target.value.match("^[0-9]{0,8}[A-Za-z]{0,1}$") != null){
+        if (e.target.value.match("^[0-9]{0,8}[A-Za-z]{0,1}$") != null) {
             this.setState({
                 form: {
                     ...this.state.form,
@@ -71,7 +71,7 @@ class GestionUsuarios extends Component {
     }
 
     changeEmailHandler = e => {
-        if(e.target.value.match("^[a-zA-Z0-9_.-]*[@]{0,1}[a-zA-z0-9]*[.]{0,1}[a-zA-Z]{0,4}$") != null){
+        if (e.target.value.match("^[a-zA-Z0-9_.-]*[@]{0,1}[a-zA-z0-9]*[.]{0,1}[a-zA-Z]{0,4}$") != null) {
             this.setState({
                 form: {
                     ...this.state.form,
@@ -91,8 +91,15 @@ class GestionUsuarios extends Component {
                     window.location.reload(true);
                 }
             }).catch(error => {
+                console.log(error.response)
                 if (error.response.status === 400) {
                     alert("Alguno de los campos introducidos es erroneo. Compruebalos y prueba otra vez");
+                } else if (error.response.status === 501) {
+                    alert("Algún campo está vacío. Compruebalos y prueba otra vez");
+                } else if (error.response.status === 208) {
+                    alert("Ya existe un usuario con ese email.");
+                } else if (error.response.status === 409) {
+                    alert("Hay algún campo que no cumple el formato necesario. Por favor, compruébalo otra vez y vuelve a intentarlo.");
                 } else {
                     alert("Error desconocido, por favor contacta con el administrador.")
                 }
@@ -121,23 +128,23 @@ class GestionUsuarios extends Component {
                         <ModalBody>
                             <FormGroup>
                                 <label>Email:</label>
-                                <input className="form-control" type="text" name="email" onChange={this.changeEmailHandler} value={email}></input>
+                                <input className="form-control" placeholder="email@example.com" type="text" name="email" onChange={this.changeEmailHandler} value={email}></input>
                             </FormGroup>
                             <FormGroup>
                                 <label>Contraseña:</label>
-                                <input className="form-control" type="password" name="password" onChange={this.changeHandler} value={password}></input>
+                                <input className="form-control" placeholder="8 caracteres con una mayúscula, una minúscula y un símbolo" type="password" name="password" onChange={this.changeHandler} value={password}></input>
                             </FormGroup>
                             <FormGroup>
                                 <label>Dni:</label>
-                                <input className="form-control" type="text" name="dni" onChange={this.changeDNIHandler} value={dni}></input>
+                                <input className="form-control" placeholder="12345678A" type="text" name="dni" onChange={this.changeDNIHandler} value={dni}></input>
                             </FormGroup>
                             <FormGroup>
                                 <label>Nombre:</label>
-                                <input className="form-control" type="text" name="nombre" onChange={this.changeOnlyStringHandler} value={nombre}></input>
+                                <input className="form-control" placeholder="Nombre" type="text" name="nombre" onChange={this.changeOnlyStringHandler} value={nombre}></input>
                             </FormGroup>
                             <FormGroup>
                                 <label>Apellidos</label>
-                                <input className="form-control" type="text" name="apellido" onChange={this.changeOnlyStringHandler} value={apellido}></input>
+                                <input className="form-control" placeholder="Apellidos" type="text" name="apellido" onChange={this.changeOnlyStringHandler} value={apellido}></input>
                             </FormGroup>
                             <FormGroup>
                                 <label style={{ marginRight: 10 }}>Centro de Vacunacion:</label>

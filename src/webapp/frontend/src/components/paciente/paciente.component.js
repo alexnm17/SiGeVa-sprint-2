@@ -79,7 +79,7 @@ class Paciente extends Component {
                 if (error.response.status === 403) {
                     alert("No hay hueco para cita en ese momento");
                 } else if (error.response.status === 404) {
-                    alert("No se puede modificar citas puesto que no dispone de ninguna cita asignada");
+                    alert("No puede modificar citas puesto que no dispone de ninguna cita asignada");
                 } else {
                     alert("Error desconocido, por favor contacta con el administrador.")
                 }

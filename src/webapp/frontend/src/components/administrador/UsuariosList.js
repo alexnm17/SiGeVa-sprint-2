@@ -102,6 +102,12 @@ class UsuariosList extends Component {
                     alert("No puede modificar a otro administrador del sistema");
                 } else if (error.response.status === 404) {
                     alert("No existe un usuario con este identificador");
+                }else if (error.response.status === 304) {
+                    alert("No se puede completar este proceso ya que el usuario ya esta vacunado");
+                }else if (error.response.status === 409) {
+                    alert("Algún campo es erroneo. Compruebelos y pruebe otra vez.");
+                }else if (error.response.status === 501) {
+                    alert("Algún campo está vacío. Compruebelos y pruebe otra vez.");
                 } else {
                     alert("Error desconocido, por favor contacta con el administrador.")
                 }
