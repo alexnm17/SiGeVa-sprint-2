@@ -98,7 +98,6 @@ class UsuariosList extends Component {
                 this.getUsuarios()
                 this.setState({ modalModificar: false })
             }).catch(error => {
-                console.log(error.response.data)
                 if (error.response.status === 403) {
                     alert("No puede modificar a otro administrador del sistema");
                 } else if (error.response.status === 404) {
