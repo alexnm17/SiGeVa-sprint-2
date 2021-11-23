@@ -4,15 +4,16 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
+import edu.esi.uclm.utils.AuxiliaryMethods;
+
 
 class TestComrpobarDniCorrecto {
 
 	@Test
 	void test() {
-		CentroVacunacion centro= new CentroVacunacion();
-		Usuario user = new Usuario("prueba@email.com","12345678A", "Pepe", "Garcia", "Contraseña", "Paciente",centro);
+		String dni = "01234987Q";
 		try {
-			user.comprobarDni();
+			AuxiliaryMethods.comprobarDni(dni);
 			throw new Exception("Se ha completado este proceso correctamente");
 		} catch (Exception e) {
 			assertEquals("Se ha completado este proceso correctamente", e.getMessage());

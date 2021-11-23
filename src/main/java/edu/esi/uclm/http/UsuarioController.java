@@ -28,6 +28,7 @@ import edu.esi.uclm.model.Cita;
 import edu.esi.uclm.model.EstadoVacunacion;
 import edu.esi.uclm.model.RolUsuario;
 import edu.esi.uclm.model.Usuario;
+import edu.esi.uclm.utils.AuxiliaryMethods;
 
 @RestController
 public class UsuarioController {
@@ -52,18 +53,33 @@ public class UsuarioController {
 			JSONObject json = new JSONObject(datosUsuario);
 			String email = json.getString(EMAIL);
 			String dni = json.getString("dni");
+			AuxiliaryMethods.comprobarCampoVacio(dni);
+			
 			String nombre = json.getString(NOMBRE);
+			AuxiliaryMethods.comprobarCampoVacio(nombre);
+			
 			String apellido = json.getString("apellido");
+			AuxiliaryMethods.comprobarCampoVacio(apellido);
+			
 			String password = json.getString(PASSWORD);
+			AuxiliaryMethods.comprobarCampoVacio(json.getString("centroSalud"));
 			CentroVacunacion centroVacunacion = centroVacunacionDao.findByNombre(json.getString("centroSalud"));
+			
 			String rol = json.getString("rol");
+			AuxiliaryMethods.comprobarCampoVacio(apellido);
+			
+			Usuario usuarioExistente = usuarioDao.findByEmail(email);
+			
+			if(usuarioExistente != null)
+				throw new SigevaException(HttpStatus.ALREADY_REPORTED,"Ya existe un usuario con ese email");
 
 			Usuario nuevoUsuario = new Usuario(email, dni, nombre, apellido, password, rol, centroVacunacion);
-
-			nuevoUsuario.controlarContrasena();
+			
+			AuxiliaryMethods.controlarContrasena(nuevoUsuario.getPassword());
+			AuxiliaryMethods.comprobarEmail(nuevoUsuario.getEmail());
+			AuxiliaryMethods.comprobarDni(nuevoUsuario.getDni());
+			
 			nuevoUsuario.setPassword(password);
-			nuevoUsuario.comprobarDni();
-			nuevoUsuario.comprobarEmail();
 			usuarioDao.save(nuevoUsuario);
 		} catch (SigevaException e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
@@ -84,20 +100,17 @@ public class UsuarioController {
 			if (!json.optString(PASSWORD).isEmpty()) {
 				password = json.getString(PASSWORD);
 			}
-			CentroVacunacion centroVacunacion = centroVacunacionDao
-					.findByNombre(json.getJSONObject("centroVacunacion").getString(NOMBRE));
+			CentroVacunacion centroVacunacion = centroVacunacionDao.findByNombre(json.getJSONObject("centroVacunacion").getString(NOMBRE));
 			String rol = json.getString("rol");
-
-			Usuario user = new Usuario(email, dni, nombre, apellido, password, rol, centroVacunacion);
-
-			if (user.getRol().equalsIgnoreCase(RolUsuario.ADMINISTRADOR.name()))
-				throw new SigevaException(HttpStatus.FORBIDDEN, "No puede modificar a otro administrador del sistema");
+			Usuario antiguoUsuario = usuarioDao.findByEmail(email);
+			
+			if (antiguoUsuario == null)
+				throw new SigevaException(HttpStatus.NOT_FOUND, "No existe un usuario con este identificador");
 			else {
-				Usuario antiguoUsuario = usuarioDao.findByEmail(user.getEmail());
-
-				if (antiguoUsuario == null)
-					throw new SigevaException(HttpStatus.NOT_FOUND, "No existe un usuario con este identificador");
-
+				Usuario user = new Usuario(email, dni, nombre, apellido, password, rol, centroVacunacion);
+				if(antiguoUsuario.getRol().equalsIgnoreCase(RolUsuario.ADMINISTRADOR.name()))
+					throw new SigevaException(HttpStatus.FORBIDDEN, "No puede modificar a otro administrador del sistema");
+				
 				antiguoUsuario.setNombre(user.getNombre());
 				antiguoUsuario.setApellido(user.getApellido());
 				antiguoUsuario.setDni(user.getDni());
@@ -106,9 +119,9 @@ public class UsuarioController {
 				if (!antiguoUsuario.getCentroVacunacion().equals(user.getCentroVacunacion()))
 					antiguoUsuario.comprobarEstado();
 				antiguoUsuario.setCentroVacunacion(user.getCentroVacunacion());
-
+				
 				if (user.getPassword() != null) {
-					user.controlarContrasena();
+					AuxiliaryMethods.controlarContrasena(user.getPassword());
 					antiguoUsuario.setPasswordModify(user.getPassword());
 				} else {
 					antiguoUsuario.setPasswordModify(antiguoUsuario.getPassword());
