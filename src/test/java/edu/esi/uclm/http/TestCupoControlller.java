@@ -74,8 +74,8 @@ class TestCupoControlller{
 		
 		try {
 			when(usuarioDao.findById(any())).thenReturn(usuarioPrueba);
-			when(cupoDao.findAllByCentroVacunacion(centroUsuario)).thenReturn(listacupos);
-			mockMvc.perform(MockMvcRequestBuilders.post("/getAllCuposConHuecoPorFecha")
+			lenient().when(cupoDao.findAllByCentroVacunacion(centroUsuario)).thenReturn(listacupos);
+			mockMvc.perform(MockMvcRequestBuilders.get("/getAllCuposConHuecoPorFecha")
 					.contentType(MediaType.ALL_VALUE)
 					.param("email",email)
 					.param("fecha",fecha))
