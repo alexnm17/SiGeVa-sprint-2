@@ -147,4 +147,8 @@ public class Usuario {
 		return true;
 	}
 
+	public void setPasswordModify(String password) {
+		this.password = password;
+	}
+
 }
