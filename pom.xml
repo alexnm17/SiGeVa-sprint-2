@@ -70,6 +70,14 @@
 			<version>0.8.7</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-surefire-plugin -->
+		<dependency>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-surefire-plugin</artifactId>
+			<version>2.22.0</version>
+		</dependency>
+
+
 		<!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
 		<dependency>
 			<groupId>commons-codec</groupId>
@@ -153,17 +161,50 @@
 				<version>2.8.2</version>
 			</plugin>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.22.2</version>
+				<version>2.22.0</version>
 				<configuration>
-					<testFailureIgnore>true</testFailureIgnore>
+					<argLine>${surefireArgLine}</argLine>
 				</configuration>
 			</plugin>
+
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.8-SNAPSHOT</version>
+				<version>0.8.7</version>
+				<executions>
+					<!-- Prepara el agente de tiempo de ejecución de JaCoCo, el cual se 
+						pasa como agumento a la VM cuando Maven ejecuta el plugin Surefire plugin. -->
+					<execution>
+						<id>pre-unit-test</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+						<configuration>
+							<!-- Establece la ruta al fichero que contiene los datos de ejecución. -->
+							<destFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</destFile>
+							<!-- Establece el nombre de la propiedad que contiene las configurationes 
+								para el agente de tiempo de ejecución de JaCoCo. -->
+							<propertyName>surefireArgLine</propertyName>
+						</configuration>
+					</execution>
+					<!-- Crea el informe de cobertura para los tests unitarios después que 
+						los tests unitarios se hayan ejecutado. -->
+					<execution>
+						<id>post-unit-test</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+						<configuration>
+							<!-- Establece la ruta del fichero que contiene los datos de ejecución. -->
+							<dataFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</dataFile>
+							<!-- Establece el directorio de destino donde se almacenarán los informes 
+								de cobertura. -->
+							<outputDirectory>${project.reporting.outputDirectory}/jacoco-ut</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
