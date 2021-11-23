@@ -18,13 +18,16 @@ import org.springframework.web.server.ResponseStatusException;
 import edu.esi.uclm.dao.CentroVacunacionDao;
 import edu.esi.uclm.exceptions.SigevaException;
 import edu.esi.uclm.model.CentroVacunacion;
+import edu.esi.uclm.utils.AuxiliaryMethods;
 
 @RestController
 public class CentroVacunacionController {
 
 	@Autowired
 	private CentroVacunacionDao centroVacunacionDao;
-
+	
+	private static final String DOSIS = "dosis";
+	
 	// Metodo para añadir centros de vacunacion a la BD
 	@CrossOrigin(origins = "http://localhost:3000")
 	@PostMapping("/addCentro")
@@ -34,7 +37,10 @@ public class CentroVacunacionController {
 			JSONObject json = new JSONObject(datosCentro);
 			String nombre = json.getString("nombre");
 			String municipio = json.getString("municipio");
-			int dosis = Integer.parseInt(json.getString("dosis"));
+			AuxiliaryMethods.comprobarCampoVacio(municipio);
+			
+			AuxiliaryMethods.comprobarCampoVacio(json.getString(DOSIS));
+			int dosis = Integer.parseInt(json.getString(DOSIS));
 
 			CentroVacunacion centroVacunacion = new CentroVacunacion(nombre, municipio, dosis);
 			if (centroVacunacionDao.findByNombre(nombre) != null)
@@ -54,7 +60,7 @@ public class CentroVacunacionController {
 			String idCentroVacunacion = json.getString("idCentroVacunacion");
 			String nombre = json.getString("nombre");
 			String municipio = json.getString("municipio");
-			int dosis = Integer.parseInt(json.getString("dosis"));
+			int dosis = Integer.parseInt(json.getString(DOSIS));
 
 			CentroVacunacion antiguoCentro = centroVacunacionDao.findByIdCentroVacunacion(idCentroVacunacion);
 

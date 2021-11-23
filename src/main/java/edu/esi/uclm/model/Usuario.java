@@ -113,7 +113,7 @@ public class Usuario {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-
+/*
 	public void comprobarDni() throws SigevaException {
 		char[] cadenaDni = dni.toCharArray();
 		if (cadenaDni.length != 9)
@@ -124,20 +124,20 @@ public class Usuario {
 		if (!Character.isLetter(cadenaDni[8]))
 			throw new SigevaException(HttpStatus.CONFLICT, MSG_CONFLICT_DNI);
 	}
-
+*/
 	public void comprobarEstado() throws SigevaException {
 		if (!estadoVacunacion.equals(EstadoVacunacion.NO_VACUNADO.name()))
 			throw new SigevaException(HttpStatus.CONFLICT,
 					"No se puede completar este proceso ya que el usuario ya esta vacunado");
 	}
-
+/*
 	public void comprobarEmail() throws SigevaException {
 		Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(email);
 		if (!matcher.find())
 			throw new SigevaException(HttpStatus.CONFLICT, MSG_CONFLICT_DNI);
 	}
-
-	public boolean controlarContrasena() throws SigevaException {
+*/
+	/*public boolean controlarContrasena() throws SigevaException {
 		if (password.length() < 8)
 			throw new SigevaException(HttpStatus.CONFLICT, "La contraseña no tiene la longitud adecuada");
 		if (password.equals(password.toLowerCase()))
@@ -146,6 +146,7 @@ public class Usuario {
 			throw new SigevaException(HttpStatus.CONFLICT, "La contraseña no contiene una letra minuscula");
 		return true;
 	}
+	*/
 
 	public void setPasswordModify(String password) {
 		this.password = password;
