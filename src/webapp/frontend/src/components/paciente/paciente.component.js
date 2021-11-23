@@ -29,9 +29,9 @@ class Paciente extends Component {
     }
 
     SolicitarClickHandler = () => {
+        this.ocultarModalSolicitar()
         axios.post("http://localhost:8080/solicitarCita", { email: localStorage.getItem("emailUsuario") })
             .then(res => {
-                this.ocultarModalSolicitar()
                 window.location.reload(true);
             }).catch(error => {
                 this.ocultarModalSolicitar()
@@ -52,6 +52,13 @@ class Paciente extends Component {
         axios.delete('http://localhost:8080/anularCita', { data: { idCita: this.state.idCitaModalModificar } })
             .then(res => {
                 window.location.reload(true);
+            }).catch(error => {
+                this.ocultarModalSolicitar()
+                if (error.response.status === 409) {
+                    alert("La cita que intenta anular ya ha sido utilizada.");
+                } else {
+                    alert("Error desconocido, por favor contacta con el administrador.")
+                }
             })
     }
 

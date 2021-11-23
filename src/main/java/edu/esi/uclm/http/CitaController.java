@@ -206,7 +206,7 @@ public class CitaController {
 			citaDao.deleteByIdCita(idCita);
 			cupoDao.save(cupo);
 		} catch (SigevaException e) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
+			throw new ResponseStatusException(e.getStatus(), e.getMessage());
 		}
 	}
 
