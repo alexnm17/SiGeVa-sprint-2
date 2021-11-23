@@ -14,8 +14,9 @@ class TestCentroVacunacionDao {
 	@Test
 	void test() {
 		CentroVacunacionDao centrodao = mock(CentroVacunacionDao.class);
-		when(centrodao.findByNombre(anyString())).thenReturn(new CentroVacunacion("Prueba","MunicipioPrueba", 1000));
 		CentroVacunacion esperado=new CentroVacunacion("Prueba","MunicipioPrueba", 1000);
+		
+		when(centrodao.findByNombre(anyString())).thenReturn(esperado);
 		CentroVacunacion resultado= centrodao.findByNombre("Prueba");
 
 		assertEquals(esperado,resultado);
