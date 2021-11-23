@@ -13,6 +13,11 @@ class Login extends Component {
         errorMsg: ''
     }
 
+    componentDidMount() {
+        localStorage.setItem('emailUsuario', "");
+        localStorage.setItem('rolUsuario', "");
+    }
+
     onChangeHandler = async e => {
         await this.setState({
             form: {
@@ -47,7 +52,7 @@ class Login extends Component {
     render() {
         return (
             <div>
-                <h6>Introduce tus credenciales y tu rol para entrar en el sistema</h6>
+                <h6>Introduce tus credenciales para entrar en el sistema</h6>
                 <Table>
                     <Row>
                         <Col></Col>
