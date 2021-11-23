@@ -31,6 +31,8 @@ class UsuariosList extends Component {
         axios.get('http://localhost:8080/getUsuarios')
             .then(res => {
                 this.setState({ usuarios: res.data })
+            }).catch(error => {
+                alert("Error desconocido, por favor contacta con el administrador.")
             })
     }
 
@@ -96,6 +98,7 @@ class UsuariosList extends Component {
                 this.getUsuarios()
                 this.setState({ modalModificar: false })
             }).catch(error => {
+                console.log(error.response.data)
                 if (error.response.status === 403) {
                     alert("No puede modificar a otro administrador del sistema");
                 } else if (error.response.status === 404) {
@@ -171,7 +174,7 @@ class UsuariosList extends Component {
                         </FormGroup>
                         <FormGroup>
                             <label style={{ marginRight: 15 }}>Contraseña: </label>
-                            <input className="form-control" type="password" name="password" onChange={this.changeHandler} value={this.state.form.password}></input>
+                            <input className="form-control" placeholder="Si cambias la contraseña se cambiará. Si no, se mantendrá." type="password" name="password" onChange={this.changeHandler} value={this.state.form.password}></input>
                         </FormGroup>
                         <FormGroup>
                             <label>DNI:</label>
@@ -208,7 +211,6 @@ class UsuariosList extends Component {
                         <Button color="danger" onClick={this.ocultarModalModificar}>Cancelar</Button>
                     </ModalFooter>
                 </Modal>
-                {/* To do lo que hay aqui abajo */}
                 <Modal isOpen={this.state.modalEliminar}>
                     <ModalHeader>
                         <div><h3>Confirmar eliminación</h3></div>

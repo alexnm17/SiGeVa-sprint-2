@@ -55,12 +55,11 @@ public class UsuarioController {
 			String nombre = json.getString(NOMBRE);
 			String apellido = json.getString("apellido");
 			String password = json.getString(PASSWORD);
-
 			CentroVacunacion centroVacunacion = centroVacunacionDao.findByNombre(json.getString("centroSalud"));
-
 			String rol = json.getString("rol");
 
 			Usuario nuevoUsuario = new Usuario(email, dni, nombre, apellido, password, rol, centroVacunacion);
+
 			nuevoUsuario.controlarContrasena();
 			nuevoUsuario.setPassword(password);
 			nuevoUsuario.comprobarDni();
@@ -81,7 +80,10 @@ public class UsuarioController {
 			String dni = json.getString("dni");
 			String nombre = json.getString(NOMBRE);
 			String apellido = json.getString("apellido");
-			String password = json.getString(PASSWORD);
+			String password = null;
+			if (!json.optString(PASSWORD).isEmpty()) {
+				password = json.getString(PASSWORD);
+			}
 			CentroVacunacion centroVacunacion = centroVacunacionDao
 					.findByNombre(json.getJSONObject("centroVacunacion").getString(NOMBRE));
 			String rol = json.getString("rol");
@@ -91,36 +93,32 @@ public class UsuarioController {
 			if (user.getRol().equalsIgnoreCase(RolUsuario.ADMINISTRADOR.name()))
 				throw new SigevaException(HttpStatus.FORBIDDEN, "No puede modificar a otro administrador del sistema");
 			else {
-
 				Usuario antiguoUsuario = usuarioDao.findByEmail(user.getEmail());
 
 				if (antiguoUsuario == null)
-
 					throw new SigevaException(HttpStatus.NOT_FOUND, "No existe un usuario con este identificador");
 
 				antiguoUsuario.setNombre(user.getNombre());
 				antiguoUsuario.setApellido(user.getApellido());
-
 				antiguoUsuario.setDni(user.getDni());
 				antiguoUsuario.setRol(user.getRol());
 				antiguoUsuario.setNombre(user.getNombre());
-
 				if (!antiguoUsuario.getCentroVacunacion().equals(user.getCentroVacunacion()))
 					antiguoUsuario.comprobarEstado();
-
 				antiguoUsuario.setCentroVacunacion(user.getCentroVacunacion());
-				antiguoUsuario.controlarContrasena();
-				antiguoUsuario.setPassword(user.getPassword());
+
+				if (user.getPassword() != null) {
+					user.controlarContrasena();
+					antiguoUsuario.setPasswordModify(user.getPassword());
+				} else {
+					antiguoUsuario.setPasswordModify(antiguoUsuario.getPassword());
+				}
 
 				usuarioDao.save(antiguoUsuario);
 			}
 
 		} catch (SigevaException e) {
-			if (e.getStatus() == HttpStatus.FORBIDDEN) {
-				throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
-			} else if (e.getStatus() == HttpStatus.NOT_FOUND) {
-				throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-			}
+			throw new ResponseStatusException(e.getStatus(), e.getMessage());
 		}
 
 	}
@@ -214,6 +212,9 @@ public class UsuarioController {
 				usuarioVacunado.setEstadoVacunacion(EstadoVacunacion.VACUNADO_SEGUNDA.name());
 				usuarioDao.save(usuarioVacunado);
 			}
+
+			citaDeEseDia.setIsUsada(true);
+			citaDao.save(citaDeEseDia);
 		} catch (SigevaException e) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
 		}
