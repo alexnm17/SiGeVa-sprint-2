@@ -60,7 +60,7 @@ public class CentroVacunacionController {
 			String idCentroVacunacion = json.getString("idCentroVacunacion");
 			String nombre = json.getString("nombre");
 			String municipio = json.getString("municipio");
-			int dosis = Integer.parseInt(json.getString(DOSIS));
+			int dosis = json.getInt(DOSIS);
 
 			CentroVacunacion antiguoCentro = centroVacunacionDao.findByIdCentroVacunacion(idCentroVacunacion);
 
