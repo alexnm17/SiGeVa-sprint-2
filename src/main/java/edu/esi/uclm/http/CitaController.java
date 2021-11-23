@@ -140,13 +140,15 @@ public class CitaController {
 
 			if (optCupoElegido.isPresent())
 				cupoElegido = optCupoElegido.get();
-
-			int citasAsignadas = citaDao.findAllByUsuarioEmail(usuario.getEmail()).size();
+			
+			List<Cita> listaCitas =  citaDao.findAllByUsuarioEmail(usuario.getEmail());
+			listaCitas.sort(Comparator.comparing(Cita::getFecha));
+			int citasAsignadas = listaCitas.size();
 
 			if (citasAsignadas < 1)
 				throw new SigevaException(HttpStatus.NOT_FOUND,
 						"No se puede modificar citas puesto que no dispone de ninguna cita asignada");
-
+			
 			if (cupoElegido.getPersonasRestantes() < 1)
 				throw new SigevaException(HttpStatus.FORBIDDEN,
 						"No hay hueco para cita el dia " + cupoElegido.getFecha() + " a las " + cupoElegido.getHora());
@@ -154,6 +156,21 @@ public class CitaController {
 			if (citaModificar.getIsUsada())
 				throw new SigevaException(HttpStatus.NOT_FOUND,
 						"No se puede modificar su cita puesto que ya está vacunado");
+			
+			int indiceCita = listaCitas.indexOf(citaModificar);
+			switch(indiceCita) {
+				case 0:
+					if(LocalDate.parse(cupoElegido.getFecha()).isAfter(LocalDate.parse(listaCitas.get(1).getFecha())) || LocalDate.parse(cupoElegido.getFecha()).isEqual
+							(LocalDate.parse(listaCitas.get(1).getFecha())))
+						throw new SigevaException(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS,"No se puede poner la primera cita el mismo dia o un dia posterior a la primera");
+					break;
+				case 1:
+					if(LocalDate.parse(cupoElegido.getFecha()).isBefore(LocalDate.parse(listaCitas.get(0).getFecha()).plusDays(21)))
+						throw new SigevaException(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS,"No se puede poner la primera cita el mismo dia o un dia posterior a la primera");
+					break;
+				default:
+					break;
+			}
 
 			citaModificar.setFecha(cupoElegido.getFecha());
 			citaModificar.setHora(cupoElegido.getHora());
@@ -239,7 +256,7 @@ public class CitaController {
 		for (int i = 0; i < centrosVacunacion.size(); i++) {
 			LocalDate fechaCita = LocalDate.now();
 
-			while (fechaCita.isBefore(LocalDate.parse(LocalDate.now().plusYears(1).getYear() + "-01-01"))) {
+			while (fechaCita.isBefore(LocalDate.parse(LocalDate.now().plusYears(1).getYear() + "-02-01"))) {
 
 				crearCupo(numFranjas, fechaCita, LocalTime.parse(formato.getHoraInicioVacunacion()),
 						centrosVacunacion.get(i), formato.getDuracionFranjaVacunacion(),
