@@ -117,7 +117,6 @@ class Paciente extends Component {
         this.getCuposLibres(e.target.value)
     }
 
-
     render() {
         if (localStorage.getItem('rolUsuario') === "Paciente") {
             return (
