@@ -54,35 +54,35 @@ public class UsuarioController {
 			String email = json.getString(EMAIL);
 			String dni = json.getString("dni");
 			AuxiliaryMethods.comprobarCampoVacio(dni);
-			
+
 			String nombre = json.getString(NOMBRE);
 			AuxiliaryMethods.comprobarCampoVacio(nombre);
-			
+
 			String apellido = json.getString("apellido");
 			AuxiliaryMethods.comprobarCampoVacio(apellido);
-			
+
 			String password = json.getString(PASSWORD);
 			AuxiliaryMethods.comprobarCampoVacio(json.getString("centroSalud"));
 			CentroVacunacion centroVacunacion = centroVacunacionDao.findByNombre(json.getString("centroSalud"));
-			
+
 			String rol = json.getString("rol");
 			AuxiliaryMethods.comprobarCampoVacio(apellido);
-			
+
 			Usuario usuarioExistente = usuarioDao.findByEmail(email);
-			
-			if(usuarioExistente != null)
-				throw new SigevaException(HttpStatus.ALREADY_REPORTED,"Ya existe un usuario con ese email");
+
+			if (usuarioExistente != null)
+				throw new SigevaException(HttpStatus.ALREADY_REPORTED, "Ya existe un usuario con ese email");
 
 			Usuario nuevoUsuario = new Usuario(email, dni, nombre, apellido, password, rol, centroVacunacion);
-			
+
 			AuxiliaryMethods.controlarContrasena(nuevoUsuario.getPassword());
 			AuxiliaryMethods.comprobarEmail(nuevoUsuario.getEmail());
 			AuxiliaryMethods.comprobarDni(nuevoUsuario.getDni());
-			
+
 			nuevoUsuario.setPassword(password);
 			usuarioDao.save(nuevoUsuario);
 		} catch (SigevaException e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+			throw new ResponseStatusException(e.getStatus(), e.getMessage());
 		}
 
 	}
@@ -94,8 +94,11 @@ public class UsuarioController {
 			JSONObject json = new JSONObject(datosUsuario);
 			String email = json.getString(EMAIL);
 			String dni = json.getString("dni");
+			AuxiliaryMethods.comprobarCampoVacio(dni);
 			String nombre = json.getString(NOMBRE);
+			AuxiliaryMethods.comprobarCampoVacio(nombre);
 			String apellido = json.getString("apellido");
+			AuxiliaryMethods.comprobarCampoVacio(apellido);
 			String password = null;
 			if (!json.optString(PASSWORD).isEmpty()) {
 				password = json.getString(PASSWORD);
@@ -103,26 +106,30 @@ public class UsuarioController {
 			CentroVacunacion centroVacunacion = centroVacunacionDao.findByNombre(json.getJSONObject("centroVacunacion").getString(NOMBRE));
 			String rol = json.getString("rol");
 			Usuario antiguoUsuario = usuarioDao.findByEmail(email);
-			
+
 			if (antiguoUsuario == null)
 				throw new SigevaException(HttpStatus.NOT_FOUND, "No existe un usuario con este identificador");
 			else {
 				Usuario user = new Usuario(email, dni, nombre, apellido, password, rol, centroVacunacion);
-				if(antiguoUsuario.getRol().equalsIgnoreCase(RolUsuario.ADMINISTRADOR.name()))
-					throw new SigevaException(HttpStatus.FORBIDDEN, "No puede modificar a otro administrador del sistema");
-				
+				if (antiguoUsuario.getRol().equalsIgnoreCase(RolUsuario.ADMINISTRADOR.name()))
+					throw new SigevaException(HttpStatus.FORBIDDEN,
+							"No puede modificar a otro administrador del sistema");
+
+				AuxiliaryMethods.comprobarEmail(user.getEmail());
+				AuxiliaryMethods.comprobarDni(user.getDni());
+
 				antiguoUsuario.setNombre(user.getNombre());
 				antiguoUsuario.setApellido(user.getApellido());
 				antiguoUsuario.setDni(user.getDni());
 				antiguoUsuario.setRol(user.getRol());
 				antiguoUsuario.setNombre(user.getNombre());
-				if (!antiguoUsuario.getCentroVacunacion().equals(user.getCentroVacunacion()))
+				if (!antiguoUsuario.getCentroVacunacion().getIdCentroVacunacion().equals(user.getCentroVacunacion().getIdCentroVacunacion()))
 					antiguoUsuario.comprobarEstado();
 				antiguoUsuario.setCentroVacunacion(user.getCentroVacunacion());
-				
+
 				if (user.getPassword() != null) {
 					AuxiliaryMethods.controlarContrasena(user.getPassword());
-					antiguoUsuario.setPasswordModify(user.getPassword());
+					antiguoUsuario.setPassword(user.getPassword());
 				} else {
 					antiguoUsuario.setPasswordModify(antiguoUsuario.getPassword());
 				}
@@ -184,11 +191,8 @@ public class UsuarioController {
 			usuarioDao.delete(user);
 
 		} catch (SigevaException e) {
-			if (e.getStatus() == HttpStatus.FORBIDDEN) {
-				throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
-			} else if (e.getStatus() == HttpStatus.LOCKED) {
-				throw new ResponseStatusException(HttpStatus.LOCKED, e.getMessage());
-			}
+				throw new ResponseStatusException(e.getStatus(), e.getMessage());
+			
 		}
 	}
 
@@ -229,7 +233,7 @@ public class UsuarioController {
 			citaDeEseDia.setIsUsada(true);
 			citaDao.save(citaDeEseDia);
 		} catch (SigevaException e) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
+			throw new ResponseStatusException(e.getStatus(), e.getMessage());
 		}
 
 	}

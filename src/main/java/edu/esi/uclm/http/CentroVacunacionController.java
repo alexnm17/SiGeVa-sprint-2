@@ -25,9 +25,9 @@ public class CentroVacunacionController {
 
 	@Autowired
 	private CentroVacunacionDao centroVacunacionDao;
-	
+
 	private static final String DOSIS = "dosis";
-	
+
 	// Metodo para añadir centros de vacunacion a la BD
 	@CrossOrigin(origins = "http://localhost:3000")
 	@PostMapping("/addCentro")
@@ -36,9 +36,11 @@ public class CentroVacunacionController {
 
 			JSONObject json = new JSONObject(datosCentro);
 			String nombre = json.getString("nombre");
+			AuxiliaryMethods.comprobarCampoVacio(nombre);
+
 			String municipio = json.getString("municipio");
 			AuxiliaryMethods.comprobarCampoVacio(municipio);
-			
+
 			AuxiliaryMethods.comprobarCampoVacio(json.getString(DOSIS));
 			int dosis = Integer.parseInt(json.getString(DOSIS));
 
@@ -47,8 +49,8 @@ public class CentroVacunacionController {
 				throw new SigevaException(HttpStatus.CONFLICT, "No se puede crear el centro puesto que ya existe");
 
 			centroVacunacionDao.save(centroVacunacion);
-		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
+		} catch (SigevaException e) {
+			throw new ResponseStatusException(e.getStatus(), e.getMessage());
 		}
 	}
 
@@ -59,8 +61,18 @@ public class CentroVacunacionController {
 			JSONObject json = new JSONObject(datosCentro);
 			String idCentroVacunacion = json.getString("idCentroVacunacion");
 			String nombre = json.getString("nombre");
+			AuxiliaryMethods.comprobarCampoVacio(nombre);
+
 			String municipio = json.getString("municipio");
-			int dosis = json.getInt(DOSIS);
+			AuxiliaryMethods.comprobarCampoVacio(municipio);
+
+			//Esta lógica compruba que si desde del front se manda un mensaje con las dosis vacías, nos de un error.
+			int dosis = -1;
+			if(json.get(DOSIS).equals("")) {
+				throw new SigevaException(HttpStatus.NOT_IMPLEMENTED,"El campo esta vacio.");
+			} else {
+				dosis = json.getInt(DOSIS);
+			}
 
 			CentroVacunacion antiguoCentro = centroVacunacionDao.findByIdCentroVacunacion(idCentroVacunacion);
 
@@ -73,7 +85,7 @@ public class CentroVacunacionController {
 
 			centroVacunacionDao.save(antiguoCentro);
 		} catch (SigevaException e) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+			throw new ResponseStatusException(e.getStatus(), e.getMessage());
 		}
 	}
 

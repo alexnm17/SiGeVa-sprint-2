@@ -87,22 +87,14 @@ public class CitaController {
 
 				// Asignar SegundaDosis
 				asignarDosis(usuario, fechaPrimeraCita.plusDays(21));
-
 				break;
 
 			default:
 				break;
-
 			}
 
 		} catch (SigevaException e) {
-			if (e.getStatus() == HttpStatus.FORBIDDEN) {
-				throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
-			} else if (e.getStatus() == HttpStatus.NOT_FOUND) {
-				throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-			} else if (e.getStatus() == HttpStatus.CONFLICT) {
-				throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
-			}
+			throw new ResponseStatusException(e.getStatus(), e.getMessage());
 		}
 	}
 
@@ -140,15 +132,15 @@ public class CitaController {
 
 			if (optCupoElegido.isPresent())
 				cupoElegido = optCupoElegido.get();
-			
-			List<Cita> listaCitas =  citaDao.findAllByUsuarioEmail(usuario.getEmail());
+
+			List<Cita> listaCitas = citaDao.findAllByUsuarioEmail(usuario.getEmail());
 			listaCitas.sort(Comparator.comparing(Cita::getFecha));
 			int citasAsignadas = listaCitas.size();
 
 			if (citasAsignadas < 1)
 				throw new SigevaException(HttpStatus.NOT_FOUND,
 						"No se puede modificar citas puesto que no dispone de ninguna cita asignada");
-			
+
 			if (cupoElegido.getPersonasRestantes() < 1)
 				throw new SigevaException(HttpStatus.FORBIDDEN,
 						"No hay hueco para cita el dia " + cupoElegido.getFecha() + " a las " + cupoElegido.getHora());
@@ -156,20 +148,24 @@ public class CitaController {
 			if (citaModificar.getIsUsada())
 				throw new SigevaException(HttpStatus.NOT_FOUND,
 						"No se puede modificar su cita puesto que ya está vacunado");
-			
+
 			int indiceCita = listaCitas.indexOf(citaModificar);
-			switch(indiceCita) {
-				case 0:
-					if(LocalDate.parse(cupoElegido.getFecha()).isAfter(LocalDate.parse(listaCitas.get(1).getFecha())) || LocalDate.parse(cupoElegido.getFecha()).isEqual
-							(LocalDate.parse(listaCitas.get(1).getFecha())))
-						throw new SigevaException(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS,"No se puede poner la primera cita el mismo dia o un dia posterior a la primera");
-					break;
-				case 1:
-					if(LocalDate.parse(cupoElegido.getFecha()).isBefore(LocalDate.parse(listaCitas.get(0).getFecha()).plusDays(21)))
-						throw new SigevaException(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS,"No se puede poner la primera cita el mismo dia o un dia posterior a la primera");
-					break;
-				default:
-					break;
+			switch (indiceCita) {
+			case 0:
+				if (LocalDate.parse(cupoElegido.getFecha()).isAfter(LocalDate.parse(listaCitas.get(1).getFecha()))
+						|| LocalDate.parse(cupoElegido.getFecha())
+								.isEqual(LocalDate.parse(listaCitas.get(1).getFecha())))
+					throw new SigevaException(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS,
+							"No se puede poner la primera cita el mismo dia o un dia posterior a la primera");
+				break;
+			case 1:
+				if (LocalDate.parse(cupoElegido.getFecha())
+						.isBefore(LocalDate.parse(listaCitas.get(0).getFecha()).plusDays(21)))
+					throw new SigevaException(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS,
+							"No se puede poner la primera cita el mismo dia o un dia posterior a la primera");
+				break;
+			default:
+				break;
 			}
 
 			citaModificar.setFecha(cupoElegido.getFecha());
@@ -180,11 +176,7 @@ public class CitaController {
 			cupoDao.save(cupoElegido);
 
 		} catch (SigevaException e) {
-			if (e.getStatus() == HttpStatus.FORBIDDEN) {
-				throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
-			} else if (e.getStatus() == HttpStatus.NOT_FOUND) {
-				throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-			}
+			throw new ResponseStatusException(e.getStatus(), e.getMessage());
 		}
 	}
 
