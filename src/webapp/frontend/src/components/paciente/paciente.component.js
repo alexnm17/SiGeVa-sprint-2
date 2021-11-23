@@ -29,9 +29,9 @@ class Paciente extends Component {
     }
 
     SolicitarClickHandler = () => {
+        this.ocultarModalSolicitar()
         axios.post("http://localhost:8080/solicitarCita", { email: localStorage.getItem("emailUsuario") })
             .then(res => {
-                this.ocultarModalSolicitar()
                 window.location.reload(true);
             }).catch(error => {
                 this.ocultarModalSolicitar()
