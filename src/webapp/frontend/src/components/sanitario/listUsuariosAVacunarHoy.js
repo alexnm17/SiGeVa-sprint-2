@@ -29,6 +29,13 @@ class listUsuariosAVacunarHoy extends Component {
         ).then(res => {
             this.ocultarModalVacunar()
             window.location.reload(true);
+        }).catch(error => {
+            if (error.response.status === 409) {
+                alert("El usuario ya ha sido vacunado hoy");
+            } else {
+                alert("Error desconocido, por favor contacta con el administrador.")
+            }
+            this.ocultarModalVacunar()
         })
     }
 
