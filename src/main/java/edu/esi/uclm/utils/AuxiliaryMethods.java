@@ -13,6 +13,10 @@ public class AuxiliaryMethods {
 			Pattern.CASE_INSENSITIVE);
 	private static final String MSG_CONFLICT_DNI = "No cumple con el formato de un DNI";
 	
+	private AuxiliaryMethods() {
+		throw new IllegalStateException("Utility class");
+	}
+	
 	public static void comprobarCampoVacio(String campo) throws SigevaException {
 		if(campo.equalsIgnoreCase("")) throw new SigevaException(HttpStatus.NOT_IMPLEMENTED,"El campo esta vacio.");
 	}
