@@ -22,7 +22,7 @@ class Paciente extends Component {
     }
 
     getCitaPaciente() {
-        axios.get('http://localhost:8080/getCitaByEmail', { params: { email: localStorage.getItem("emailUsuario") } })
+        axios.get('https://sigeva-grupo6.herokuapp.com/getCitaByEmail', { params: { email: localStorage.getItem("emailUsuario") } })
             .then(res => {
                 this.setState({ citaUsuario: res.data })
             })
@@ -30,7 +30,7 @@ class Paciente extends Component {
 
     SolicitarClickHandler = () => {
         this.ocultarModalSolicitar()
-        axios.post("http://localhost:8080/solicitarCita", { email: localStorage.getItem("emailUsuario") })
+        axios.post("https://sigeva-grupo6.herokuapp.com/solicitarCita", { email: localStorage.getItem("emailUsuario") })
             .then(res => {
                 window.location.reload(true);
             }).catch(error => {
@@ -49,7 +49,7 @@ class Paciente extends Component {
 
     anularHandler = e => {
         e.preventDefault()
-        axios.delete('http://localhost:8080/anularCita', { data: { idCita: this.state.idCitaModalModificar } })
+        axios.delete('https://sigeva-grupo6.herokuapp.com/anularCita', { data: { idCita: this.state.idCitaModalModificar } })
             .then(res => {
                 window.location.reload(true);
             }).catch(error => {
@@ -63,7 +63,7 @@ class Paciente extends Component {
     }
 
     getCuposLibres(fecha) {
-        axios.get('http://localhost:8080/getAllCuposConHuecoPorFecha', { params: { email: localStorage.getItem("emailUsuario"), fecha: fecha } })
+        axios.get('https://sigeva-grupo6.herokuapp.com/getAllCuposConHuecoPorFecha', { params: { email: localStorage.getItem("emailUsuario"), fecha: fecha } })
             .then(res => {
                 this.setState({ cuposList: res.data })
             })
@@ -71,7 +71,7 @@ class Paciente extends Component {
 
     seleccionarHandler = e => {
         e.preventDefault()
-        axios.post('http://localhost:8080/modificarCita', { emailUsuario: localStorage.getItem("emailUsuario"), idCupo: e.target.id, idCita: this.state.citaSeleccionada })
+        axios.post('https://sigeva-grupo6.herokuapp.com/modificarCita', { emailUsuario: localStorage.getItem("emailUsuario"), idCupo: e.target.id, idCita: this.state.citaSeleccionada })
             .then(res => {
                 this.ocultarModalSolicitar()
                 window.location.reload(true);
