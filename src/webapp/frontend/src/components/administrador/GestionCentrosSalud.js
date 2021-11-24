@@ -68,7 +68,7 @@ class GestionCentroSalud extends Component {
 
     submitHandler = e => {
         e.preventDefault()
-        axios.post("http://localhost:8080/addCentro", this.state.form)
+        axios.post("https://sigeva-grupo6.herokuapp.com/addCentro", this.state.form)
             .then(res => {
                 if (res.status === 200) {
                     alert("Centro creado con éxito")

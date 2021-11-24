@@ -16,7 +16,7 @@ class listUsuariosAVacunarHoy extends Component {
     }
 
     getCitasHoy() {
-        axios.post('http://localhost:8080/getCitasHoy', { "emailUsuario": localStorage.getItem("emailUsuario") }
+        axios.post('https://sigeva-grupo6.herokuapp.com/getCitasHoy', { "emailUsuario": localStorage.getItem("emailUsuario") }
         ).then(res => {
             this.setState({ citas: res.data })
         })
@@ -25,7 +25,7 @@ class listUsuariosAVacunarHoy extends Component {
     VacunarClickHandler = e => {
         e.preventDefault()
         console.log(this.state.usuarioAVacunar)
-        axios.post('http://localhost:8080/marcarVacunado', { "email":  this.state.usuarioAVacunar }
+        axios.post('https://sigeva-grupo6.herokuapp.com/marcarVacunado', { "email":  this.state.usuarioAVacunar }
         ).then(res => {
             this.ocultarModalVacunar()
             window.location.reload(true);

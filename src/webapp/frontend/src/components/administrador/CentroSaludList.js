@@ -21,7 +21,7 @@ class centroSaludList extends Component {
     }
 
     getCentrosSalud() {
-        axios.get('http://localhost:8080/getAllCentros')
+        axios.get('https://sigeva-grupo6.herokuapp.com/getAllCentros')
             .then(res => {
                 this.setState({ centroSalud: res.data })
             })
@@ -82,7 +82,7 @@ class centroSaludList extends Component {
     ModificarHandler = e => {
         e.preventDefault()
         console.log(this.state.form);
-        axios.post('http://localhost:8080/modificarCentro', this.state.form)
+        axios.post('https://sigeva-grupo6.herokuapp.com/modificarCentro', this.state.form)
             .then(res => {
                 this.getCentrosSalud()
                 this.setState({ modalModificar: false })

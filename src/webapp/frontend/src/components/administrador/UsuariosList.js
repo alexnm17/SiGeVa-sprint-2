@@ -28,7 +28,7 @@ class UsuariosList extends Component {
     }
 
     getUsuarios() {
-        axios.get('http://localhost:8080/getUsuarios')
+        axios.get('https://sigeva-grupo6.herokuapp.com/getUsuarios')
             .then(res => {
                 this.setState({ usuarios: res.data })
             }).catch(error => {
@@ -37,7 +37,7 @@ class UsuariosList extends Component {
     }
 
     getCentrosSalud() {
-        axios.get('http://localhost:8080/getAllCentros')
+        axios.get('https://sigeva-grupo6.herokuapp.com/getAllCentros')
             .then(res => {
                 this.setState({ centroSalud: res.data })
             })
@@ -75,7 +75,7 @@ class UsuariosList extends Component {
 
     EliminarClickHandler = e => {
         e.preventDefault()
-        axios.delete('http://localhost:8080/eliminarUsuario', { data: { email: this.state.usuarioAEliminar } })
+        axios.delete('https://sigeva-grupo6.herokuapp.com/eliminarUsuario', { data: { email: this.state.usuarioAEliminar } })
             .then(res => {
                 this.getUsuarios()
                 this.setState({ modalEliminar: false })
@@ -93,7 +93,7 @@ class UsuariosList extends Component {
 
     ModificarHandler = e => {
         e.preventDefault()
-        axios.post('http://localhost:8080/modificarUsuario', this.state.form)
+        axios.post('https://sigeva-grupo6.herokuapp.com/modificarUsuario', this.state.form)
             .then(res => {
                 this.getUsuarios()
                 this.setState({ modalModificar: false })

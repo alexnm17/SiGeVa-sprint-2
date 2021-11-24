@@ -19,7 +19,7 @@ class GestionDefinicionDeCitas extends Component {
     }
 
     getFormatoVacunacion() {
-        axios.get('http://localhost:8080/getFormatoVacunacion')
+        axios.get('https://sigeva-grupo6.herokuapp.com/getFormatoVacunacion')
             .then(res => {
                 this.setState({ formatoVacunacion: res.data })
             })
@@ -29,7 +29,7 @@ class GestionDefinicionDeCitas extends Component {
         e.preventDefault()
         this.ocultarModalDefinir()
         alert("Ya puedes navegar por la aplicación, si hay algun problema en la creación se te notificará.")
-        axios.post("http://localhost:8080/definirFormatoVacunacion", this.state)
+        axios.post("https://sigeva-grupo6.herokuapp.com/definirFormatoVacunacion", this.state)
             .then(res => {
                 window.location.reload(true);
                 this.crearPlantillaCitas()
@@ -39,7 +39,7 @@ class GestionDefinicionDeCitas extends Component {
     }
 
     crearPlantillaCitas() {
-        axios.post("http://localhost:8080/crearPlantillasCitaVacunacion")
+        axios.post("https://sigeva-grupo6.herokuapp.com/crearPlantillasCitaVacunacion")
             .then(res => {
                 alert("Plantilla de citas generada totalmente con éxito")
             }).catch(error => {
