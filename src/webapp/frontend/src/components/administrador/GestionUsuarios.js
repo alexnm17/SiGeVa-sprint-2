@@ -33,7 +33,7 @@ class GestionUsuarios extends Component {
     }
 
     getCentrosSalud() {
-        axios.get('http://localhost:8080/getAllCentros')
+        axios.get('https://sigeva-grupo6.herokuapp.com/getAllCentros')
             .then(res => {
                 this.setState({ centroSalud: res.data })
             })
@@ -83,7 +83,7 @@ class GestionUsuarios extends Component {
 
     submitHandler = e => {
         e.preventDefault()
-        axios.post("http://localhost:8080/crearUsuario", this.state.form)
+        axios.post("https://sigeva-grupo6.herokuapp.com/crearUsuario", this.state.form)
             .then(res => {
                 if (res.status === 200) {
                     alert("Usuario creado con éxito")

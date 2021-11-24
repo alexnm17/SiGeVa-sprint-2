@@ -14,7 +14,7 @@ class DropdownCentros extends Component {
     }
 
     getCentrosSalud() {
-        axios.get('http://localhost:8080/getAllCentros')
+        axios.get('https://sigeva-grupo6.herokuapp.com/getAllCentros')
             .then(res => {
                 this.setState({ centroSalud: res.data })
             })

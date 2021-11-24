@@ -27,7 +27,7 @@ class Sanitario extends Component {
     }
 
     getCitasDiaSeleccionado(fecha) {
-        axios.post('http://localhost:8080/getCitasOtroDia', { "emailUsuario": localStorage.getItem("emailUsuario"), "fecha": fecha }
+        axios.post('https://sigeva-grupo6.herokuapp.com/getCitasOtroDia', { "emailUsuario": localStorage.getItem("emailUsuario"), "fecha": fecha }
         ).then(res => {
             this.setState({ citasFechaOtroDia: res.data })
         })

@@ -21,7 +21,7 @@ class GestionCentroSalud extends Component {
     submitHandler = e => {
         e.preventDefault()
         console.log(this.state)
-        axios.post("http://localhost:8080/definirFormatoVacunacion", this.state)
+        axios.post("https://sigeva-grupo6.herokuapp.com/definirFormatoVacunacion", this.state)
             .then(res => {
                 alert("Formato de Vacunacion definido con éxito")
                 document.getElementById("txtHoraIni").disabled=true;
