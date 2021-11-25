@@ -71,16 +71,19 @@ class Paciente extends Component {
 
     seleccionarHandler = e => {
         e.preventDefault()
+        this.ocultarModalModificar()
         axios.post('https://sigeva-grupo6.herokuapp.com/modificarCita', { emailUsuario: localStorage.getItem("emailUsuario"), idCupo: e.target.id, idCita: this.state.citaSeleccionada })
             .then(res => {
-                this.ocultarModalSolicitar()
                 window.location.reload(true);
             }).catch(error => {
                 if (error.response.status === 403) {
                     alert("No hay hueco para cita en ese momento");
                 } else if (error.response.status === 404) {
-                    alert("No puede modificar citas puesto que no dispone de ninguna cita asignada");
-                } else {
+                    alert("No se puede modificar su cita puesto que ya está vacunado");
+                } else if (error.response.status === 451){
+                    alert("No se puede modificar la cita. La fecha no cumple con la norma de 21 entre citas entre citas o porque estas intentando poner la primera despues de la segunda dosis.")
+                }
+                else {
                     alert("Error desconocido, por favor contacta con el administrador.")
                 }
             })
