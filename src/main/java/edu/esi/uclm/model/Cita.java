@@ -1,23 +1,29 @@
 package edu.esi.uclm.model;
 
+import java.util.UUID;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
 public class Cita {
+	@Id
+	private String idCita;
 	private String fecha;
 	private String hora;
-	private String usuarioDni;
+	@DBRef
+	private Usuario usuario;
 	@DBRef
 	private CentroVacunacion centroVacunacion;
+	private boolean isUsada;
 
 	public Cita() {
-		// El constructor vacio ha sido crado por exigencias del Spring
+		this.idCita = UUID.randomUUID().toString();
 	}
 
-	public Cita(String fecha, String hora, CentroVacunacion centro, String usuarioDni) {
+	public Cita(String fecha, String hora, Usuario usuario) {
 		this.fecha = fecha;
 		this.hora = hora;
-		this.centroVacunacion = centro;
-		this.usuarioDni = usuarioDni;
+		this.centroVacunacion = usuario.getCentroVacunacion();
+		this.usuario = usuario;
 	}
 
 	public String getFecha() {
@@ -44,12 +50,28 @@ public class Cita {
 		this.centroVacunacion = centroVacunacion;
 	}
 
-	public String getUsuarioDni() {
-		return usuarioDni;
+	public Usuario getUsuario() {
+		return usuario;
 	}
 
-	public void setUsuarioDni(String usuarioDni) {
-		this.usuarioDni = usuarioDni;
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
+
+	public String getIdCita() {
+		return idCita;
+	}
+
+	public void setIdCita(String idCita) {
+		this.idCita = idCita;
+	}
+
+	public boolean getIsUsada() {
+		return isUsada;
+	}
+
+	public void setIsUsada(boolean isUsada) {
+		this.isUsada = isUsada;
 	}
 
 }

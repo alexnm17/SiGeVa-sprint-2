@@ -10,6 +10,8 @@ public interface UsuarioDao extends MongoRepository<Usuario, String> {
 
 	Usuario findByDni(String dni);
 
-	void deleteByDni(String dni);
+	Usuario findByEmail(String email);
+
+	Usuario findByEmailAndPassword(String email, String password);
 
 }

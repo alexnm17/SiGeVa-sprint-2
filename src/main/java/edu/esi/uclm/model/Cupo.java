@@ -1,8 +1,13 @@
 package edu.esi.uclm.model;
 
+import java.util.UUID;
+
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
 public class Cupo {
+	@Id
+	private String idCupo;
 	private String fecha;
 	private String hora;
 	private int personasRestantes;
@@ -10,14 +15,14 @@ public class Cupo {
 	private CentroVacunacion centroVacunacion;
 
 	public Cupo() {
-		// El constructor vacio ha sido crado por exigencias del Spring
+		this.idCupo = UUID.randomUUID().toString();
 	}
 
 	public Cupo(String fecha, String hora, CentroVacunacion centro, int personasRestantes) {
 		this.fecha = fecha;
 		this.hora = hora;
 		this.centroVacunacion = centro;
-		this.personasRestantes=personasRestantes;
+		this.personasRestantes = personasRestantes;
 	}
 
 	public String getFecha() {
@@ -51,12 +56,17 @@ public class Cupo {
 	public void setPersonasRestantes(int personasRestantes) {
 		this.personasRestantes = personasRestantes;
 	}
-	
+
 	public void restarPersona(int numero) {
 		this.personasRestantes -= numero;
 	}
 
+	public String getIdCupo() {
+		return idCupo;
+	}
+
+	public void setIdCupo(String idCupo) {
+		this.idCupo = idCupo;
+	}
+
 }
-
-
-
