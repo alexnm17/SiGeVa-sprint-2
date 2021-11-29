@@ -124,7 +124,7 @@ class TestUsuarioController {
 			mockMvc.perform(MockMvcRequestBuilders.post("/crearUsuario")
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(body))
-			.andExpect(MockMvcResultMatchers.status().isBadRequest());
+			.andExpect(MockMvcResultMatchers.status().isConflict());
 			assertTrue(true);
 
 		} catch (Exception e) {
@@ -154,7 +154,7 @@ class TestUsuarioController {
 			mockMvc.perform(MockMvcRequestBuilders.post("/crearUsuario")
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(body))
-			.andExpect(MockMvcResultMatchers.status().isBadRequest());
+			.andExpect(MockMvcResultMatchers.status().isConflict());
 			assertTrue(true);
 
 		} catch (Exception e) {
@@ -166,7 +166,7 @@ class TestUsuarioController {
 	void testModificarUsuarioCorrecto() {
 		Map<String, Object> mapa = new HashMap<String, Object>();
 		mapa.put("email", "prueba@gmail.com");
-		mapa.put("dni", "03255");
+		mapa.put("dni", "03255873A");
 		mapa.put("nombre", "pepe");
 		mapa.put("apellido", "prueba");
 		mapa.put("password", "Prueba123");
