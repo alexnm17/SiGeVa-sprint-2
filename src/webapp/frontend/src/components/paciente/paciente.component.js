@@ -30,7 +30,7 @@ class Paciente extends Component {
 
     SolicitarClickHandler = () => {
         this.ocultarModalSolicitar()
-        axios.post("https://sigeva-grupo6.herokuapp.com/solicitarCita", { email: localStorage.getItem("emailUsuario") })
+        axios.post("http://localhost:8080/solicitarCita", { email: localStorage.getItem("emailUsuario") })
             .then(res => {
                 window.location.reload(true);
             }).catch(error => {
